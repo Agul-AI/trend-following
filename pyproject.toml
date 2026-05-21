@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trend-following-real-data"
+version = "0.1.0"
+description = "Transparent trend-following research pipeline using real market data."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Agul-AI" }]
+dependencies = [
+  "pandas>=2.0",
+  "numpy>=1.24",
+  "yfinance>=0.2",
+  "matplotlib>=3.7",
+  "pyarrow>=12",
+  "pydantic>=2",
+  "python-dotenv>=1",
+  "PyYAML>=6",
+  "tqdm>=4",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "ruff>=0.5",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "scripts", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

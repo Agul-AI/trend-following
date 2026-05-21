@@ -1,0 +1,47 @@
+project:
+  name: trend-following-real-data
+
+data:
+  source: yfinance
+  tickers: [SPY, QQQ, IWM, TLT, GLD, EFA, EEM, VNQ]
+  start_date: "2005-01-01"
+  end_date: null
+  raw_dir: data/raw
+  processed_dir: data/processed
+  alignment: inner
+  suspicious_gap_days: 7
+
+backtest:
+  initial_capital: 1.0
+  transaction_cost_bps: 1.0
+  slippage_bps: 1.0
+  annualization: 252
+  return_convention: close_to_close
+  execution_delay_days: 1
+  portfolio_mode: equal_sleeves
+  train_end_date: "2018-12-31"
+
+strategies:
+  sma_trend:
+    window: 200
+  sma_crossover:
+    short_window: 50
+    long_window: 200
+  tsmom:
+    lookback: 252
+  volatility_targeting:
+    enabled: false
+    target_vol: 0.10
+    lookback: 63
+    max_leverage: 1.0
+
+experiments:
+  sma_windows: [50, 100, 150, 200, 250]
+  tsmom_lookbacks: [63, 126, 189, 252]
+  crossover_short_windows: [20, 50, 100]
+  crossover_long_windows: [100, 150, 200, 250]
+
+reports:
+  figures_dir: reports/figures
+  tables_dir: reports/tables
+  summary_path: reports/summary.md

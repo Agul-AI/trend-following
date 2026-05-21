@@ -1,0 +1,9 @@
+ticker,status,rows,start_date,end_date,duplicate_dates,is_monotonic,missing_adj_close,missing_values,invalid_prices,suspicious_gaps,max_gap_days,weekdays_only,messages
+SPY,pass,5375,2005-01-03,2026-05-14,0,True,False,0,0,0,5,True,
+QQQ,pass,5375,2005-01-03,2026-05-14,0,True,False,0,0,0,5,True,
+IWM,pass,5375,2005-01-03,2026-05-14,0,True,False,0,0,0,5,True,
+TLT,pass,5375,2005-01-03,2026-05-14,0,True,False,0,0,0,5,True,
+GLD,pass,5375,2005-01-03,2026-05-14,0,True,False,0,0,0,5,True,
+EFA,pass,5375,2005-01-03,2026-05-14,0,True,False,0,0,0,5,True,
+EEM,pass,5375,2005-01-03,2026-05-14,0,True,False,0,0,0,5,True,
+VNQ,pass,5375,2005-01-03,2026-05-14,0,True,False,0,0,0,5,True,
