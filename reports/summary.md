@@ -6,7 +6,7 @@ Data source: `yfinance` via `yfinance`.
 
 Configured universe: SPY, UPRO, QQQ, TQQQ, IWM, URTY, TLT, TMF, GLD, EFA, EEM, EDC, VNQ, DRN.
 
-Configured range: `2005-01-01` to `latest available`.
+Configured range: `2017-01-01` to `latest available`.
 
 Raw data is cached under `/Users/cosdis/Desktop/job/quant_projects/trend_following/data/raw` and processed adjusted-price panels are stored under `/Users/cosdis/Desktop/job/quant_projects/trend_following/data/processed`.
 
@@ -14,20 +14,20 @@ Raw data is cached under `/Users/cosdis/Desktop/job/quant_projects/trend_followi
 
 | ticker | status | rows | start_date | end_date | messages |
 | --- | --- | --- | --- | --- | --- |
-| SPY | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
-| UPRO | pass | 4255 | 2009-06-25 | 2026-05-26 | nan |
-| QQQ | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
-| TQQQ | pass | 4096 | 2010-02-11 | 2026-05-26 | nan |
-| IWM | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
-| URTY | pass | 4096 | 2010-02-11 | 2026-05-26 | nan |
-| TLT | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
-| TMF | pass | 4304 | 2009-04-16 | 2026-05-26 | nan |
-| GLD | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
-| EFA | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
-| EEM | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
-| EDC | pass | 4377 | 2008-12-30 | 2026-05-26 | nan |
-| VNQ | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
-| DRN | pass | 4241 | 2009-07-16 | 2026-05-26 | nan |
+| SPY | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| UPRO | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| QQQ | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| TQQQ | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| IWM | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| URTY | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| TLT | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| TMF | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| GLD | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| EFA | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| EEM | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| EDC | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| VNQ | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
+| DRN | pass | 2361 | 2017-01-03 | 2026-05-26 | nan |
 
 ## Strategy definitions
 
@@ -48,15 +48,15 @@ Raw data is cached under `/Users/cosdis/Desktop/job/quant_projects/trend_followi
 
 | name | cumulative_return | annualized_return | annualized_volatility | sharpe_ratio | max_drawdown | average_daily_turnover | exposure_percentage |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| sma_crossover | 2.2262 | 0.0747 | 0.1750 | 0.5010 | -0.4681 | 0.0055 | 0.6363 |
-| Buy & Hold SPY | 8.2774 | 0.1469 | 0.1712 | 0.8866 | -0.3372 | 0.0002 | 1.0000 |
-| Equal-Weight Buy & Hold | 12.5338 | 0.1738 | 0.2640 | 0.7402 | -0.4884 | 0.0002 | 1.0000 |
-| sma_trend | 2.7940 | 0.0855 | 0.1390 | 0.6602 | -0.1884 | 0.0318 | 0.6320 |
-| Buy & Hold SPY | 8.2774 | 0.1469 | 0.1712 | 0.8866 | -0.3372 | 0.0002 | 1.0000 |
-| Equal-Weight Buy & Hold | 12.5338 | 0.1738 | 0.2640 | 0.7402 | -0.4884 | 0.0002 | 1.0000 |
-| tsmom | 2.1510 | 0.0732 | 0.1526 | 0.5395 | -0.2497 | 0.0269 | 0.6305 |
-| Buy & Hold SPY | 8.2774 | 0.1469 | 0.1712 | 0.8866 | -0.3372 | 0.0002 | 1.0000 |
-| Equal-Weight Buy & Hold | 12.5338 | 0.1738 | 0.2640 | 0.7402 | -0.4884 | 0.0002 | 1.0000 |
+| sma_crossover | 0.6156 | 0.0525 | 0.1884 | 0.3685 | -0.4681 | 0.0054 | 0.5895 |
+| Buy & Hold SPY | 2.8597 | 0.1551 | 0.1830 | 0.8799 | -0.3372 | 0.0004 | 1.0000 |
+| Equal-Weight Buy & Hold | 2.9751 | 0.1587 | 0.2779 | 0.6704 | -0.4884 | 0.0004 | 1.0000 |
+| sma_trend | 1.1560 | 0.0855 | 0.1422 | 0.6481 | -0.1884 | 0.0317 | 0.5832 |
+| Buy & Hold SPY | 2.8597 | 0.1551 | 0.1830 | 0.8799 | -0.3372 | 0.0004 | 1.0000 |
+| Equal-Weight Buy & Hold | 2.9751 | 0.1587 | 0.2779 | 0.6704 | -0.4884 | 0.0004 | 1.0000 |
+| tsmom | 0.8353 | 0.0670 | 0.1512 | 0.5046 | -0.2411 | 0.0234 | 0.5570 |
+| Buy & Hold SPY | 2.8597 | 0.1551 | 0.1830 | 0.8799 | -0.3372 | 0.0004 | 1.0000 |
+| Equal-Weight Buy & Hold | 2.9751 | 0.1587 | 0.2779 | 0.6704 | -0.4884 | 0.0004 | 1.0000 |
 
 ## Parameter sensitivity
 

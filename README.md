@@ -27,7 +27,7 @@ The default config uses liquid ETFs:
 - VNQ
 - DRN
 
-The date range defaults to `2005-01-01` through the most recent data available from Yahoo Finance via `yfinance`. Note that several leveraged ETFs began trading later than the unlevered ETFs, so the default inner alignment will start the multi-asset panel at the first date where all selected tickers have data.
+The date range defaults to `2017-01-01` through the most recent data available from Yahoo Finance via `yfinance`. Note that several leveraged ETFs began trading later than the unlevered ETFs, so the default inner alignment will start the multi-asset panel at the first date where all selected tickers have data.
 
 ## Leveraged ETF note
 

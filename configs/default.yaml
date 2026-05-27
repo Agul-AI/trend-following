@@ -4,7 +4,7 @@ project:
 data:
   source: yfinance
   tickers: [SPY, UPRO, QQQ, TQQQ, IWM, URTY, TLT, TMF, GLD, EFA, EEM, EDC, VNQ, DRN]
-  start_date: "2005-01-01"
+  start_date: "2017-01-01"
   end_date: null
   raw_dir: data/raw
   processed_dir: data/processed
