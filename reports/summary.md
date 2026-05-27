@@ -4,7 +4,7 @@
 
 Data source: `yfinance` via `yfinance`.
 
-Configured universe: SPY, QQQ, IWM, TLT, GLD, EFA, EEM, VNQ.
+Configured universe: SPY, UPRO, QQQ, TQQQ, IWM, URTY, TLT, TMF, GLD, EFA, EEM, EDC, VNQ, DRN.
 
 Configured range: `2005-01-01` to `latest available`.
 
@@ -14,14 +14,20 @@ Raw data is cached under `/Users/cosdis/Desktop/job/quant_projects/trend_followi
 
 | ticker | status | rows | start_date | end_date | messages |
 | --- | --- | --- | --- | --- | --- |
-| SPY | pass | 5375 | 2005-01-03 | 2026-05-14 | nan |
-| QQQ | pass | 5375 | 2005-01-03 | 2026-05-14 | nan |
-| IWM | pass | 5375 | 2005-01-03 | 2026-05-14 | nan |
-| TLT | pass | 5375 | 2005-01-03 | 2026-05-14 | nan |
-| GLD | pass | 5375 | 2005-01-03 | 2026-05-14 | nan |
-| EFA | pass | 5375 | 2005-01-03 | 2026-05-14 | nan |
-| EEM | pass | 5375 | 2005-01-03 | 2026-05-14 | nan |
-| VNQ | pass | 5375 | 2005-01-03 | 2026-05-14 | nan |
+| SPY | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
+| UPRO | pass | 4255 | 2009-06-25 | 2026-05-26 | nan |
+| QQQ | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
+| TQQQ | pass | 4096 | 2010-02-11 | 2026-05-26 | nan |
+| IWM | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
+| URTY | pass | 4096 | 2010-02-11 | 2026-05-26 | nan |
+| TLT | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
+| TMF | pass | 4304 | 2009-04-16 | 2026-05-26 | nan |
+| GLD | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
+| EFA | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
+| EEM | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
+| EDC | pass | 4377 | 2008-12-30 | 2026-05-26 | nan |
+| VNQ | pass | 5382 | 2005-01-03 | 2026-05-26 | nan |
+| DRN | pass | 4241 | 2009-07-16 | 2026-05-26 | nan |
 
 ## Strategy definitions
 
@@ -42,15 +48,15 @@ Raw data is cached under `/Users/cosdis/Desktop/job/quant_projects/trend_followi
 
 | name | cumulative_return | annualized_return | annualized_volatility | sharpe_ratio | max_drawdown | average_daily_turnover | exposure_percentage |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| sma_crossover | 2.7592 | 0.0641 | 0.1025 | 0.6573 | -0.2546 | 0.0053 | 0.6718 |
-| Buy & Hold SPY | 8.1931 | 0.1096 | 0.1897 | 0.6433 | -0.5519 | 0.0002 | 1.0000 |
-| Equal-Weight Buy & Hold | 6.6599 | 0.1002 | 0.1604 | 0.6756 | -0.4434 | 0.0002 | 1.0000 |
-| sma_trend | 2.9993 | 0.0671 | 0.0881 | 0.7818 | -0.1385 | 0.0323 | 0.6724 |
-| Buy & Hold SPY | 8.1931 | 0.1096 | 0.1897 | 0.6433 | -0.5519 | 0.0002 | 1.0000 |
-| Equal-Weight Buy & Hold | 6.6599 | 0.1002 | 0.1604 | 0.6756 | -0.4434 | 0.0002 | 1.0000 |
-| tsmom | 2.9938 | 0.0671 | 0.0963 | 0.7222 | -0.1520 | 0.0221 | 0.6835 |
-| Buy & Hold SPY | 8.1931 | 0.1096 | 0.1897 | 0.6433 | -0.5519 | 0.0002 | 1.0000 |
-| Equal-Weight Buy & Hold | 6.6599 | 0.1002 | 0.1604 | 0.6756 | -0.4434 | 0.0002 | 1.0000 |
+| sma_crossover | 2.2262 | 0.0747 | 0.1750 | 0.5010 | -0.4681 | 0.0055 | 0.6363 |
+| Buy & Hold SPY | 8.2774 | 0.1469 | 0.1712 | 0.8866 | -0.3372 | 0.0002 | 1.0000 |
+| Equal-Weight Buy & Hold | 12.5338 | 0.1738 | 0.2640 | 0.7402 | -0.4884 | 0.0002 | 1.0000 |
+| sma_trend | 2.7940 | 0.0855 | 0.1390 | 0.6602 | -0.1884 | 0.0318 | 0.6320 |
+| Buy & Hold SPY | 8.2774 | 0.1469 | 0.1712 | 0.8866 | -0.3372 | 0.0002 | 1.0000 |
+| Equal-Weight Buy & Hold | 12.5338 | 0.1738 | 0.2640 | 0.7402 | -0.4884 | 0.0002 | 1.0000 |
+| tsmom | 2.1510 | 0.0732 | 0.1526 | 0.5395 | -0.2497 | 0.0269 | 0.6305 |
+| Buy & Hold SPY | 8.2774 | 0.1469 | 0.1712 | 0.8866 | -0.3372 | 0.0002 | 1.0000 |
+| Equal-Weight Buy & Hold | 12.5338 | 0.1738 | 0.2640 | 0.7402 | -0.4884 | 0.0002 | 1.0000 |
 
 ## Parameter sensitivity
 
@@ -58,15 +64,15 @@ Top out-of-sample rows by strategy, if the sweep has been run:
 
 | strategy | parameters | annualized_return | sharpe_ratio | max_drawdown |
 | --- | --- | --- | --- | --- |
-| sma_crossover | {"long_window": 100, "short_window": 20} | 0.0784 | 0.8616 | -0.1523 |
-| sma_crossover | {"long_window": 200, "short_window": 100} | 0.0958 | 0.8345 | -0.2569 |
-| sma_crossover | {"long_window": 250, "short_window": 100} | 0.0982 | 0.8344 | -0.2569 |
-| sma_trend | {"window": 150} | 0.0864 | 0.9877 | -0.1157 |
-| sma_trend | {"window": 100} | 0.0819 | 0.9611 | -0.1165 |
-| sma_trend | {"window": 200} | 0.0817 | 0.9322 | -0.1385 |
-| tsmom | {"lookback": 252} | 0.0943 | 1.0050 | -0.1520 |
-| tsmom | {"lookback": 126} | 0.0861 | 0.9645 | -0.1286 |
-| tsmom | {"lookback": 189} | 0.0845 | 0.9254 | -0.1372 |
+| sma_crossover | {"long_window": 200, "short_window": 100} | 0.1099 | 0.5957 | -0.4706 |
+| sma_crossover | {"long_window": 100, "short_window": 20} | 0.0868 | 0.5802 | -0.2885 |
+| sma_crossover | {"long_window": 250, "short_window": 20} | 0.0839 | 0.5518 | -0.3530 |
+| sma_trend | {"window": 250} | 0.1091 | 0.7704 | -0.2099 |
+| sma_trend | {"window": 200} | 0.1085 | 0.7661 | -0.1884 |
+| sma_trend | {"window": 50} | 0.0976 | 0.6810 | -0.2765 |
+| tsmom | {"lookback": 189} | 0.1110 | 0.7535 | -0.2544 |
+| tsmom | {"lookback": 252} | 0.1068 | 0.7205 | -0.2411 |
+| tsmom | {"lookback": 126} | 0.1036 | 0.7076 | -0.2332 |
 
 ## Comparison to buy-and-hold
 

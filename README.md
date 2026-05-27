@@ -13,15 +13,27 @@ Trend following is a simple and well-studied family of rules that can be impleme
 The default config uses liquid ETFs:
 
 - SPY
+- UPRO
 - QQQ
+- TQQQ
 - IWM
+- URTY
 - TLT
+- TMF
 - GLD
 - EFA
 - EEM
+- EDC
 - VNQ
+- DRN
 
-The date range defaults to `2005-01-01` through the most recent data available from Yahoo Finance via `yfinance`.
+The date range defaults to `2005-01-01` through the most recent data available from Yahoo Finance via `yfinance`. Note that several leveraged ETFs began trading later than the unlevered ETFs, so the default inner alignment will start the multi-asset panel at the first date where all selected tickers have data.
+
+## Leveraged ETF note
+
+The default universe includes the available **long +3x** ETF candidates that closely map to the current unlevered universe: UPRO for S&P 500/SPY, TQQQ for Nasdaq-100/QQQ, URTY for Russell 2000/IWM, TMF for 20+ year Treasuries/TLT, EDC for emerging markets/EEM, and DRN for real estate/VNQ. GLD and EFA are left without a default +3x ETF counterpart because there is no clean current broad +3x ETF match in the same style.
+
+Leveraged ETFs target daily multiples and can experience path-dependent compounding and volatility drag, so they should be analyzed separately from unlevered buy-and-hold ETFs and are not assumed to be appropriate long-term holdings. Product availability can change, so verify tickers before using them in research.
 
 ## Data source and limitations
 
