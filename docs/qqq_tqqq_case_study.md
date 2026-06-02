@@ -61,16 +61,45 @@ For the hourly strategy, the process is:
 4. Enforce max one accepted position change per calendar day.
 5. Apply synthetic TQQQ returns, transaction costs, slippage, tax approximation, and cash return.
 
-## Latest comparison snapshot
+## Latest performance snapshot
 
-Recent focused comparison with 3% annualized out-of-market cash return:
+The repository now keeps the current preferred rule plus two retained alternative candidates in GitHub. All rows below use the same evaluation convention unless otherwise noted: after-tax approximation, 1 bp transaction cost, 5 bps slippage, and 3% annualized return on out-of-market cash.
 
-| Candidate | Annualized return | Sharpe | Max drawdown | Trades | Exposure | DD >20 / >30 / >40 / >50 |
-|---|---:|---:|---:|---:|---:|---:|
-| New preferred: no daily gate + QQQ hourly 200MA gate | 24.68% | 0.734 | -56.36% | 109 | 68.97% | 26 / 17 / 9 / 6 |
-| Prior preferred: QQQ entry + QQQ exit + no lock | 23.37% | 0.721 | -58.19% | 101 | 64.92% | 21 / 14 / 7 / 5 |
+### Long-history synthetic +3x QQQ test
 
-Source table: [`reports/tables/tqqq_cash_yield_preferred_vs_hourly_200ma_candidate.csv`](../reports/tables/tqqq_cash_yield_preferred_vs_hourly_200ma_candidate.csv).
+This is the main long-history research comparison using `QQQ_3X_CALC` as the target return series.
+
+| Candidate | Annualized return | Sharpe | Max drawdown | Trades | Approx. trades/year | Exposure | DD >20 / >30 / >40 / >50 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| **Current preferred: QQQ hourly 200MA gate, no daily gate, no lock** | **24.68%** | 0.734 | -56.36% | **109** | **4.13** | 68.97% | 26 / 17 / 9 / 6 |
+| Candidate A: QQQ entry + TQQQ/synthetic exit + 200/300 profit lock | 23.57% | **0.753** | **-48.83%** | 184 | 6.97 | 59.75% | 22 / 10 / 4 / 0 |
+| Candidate B: TQQQ/synthetic entry + TQQQ/synthetic exit + 200/300 profit lock | 23.50% | 0.751 | **-48.83%** | 188 | 7.12 | 60.02% | 20 / 9 / 3 / 0 |
+
+Source tables:
+
+- [`reports/tables/qqq_tqqq_retained_candidate_performance_synthetic.csv`](../reports/tables/qqq_tqqq_retained_candidate_performance_synthetic.csv)
+- [`reports/tables/tqqq_cash_yield_candidate_comparison_compact.csv`](../reports/tables/tqqq_cash_yield_candidate_comparison_compact.csv)
+
+Interpretation: the current preferred rule has the highest annualized return and lowest turnover among these three. The profit-lock candidates have lower drawdowns and slightly higher Sharpe, but require substantially more trades.
+
+### Actual TQQQ available-history sanity check
+
+This check applies the same signal rules to **actual TQQQ** hourly returns over actual TQQQ's available Alpha Vantage 60-minute history.
+
+| Candidate | Annualized return | Sharpe | Max drawdown | Trades | Approx. trades/year | Exposure | DD >20 / >30 / >40 / >50 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| **Current preferred: QQQ hourly 200MA gate, no daily gate, no lock** | **32.07%** | **0.853** | -53.34% | **61** | **3.74** | 78.85% | 18 / 13 / 5 / 4 |
+| Candidate A: QQQ entry + TQQQ/synthetic exit + 200/300 profit lock | 23.28% | 0.716 | **-48.83%** | 157 | 9.63 | 73.10% | 16 / 10 / 5 / 0 |
+| Candidate B: TQQQ/synthetic entry + TQQQ/synthetic exit + 200/300 profit lock | 23.10% | 0.712 | -49.50% | 161 | 9.88 | 73.27% | 16 / 10 / 5 / 0 |
+
+Source tables:
+
+- [`reports/tables/qqq_tqqq_retained_candidate_performance_actual_tqqq.csv`](../reports/tables/qqq_tqqq_retained_candidate_performance_actual_tqqq.csv)
+- [`reports/tables/actual_tqqq_current_previous_preferred_summary.csv`](../reports/tables/actual_tqqq_current_previous_preferred_summary.csv)
+
+![Actual TQQQ current vs retained candidates](../reports/figures/actual_tqqq_current_previous_preferred_equity_drawdown.png)
+
+Interpretation: on actual TQQQ's available period, the current preferred rule had the highest annualized return, highest Sharpe, and lowest trade count among the retained candidates, while the profit-lock candidates reduced maximum drawdown at the cost of many more trades and lower return.
 
 ## Worst drawdowns and hiking-cycle context
 

@@ -1004,3 +1004,176 @@ Alpha Vantage returned 103 QQQ holdings. 92 had positive usable PE values, cover
 **Interpretation.**
 
 This framing is stronger for GitHub/interviews: the project demonstrates generalizable quant-engineering skill while also showing focused research depth on the QQQ/synthetic-TQQQ strategy.
+
+---
+
+### 2026-06-02 — Added current preferred-strategy signal updater
+
+**Question.** Based on the most recent hourly data, should the current preferred QQQ/synthetic-TQQQ strategy be long or cash, and how can the signal be refreshed every trading hour?
+
+**Implementation.**
+
+- Added `scripts/update_preferred_strategy_signal.py`.
+- The script downloads the latest Alpha Vantage QQQ 60-minute bars for the current/prior month, refreshes QQQ daily adjusted data, rebuilds `QQQ_3X_CALC`, computes the current preferred hourly-200MA-gated MACD signal, and writes:
+  - `reports/tables/preferred_strategy_current_signal.csv`
+  - `reports/tables/preferred_strategy_current_signal_history.csv`
+- The report separates the latest raw desired signal from the no-lookahead executable position.
+
+**Latest run.**
+
+- Latest available Alpha Vantage hourly QQQ bar at run time: `2026-06-01 15:00:00`.
+- Executable target position: long synthetic TQQQ exposure.
+- Approximate QQQ hourly 200-day MA exit trigger at that bar: `617.47`, with QQQ close `742.69`.
+
+---
+
+### 2026-06-02 — Applied current and previous preferred rules to actual TQQQ hourly data
+
+**Question.** What happens if the current and previous preferred QQQ-signal rules are applied to actual TQQQ, instead of synthetic TQQQ, over actual TQQQ's available Alpha Vantage 60-minute history?
+
+**Implementation.**
+
+- Refreshed cached actual TQQQ 60-minute data for May/June 2026.
+- Ran `scripts/run_tqqq_cash_yield_candidate_comparison.py` with:
+  - `--target-ticker TQQQ`
+  - `--target-raw-dir data/raw/alpha_vantage_60min`
+  - `--benchmark-ticker QQQ`
+  - `--output-prefix actual_tqqq_current_previous_preferred_comparison`
+- Used the current default evaluation assumptions: 1 bp transaction cost, 5 bps slippage, 24% short-term tax approximation, 3% annualized return on out-of-market cash.
+- Actual TQQQ common hourly period: 2010-02-11 10:00 to 2026-06-01 15:00.
+
+**Results.**
+
+| Strategy | Cumulative return | Ann. return | Sharpe | Max DD | Trades | Exposure | DD >20/>30/>40/>50 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Current preferred: no daily gate + QQQ hourly 200MA gate | 9,115.18% | 32.07% | 0.853 | -53.34% | 61 | 78.85% | 18/13/5/4 |
+| Previous preferred: daily QQQ regime gate + QQQ exit | 6,055.07% | 28.83% | 0.793 | -55.69% | 75 | 79.48% | 17/12/5/2 |
+| Buy & hold actual TQQQ, pretax | 43,847.91% | 45.39% | 0.932 | -82.08% | 0 | 100% | not counted |
+| Buy & hold QQQ, pretax | 1,891.50% | 20.20% | 1.038 | -36.10% | 0 | 100% | not counted |
+
+**Interpretation.**
+
+- Actual TQQQ buy-and-hold delivered much higher return during the available 2010-2026 bull-heavy sample, but with an extreme -82% max drawdown.
+- The current preferred rule outperformed the previous preferred rule on actual TQQQ in annualized return, Sharpe, max drawdown, and trade count.
+- The current preferred rule still had large drawdowns above 50%, so it reduces but does not remove leveraged-ETF crash risk.
+
+**Outputs.**
+
+- `reports/tables/actual_tqqq_current_previous_preferred_summary.csv`
+- `reports/tables/actual_tqqq_current_previous_preferred_comparison_compact.csv`
+- `reports/tables/actual_tqqq_current_previous_preferred_comparison_metrics.csv`
+- `reports/figures/actual_tqqq_current_previous_preferred_equity_drawdown.png`
+
+---
+
+### 2026-06-02 — Documented hourly update workflow and created Codex updater skill
+
+**Question.** How should a separate thread update QQQ/TQQQ data and rerun the current preferred strategy every trading hour?
+
+**Implementation.**
+
+- Added `docs/hourly_update_workflow.md` with:
+  - the one-shot manual update command,
+  - interpretation of `preferred_strategy_current_signal.csv`,
+  - a local macOS cron schedule for weekday trading-hour updates,
+  - operational cautions about no-lookahead interpretation and delayed vendor data.
+- Created a reusable Codex skill:
+  - `/Users/cosdis/.codex/skills/qqq-tqqq-hourly-updater`
+- The skill tells a future thread to run:
+
+```bash
+cd /Users/cosdis/Desktop/job/quant_projects/trend_following
+source ~/.venvs/myenv/bin/activate
+python scripts/update_preferred_strategy_signal.py --pause-seconds 0.85
+cat reports/tables/preferred_strategy_current_signal.csv
+```
+
+**Interpretation.**
+
+A separate monitoring thread should use the no-lookahead `executable_position_latest_bar` field as the current long/cash state, not the unshifted raw signal. It should always report the actual `asof_intraday_bar` because Alpha Vantage data can be delayed.
+
+---
+
+### 2026-06-02 — Expanded hourly updater to include actual TQQQ and QQQ P/E history
+
+**Question.** When updating data hourly, also refresh actual TQQQ data and QQQ P/E ratio, and make sure each refreshed dataset is merged into the project's local history.
+
+**Implementation.**
+
+- Updated `scripts/update_preferred_strategy_signal.py` so the normal update now refreshes:
+  - QQQ 60-minute bars from Alpha Vantage into `data/raw/alpha_vantage_60min/QQQ.parquet`.
+  - Actual TQQQ 60-minute bars from Alpha Vantage into `data/raw/alpha_vantage_60min/TQQQ.parquet`.
+  - QQQ daily adjusted OHLCV into `data/raw/alpha_vantage_daily_adjusted/QQQ.parquet`.
+  - Synthetic +3x QQQ into `data/raw/synthetic_3x_60min/QQQ_3X_CALC.parquet` and daily synthetic history.
+  - QQQ Option-B P/E into `data/processed/valuation/qqq_pe_option_b_daily_history.parquet` and `reports/tables/qqq_pe_option_b_daily_history.csv`.
+- Added actual TQQQ and QQQ P/E fields to `reports/tables/preferred_strategy_current_signal.csv` and `reports/tables/preferred_strategy_current_signal_history.csv`.
+- Updated `docs/hourly_update_workflow.md` and the local Codex skill `/Users/cosdis/.codex/skills/qqq-tqqq-hourly-updater`.
+
+**Operational detail.**
+
+- QQQ and actual TQQQ hourly prices are refreshed every updater run by downloading recent monthly slices and merging/deduplicating into parquet history.
+- QQQ P/E is a point-in-time holdings/fundamentals snapshot, not a true hourly data series. The updater therefore creates/reuses one P/E snapshot per local calendar date by default. Use `--force-pe` only when intentionally refetching the same day's P/E snapshot.
+
+**Latest verification run.**
+
+- Latest QQQ bar: `2026-06-01 15:00:00`.
+- Latest actual TQQQ bar: `2026-06-01 15:00:00`.
+- Latest QQQ Option-B P/E snapshot date: `2026-06-02`, P/E `36.104342`, usable from `2026-06-03` under the no-lookahead convention.
+
+---
+
+### 2026-06-02 — Switched hourly updater from Alpha Vantage to Yahoo Finance/yfinance
+
+**Question.** The hourly updater should not rely on Alpha Vantage because the subscription may be canceled. Use Yahoo Finance data instead, while still merging the newest data into the project's own local history.
+
+**Implementation.**
+
+- Rewrote `scripts/update_preferred_strategy_signal.py` to use Yahoo Finance through `yfinance` only.
+- The updater no longer requires `ALPHA_VANTAGE_API_KEY`.
+- New local Yahoo/yfinance histories:
+  - QQQ 60-minute bars: `data/raw/yfinance_60min/QQQ.parquet`
+  - Actual TQQQ 60-minute bars: `data/raw/yfinance_60min/TQQQ.parquet`
+  - QQQ daily bars: `data/raw/yfinance_daily/QQQ.parquet`
+  - Synthetic +3x QQQ from Yahoo QQQ: `data/raw/synthetic_yfinance_3x_60min/QQQ_3X_CALC.parquet` and `data/raw/synthetic_yfinance_3x_1d/QQQ_3X_CALC.parquet`
+  - Yahoo-reported QQQ trailing P/E snapshot history: `data/processed/valuation/qqq_pe_yfinance_snapshot_history.parquet` and `reports/tables/qqq_pe_yfinance_snapshot_history.csv`
+- Updated `docs/hourly_update_workflow.md` and `/Users/cosdis/.codex/skills/qqq-tqqq-hourly-updater`.
+
+**Important inconsistency/inaccuracy notes.**
+
+- Yahoo 60-minute data usually has seven regular-session bars per full day (`09:30`, `10:30`, ..., `15:30`), while the prior Alpha Vantage 60-minute research cache used six bars/day (`10:00`, ..., `15:00`). The updater therefore uses `bars_per_day=7`, so the current monitoring signal can differ from Alpha Vantage-based backtest outputs.
+- Yahoo intraday history is limited, usually around 730 days. That is enough for the current 200-trading-day hourly MA monitor, but not enough to reproduce the full long-history research backtest from Yahoo alone.
+- Yahoo's QQQ P/E is a vendor-reported ETF `trailingPE` snapshot, not the prior transparent Alpha Vantage holdings-level harmonic P/E calculation. It may differ from the prior Option-B estimate.
+- Yahoo/yfinance is an unofficial interface and can have delays, temporary failures, or revised data. The updater always reports the actual `asof_intraday_bar`.
+
+**Latest verification run.**
+
+- Latest Yahoo QQQ hourly bar: `2026-06-02 13:30:00`.
+- Latest Yahoo actual TQQQ hourly bar: `2026-06-02 13:30:00`.
+- Current executable position: long synthetic TQQQ exposure.
+- Yahoo QQQ trailing P/E snapshot: approximately `36.315`.
+
+---
+
+### 2026-06-02 — Added GitHub-facing performance tables for preferred strategy and two retained candidates
+
+**Question.** Include the performance test results for the current preferred strategy and the other two retained candidate strategies in GitHub.
+
+**Implementation.**
+
+- Added curated retained-candidate performance tables:
+  - `reports/tables/qqq_tqqq_retained_candidate_performance_synthetic.csv`
+  - `reports/tables/qqq_tqqq_retained_candidate_performance_actual_tqqq.csv`
+- Updated `docs/qqq_tqqq_case_study.md` with two GitHub-readable tables:
+  - Long-history synthetic `QQQ_3X_CALC` test.
+  - Actual TQQQ available-history sanity check.
+- Included the existing actual-TQQQ equity/drawdown plot as a case-study figure.
+
+**Retained candidate set.**
+
+1. Current preferred: QQQ hourly 200MA gate, no daily gate, no profit lock.
+2. Candidate A: QQQ entry + TQQQ/synthetic exit + +200/+300 profit lock.
+3. Candidate B: TQQQ/synthetic entry + TQQQ/synthetic exit + +200/+300 profit lock.
+
+**Main interpretation.**
+
+The current preferred strategy has the best return and lowest trade count among the retained candidates, while the two profit-lock alternatives reduce drawdown but require substantially more trades.

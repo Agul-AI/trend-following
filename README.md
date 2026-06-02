@@ -27,7 +27,12 @@ The main research application is a long-only strategy that uses **QQQ as the sig
 - Max one trade per day.
 - Out-of-market cash earns 3% annualized in evaluation.
 
-Detailed case-study documentation: [`docs/qqq_tqqq_case_study.md`](docs/qqq_tqqq_case_study.md).
+Detailed case-study documentation and retained-candidate performance tables: [`docs/qqq_tqqq_case_study.md`](docs/qqq_tqqq_case_study.md).
+
+Curated performance CSVs:
+
+- [`reports/tables/qqq_tqqq_retained_candidate_performance_synthetic.csv`](reports/tables/qqq_tqqq_retained_candidate_performance_synthetic.csv)
+- [`reports/tables/qqq_tqqq_retained_candidate_performance_actual_tqqq.csv`](reports/tables/qqq_tqqq_retained_candidate_performance_actual_tqqq.csv)
 
 Confirmed preferred rules: [`reports/preferred_strategy_rules.md`](reports/preferred_strategy_rules.md).
 
