@@ -1,12 +1,41 @@
-# trend-following-real-data
+# Trend-Following Research Pipeline with QQQ / Synthetic-TQQQ Case Study
 
-A professional, interview-ready Python research pipeline for transparent trend-following strategies on real market data.
+A professional, interview-ready Python research pipeline for transparent trend-following strategies on real market data. The repo is intentionally structured in two layers: a **general ETF research framework** and a deeper **QQQ / synthetic-TQQQ flagship case study**.
 
-This project is **not** a live trading system. It is designed to demonstrate a clean quantitative research workflow: data ingestion, validation, adjusted-price processing, signal generation, no-lookahead backtesting, transaction costs, parameter sensitivity, out-of-sample evaluation, plots, and a short research memo.
+This project is **not** a live trading system. It is designed to demonstrate a clean quantitative research workflow: data ingestion, validation, adjusted-price processing, signal generation, no-lookahead backtesting, transaction costs, parameter sensitivity, out-of-sample evaluation, plots, research logs, and documented limitations.
+
+## How to read this repo
+
+| Layer | Purpose | Main files |
+|---|---|---|
+| General ETF pipeline | Download, validate, process, and backtest ETF strategies from scratch | `src/trend_following/`, `scripts/run_backtest.py`, `configs/default.yaml` |
+| Strategy library | Transparent trend-following rules such as SMA, crossover, momentum, regime, breakout, regression, and Kalman-style trend | `src/trend_following/signals.py`, `src/trend_following/regime.py` |
+| Flagship case study | Focused QQQ-driven synthetic-TQQQ research thread | `docs/qqq_tqqq_case_study.md`, `reports/preferred_strategy_rules.md`, `reports/project_log.md` |
+| Curated outputs | Compact result tables and drawdown figures for the current preferred strategy | `reports/tables/`, `reports/figures/` |
+
+## Current flagship case study: QQQ-driven synthetic TQQQ
+
+The main research application is a long-only strategy that uses **QQQ as the signal asset** and **synthetic +3x QQQ exposure** as the risk asset. The current preferred rule is:
+
+- Signal source: QQQ.
+- Exposure: synthetic TQQQ, calculated as `QQQ_3X_CALC`.
+- Entry: QQQ hourly MACD histogram > 0.
+- Entry gate: QQQ hourly close > QQQ hourly 200-day moving average.
+- Exit: QQQ hourly close < QQQ hourly 200-day moving average.
+- No daily regime gate.
+- No profit lock.
+- Max one trade per day.
+- Out-of-market cash earns 3% annualized in evaluation.
+
+Detailed case-study documentation: [`docs/qqq_tqqq_case_study.md`](docs/qqq_tqqq_case_study.md).
+
+Confirmed preferred rules: [`reports/preferred_strategy_rules.md`](reports/preferred_strategy_rules.md).
+
+Research history, including failed experiments: [`reports/project_log.md`](reports/project_log.md).
 
 ## Why trend following?
 
-Trend following is a simple and well-studied family of rules that can be implemented transparently and audited for common backtesting mistakes. The strategies here are intentionally basic so the research pipeline, assumptions, and validation choices remain easy to explain in interviews.
+Trend following is a simple and well-studied family of rules that can be implemented transparently and audited for common backtesting mistakes. The initial strategy set is intentionally broad so the research pipeline, assumptions, and validation choices remain easy to explain in interviews. The QQQ/synthetic-TQQQ case study then shows how the same framework can support a deeper, more focused research investigation.
 
 ## Initial universe
 
@@ -65,6 +94,8 @@ pip install -e '.[dev]'
 
 ## Quick start
 
+General ETF pipeline commands:
+
 ```bash
 python scripts/download_data.py --config configs/default.yaml
 python scripts/run_backtest.py --config configs/default.yaml --strategy sma_trend
@@ -79,6 +110,13 @@ python scripts/run_mixed_frequency_backtest.py --config configs/regime_hourly_qq
 python scripts/run_parameter_sweep.py --config configs/default.yaml
 python scripts/make_report.py --config configs/default.yaml
 pytest
+```
+
+Current QQQ/synthetic-TQQQ case-study commands, assuming the required Alpha Vantage and synthetic data caches already exist:
+
+```bash
+python scripts/run_tqqq_cash_yield_candidate_comparison.py
+python scripts/plot_preferred_worst_drawdowns_hiking.py
 ```
 
 For long-history hourly Alpha Vantage data, store `ALPHA_VANTAGE_API_KEY` in `.env`, confirm your plan includes the historical intraday endpoint, then run:
@@ -163,7 +201,8 @@ python scripts/run_backtest.py --config configs/default.yaml --strategy sma_tren
 The first version is deliberately simple and auditable:
 
 - Long-only strategies; signal values are in `[0, 1]`.
-- Cash earns zero return.
+- General daily ETF examples assume cash earns zero return unless a script explicitly adds a cash yield.
+- The current QQQ/synthetic-TQQQ case-study evaluation assumes out-of-market cash earns 3% annualized.
 - Daily returns are computed from adjusted close prices.
 - The default return convention is close-to-close.
 - A signal computed using the close on day `t` is **not** allowed to earn day `t` or day `t+1` close-to-close returns when the execution assumption is next-close execution.
@@ -248,16 +287,24 @@ Results are saved to `reports/tables/parameter_sweep.csv` and plots/tables are s
 
 ## Outputs
 
+- QQQ/synthetic-TQQQ case study: `docs/qqq_tqqq_case_study.md`
+- Current preferred strategy rules: `reports/preferred_strategy_rules.md`
+- Research/project log: `reports/project_log.md`
 - Metrics: `reports/tables/*_metrics.csv`
 - Daily backtest data: `reports/tables/*_daily_results.csv`
 - Parameter sweep: `reports/tables/parameter_sweep.csv`
 - Figures: `reports/figures/*.png`
 - Research memo: `reports/summary.md`
-- Research/project log: `reports/project_log.md`
 
 ## Example interview explanation
 
+Framework explanation:
+
 > This project demonstrates an end-to-end research pipeline using real market data: ingestion, validation, feature/signal construction, backtesting, transaction costs, parameter sensitivity, and out-of-sample evaluation.
+
+Case-study explanation:
+
+> I first built a general ETF trend-following framework, then used it to deeply investigate a QQQ-driven synthetic-TQQQ strategy with explicit no-lookahead timing, cash-yield assumptions, drawdown analysis, and a research log of both failed and successful variants.
 
 ## Future extensions
 
@@ -267,3 +314,4 @@ Results are saved to `reports/tables/parameter_sweep.csv` and plots/tables are s
 - Add shorting, borrow constraints, and portfolio-level volatility targeting.
 - Add walk-forward parameter selection.
 - Add vectorbt later for performance comparison, while keeping the transparent from-scratch backtester as the reference implementation.
+- Convert the current QQQ/synthetic-TQQQ case-study scripts into a more unified configurable experiment runner.

@@ -985,3 +985,22 @@ Alpha Vantage returned 103 QQQ holdings. 92 had positive usable PE values, cover
 - `reports/figures/preferred_hourly_200ma_worst6_drawdowns_hiking_analysis.png`
 - Individual plots in `reports/figures/preferred_hourly_200ma_worst6_drawdowns/`
 - Updated `reports/preferred_strategy_rules.md`
+
+---
+
+### 2026-06-02 — Reframed repository presentation around the QQQ/synthetic-TQQQ case study
+
+**Question.** The repository originally read like a general ETF trend-following project, but the current research focus has moved toward the QQQ/synthetic-TQQQ strategy. How should the repo present this without losing the broader pipeline value?
+
+**Implementation.**
+
+- Updated `README.md` to present the project in two layers:
+  - a general ETF data/backtesting/research framework, and
+  - a focused QQQ-driven synthetic-TQQQ flagship case study.
+- Added `docs/qqq_tqqq_case_study.md` with the research question, current preferred rule, no-lookahead convention, latest compact metrics, worst drawdown/hiking-cycle context, reproduction commands, failed experiments, and limitations.
+- Kept `reports/preferred_strategy_rules.md` as the source of truth for confirmed preferred strategy rules.
+- Kept `reports/project_log.md` as the chronological record of the research process.
+
+**Interpretation.**
+
+This framing is stronger for GitHub/interviews: the project demonstrates generalizable quant-engineering skill while also showing focused research depth on the QQQ/synthetic-TQQQ strategy.
