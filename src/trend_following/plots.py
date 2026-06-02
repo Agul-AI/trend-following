@@ -114,6 +114,40 @@ def plot_positions(
     return _save(fig, output_path)
 
 
+def plot_regime_diagnostic(
+    price: pd.Series,
+    regimes: pd.Series,
+    output_path: str | Path,
+    title: str = "Regime Diagnostic",
+) -> Path:
+    """Plot price with points colored by close-date regime label."""
+    aligned_regimes = regimes.reindex(price.index).fillna("neutral")
+    colors = {
+        "trend": "#2ca02c",
+        "mean_reversion": "#1f77b4",
+        "risk_off": "#d62728",
+        "neutral": "#7f7f7f",
+    }
+    fig, ax = plt.subplots(figsize=(10, 5.2))
+    price.dropna().plot(ax=ax, color="black", linewidth=1.0, alpha=0.55, label=price.name)
+    for regime, color in colors.items():
+        mask = aligned_regimes.eq(regime) & price.notna()
+        if mask.any():
+            ax.scatter(
+                price.index[mask],
+                price.loc[mask],
+                s=8,
+                color=color,
+                alpha=0.70,
+                label=regime,
+            )
+    ax.set_title(title)
+    ax.set_ylabel("Adjusted Close")
+    ax.grid(True, alpha=0.25)
+    ax.legend(markerscale=2)
+    return _save(fig, output_path)
+
+
 def plot_heatmap(
     matrix: pd.DataFrame,
     output_path: str | Path,

@@ -117,6 +117,10 @@ Raw data is cached under `{config.data.raw_dir}` and processed adjusted-price pa
 - **SMA trend:** long if adjusted close is above its moving average; otherwise cash.
 - **SMA crossover:** long if short SMA is above long SMA; otherwise cash.
 - **Time-series momentum:** long if the past lookback-day return is positive; otherwise cash.
+- **Donchian breakout:** long after an entry-window high breakout until an exit-window low is hit.
+- **Regression slope:** long when the rolling log-price regression slope is positive.
+- **Kalman trend:** long when a local-linear Kalman filter estimates a positive latent trend slope.
+- **Cross-sectional momentum:** long the strongest assets by trailing return, optionally requiring positive absolute momentum.
 
 ## Assumptions
 

@@ -15,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from trend_following.config import load_config
 from trend_following.data_processing import build_adjusted_panels, load_processed_panels
 from trend_following.experiments import (
+    STRATEGY_NAMES,
     benchmark_backtests,
     run_strategy_backtest,
     strategy_default_params,
@@ -24,8 +25,15 @@ from trend_following.plots import (
     plot_drawdowns,
     plot_equity_curves,
     plot_positions,
+    plot_regime_diagnostic,
     plot_rolling_sharpe,
     plot_rolling_volatility,
+)
+from trend_following.regime import (
+    classify_regimes,
+    compute_regime_features,
+    regime_confirmation_accuracy,
+    regime_confirmation_table,
 )
 from trend_following.utils import as_list, ensure_directory
 
@@ -36,7 +44,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--strategy",
         required=True,
-        choices=["sma_trend", "sma_crossover", "tsmom"],
+        choices=STRATEGY_NAMES,
         help="Strategy to run",
     )
     parser.add_argument("--tickers", nargs="*", help="Optional ticker override")
@@ -49,6 +57,12 @@ def _load_or_build_panels(config, tickers: list[str]) -> dict[str, pd.DataFrame]
         missing = [ticker for ticker in tickers if ticker not in panels["returns"].columns]
         if missing:
             raise FileNotFoundError(f"Processed panels missing requested tickers: {missing}")
+        start = pd.Timestamp(config.data.start_date)
+        if panels["returns"].index.min() > start:
+            raise FileNotFoundError(
+                "Processed panels start after configured start date: "
+                f"{panels['returns'].index.min().date()} > {start.date()}"
+            )
         return {
             name: frame[tickers]
             for name, frame in panels.items()
@@ -140,6 +154,66 @@ def main() -> None:
         config.reports.figures_dir / f"{args.strategy}_positions.png",
         ticker=tickers[0],
     )
+
+    if args.strategy == "regime_switch":
+        regime_ticker = str(params.get("regime_ticker", "QQQ"))
+        features = compute_regime_features(
+            prices,
+            returns,
+            regime_ticker=regime_ticker,
+            params=params,
+        )
+        regimes = classify_regimes(features, params=params)
+        regime_table = features.copy()
+        regime_table["regime"] = regimes
+        regimes_path = config.reports.tables_dir / "regime_switch_regimes.csv"
+        regime_table.to_csv(regimes_path)
+        confirmation = regime_confirmation_table(features, regimes, lag_days=1)
+        confirmation_path = config.reports.tables_dir / "regime_switch_regime_confirmation.csv"
+        confirmation.to_csv(confirmation_path)
+        confirmation_accuracy = regime_confirmation_accuracy(
+            confirmation,
+            feature_ready_only=True,
+        )
+        all_valid_accuracy = regime_confirmation_accuracy(
+            confirmation,
+            feature_ready_only=False,
+        )
+        confirmation_summary = pd.DataFrame(
+            [
+                {
+                    "lag_days": 1,
+                    "feature_ready_only": True,
+                    "accuracy": confirmation_accuracy,
+                    "observations": int(
+                        (
+                            confirmation["regime_match"].notna()
+                            & confirmation["feature_ready"]
+                        ).sum()
+                    ),
+                },
+                {
+                    "lag_days": 1,
+                    "feature_ready_only": False,
+                    "accuracy": all_valid_accuracy,
+                    "observations": int(confirmation["regime_match"].notna().sum()),
+                },
+            ]
+        )
+        confirmation_summary_path = (
+            config.reports.tables_dir / "regime_switch_regime_confirmation_summary.csv"
+        )
+        confirmation_summary.to_csv(confirmation_summary_path, index=False)
+        plot_regime_diagnostic(
+            features["price"].rename(regime_ticker),
+            regimes,
+            config.reports.figures_dir / "regime_switch_regime_diagnostic.png",
+            title=f"{regime_ticker} Regime Diagnostic",
+        )
+        print(f"Regime table saved to {regimes_path}")
+        print(f"Regime confirmation saved to {confirmation_path}")
+        print(f"Regime confirmation summary saved to {confirmation_summary_path}")
+        print(f"Regime one-day lag confirmation accuracy: {confirmation_accuracy:.2%}")
 
     print(f"Metrics saved to {metrics_path}")
     print(f"Daily results saved to {daily_path}")

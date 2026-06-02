@@ -1,6 +1,6 @@
 # trend-following-real-data
 
-A professional, interview-ready Python research pipeline for transparent trend-following strategies on real daily market data.
+A professional, interview-ready Python research pipeline for transparent trend-following strategies on real market data.
 
 This project is **not** a live trading system. It is designed to demonstrate a clean quantitative research workflow: data ingestion, validation, adjusted-price processing, signal generation, no-lookahead backtesting, transaction costs, parameter sensitivity, out-of-sample evaluation, plots, and a short research memo.
 
@@ -27,7 +27,7 @@ The default config uses liquid ETFs:
 - VNQ
 - DRN
 
-The date range defaults to `2017-01-01` through the most recent data available from Yahoo Finance via `yfinance`. Note that several leveraged ETFs began trading later than the unlevered ETFs, so the default inner alignment will start the multi-asset panel at the first date where all selected tickers have data.
+The default config downloads **daily** data using `yfinance`. Long-history intraday data is configured separately in `configs/alpha_vantage_max_history.yaml` and requires an Alpha Vantage API key with historical intraday entitlement.
 
 ## Leveraged ETF note
 
@@ -37,14 +37,19 @@ Leveraged ETFs target daily multiples and can experience path-dependent compound
 
 ## Data source and limitations
 
-Data is downloaded with `yfinance`, then cached locally as parquet:
+Data is downloaded with the configured source (`yfinance` by default for daily data, `stooq` for long-history hourly CSVs when a Stooq apikey is available, or `alpha_vantage` for long-history intraday data when entitled), then cached locally as parquet:
 
-- Raw downloaded files: `data/raw/{ticker}.parquet`
-- Processed panels: `data/processed/*.parquet`
+- Raw downloaded yfinance daily files: `data/raw/{ticker}.parquet`
+- Processed yfinance daily panels: `data/processed/*.parquet`
+- Raw downloaded Stooq hourly files: `data/raw/stooq_hourly/{ticker}.parquet`
+- Processed Stooq hourly panels: `data/processed/stooq_hourly/*.parquet`
+- Raw downloaded Alpha Vantage hourly files: `data/raw/alpha_vantage_hourly/{ticker}.parquet`
+- Processed Alpha Vantage hourly panels: `data/processed/alpha_vantage_hourly/*.parquet`
 
 Important limitations:
 
 - Yahoo Finance data can contain revisions, missing values, ticker changes, and corporate-action issues.
+- Yahoo Finance intraday/hourly history is limited to roughly 730 days; use `configs/stooq_hourly.yaml` or `configs/alpha_vantage_hourly.yaml` for longer hourly history when the required vendor apikey/entitlement is available.
 - ETF inception dates differ, so some assets may not have history from the requested start date.
 - The default universe is composed of current ETFs, so a broader stock universe would require explicit survivorship-bias controls.
 - Adjusted close is used for return calculations when available; adjusted opens are approximated using the close adjustment factor when needed later.
@@ -65,10 +70,86 @@ python scripts/download_data.py --config configs/default.yaml
 python scripts/run_backtest.py --config configs/default.yaml --strategy sma_trend
 python scripts/run_backtest.py --config configs/default.yaml --strategy sma_crossover
 python scripts/run_backtest.py --config configs/default.yaml --strategy tsmom
+python scripts/run_backtest.py --config configs/default.yaml --strategy donchian_breakout
+python scripts/run_backtest.py --config configs/default.yaml --strategy regression_slope
+python scripts/run_backtest.py --config configs/default.yaml --strategy kalman_trend
+python scripts/run_backtest.py --config configs/default.yaml --strategy cross_sectional_momentum
+python scripts/run_backtest.py --config configs/default.yaml --strategy regime_switch --tickers QQQ
+python scripts/run_mixed_frequency_backtest.py --config configs/regime_hourly_qqq.yaml
 python scripts/run_parameter_sweep.py --config configs/default.yaml
 python scripts/make_report.py --config configs/default.yaml
 pytest
 ```
+
+For long-history hourly Alpha Vantage data, store `ALPHA_VANTAGE_API_KEY` in `.env`, confirm your plan includes the historical intraday endpoint, then run:
+
+```bash
+python scripts/download_data.py --config configs/alpha_vantage_hourly.yaml --force
+```
+
+This can require thousands of monthly API calls for the full ETF universe, so set `ALPHA_VANTAGE_PAUSE_SECONDS` according to your plan's rate limit.
+
+For a one-month Alpha Vantage Premium bootstrap that maximizes useful history for the expanded regular + leveraged ETF universe, use:
+
+```bash
+export ALPHA_VANTAGE_PAUSE_SECONDS=0.85  # about 75 requests/minute with a small buffer
+
+python scripts/download_alpha_vantage_bulk.py \
+  --config configs/alpha_vantage_max_history.yaml \
+  --intervals 15min 30min 60min 1d \
+  --pause-seconds 0.85
+```
+
+The bulk script downloads daily adjusted data first, uses each ticker's actual first available daily date to avoid pre-inception intraday month calls, and then downloads 15-minute, 30-minute, and 60-minute bars into separate caches:
+
+- `data/raw/alpha_vantage_15min/{ticker}.parquet`
+- `data/raw/alpha_vantage_30min/{ticker}.parquet`
+- `data/raw/alpha_vantage_60min/{ticker}.parquet`
+- `data/raw/alpha_vantage_daily_adjusted/{ticker}.parquet`
+
+To estimate request counts without downloading:
+
+```bash
+python scripts/download_alpha_vantage_bulk.py \
+  --config configs/alpha_vantage_max_history.yaml \
+  --intervals 15min 30min 60min 1d \
+  --pause-seconds 0.85 \
+  --dry-run
+```
+
+To create a separate synthetic daily-reset 3x TQQQ-style series from QQQ, without
+using the actual TQQQ history:
+
+```bash
+python scripts/create_synthetic_tqqq.py --intervals 1d 15min 30min 60min
+```
+
+This writes `TQQQ_CALC.parquet` under `data/raw/synthetic_tqqq_1d/`,
+`data/raw/synthetic_tqqq_15min/`, `data/raw/synthetic_tqqq_30min/`, and
+`data/raw/synthetic_tqqq_60min/`. The synthetic close return is exactly
+`3 * QQQ adjusted close return` each day before fees, financing, and tracking
+error. Intraday synthetic bars are mapped from QQQ bars relative to the prior
+daily close, preserving the daily-reset convention.
+
+For long-history hourly Stooq data, first obtain a Stooq CSV apikey by opening a URL like `https://stooq.com/q/d/?s=spy.us&get_apikey`, completing Stooq's captcha flow, and copying the `apikey` value from the generated CSV link into `.env` as `STOOQ_API_KEY=...`. Then run:
+
+```bash
+python scripts/download_data.py --config configs/stooq_hourly.yaml --force
+```
+
+To compare the overlapping Stooq cache with the recent Yahoo hourly cache:
+
+```bash
+python scripts/compare_data_sources.py \
+  --config configs/default.yaml \
+  --left-dir data/raw/hourly \
+  --right-dir data/raw/stooq_hourly \
+  --left-label yahoo \
+  --right-label stooq \
+  --right-timezone America/New_York
+```
+
+The comparison report is saved to `reports/tables/data_source_comparison_yahoo_vs_stooq.csv`.
 
 For a first smaller run using only the initial deliverable tickers:
 
@@ -87,6 +168,7 @@ The first version is deliberately simple and auditable:
 - The default return convention is close-to-close.
 - A signal computed using the close on day `t` is **not** allowed to earn day `t` or day `t+1` close-to-close returns when the execution assumption is next-close execution.
 - With the default `execution_delay_days = 1`, a close-`t` signal is executed at the close of `t+1`, so P&L starts with the close-to-close return ending on `t+2`. In code this is implemented as `raw_signal.shift(execution_delay_days + 1)` before multiplying by returns.
+- Intraday backtests additionally enforce `max_trades_per_day = 1` by default: after positions are shifted into executable weights, the simulator accepts only the first position change per calendar day and ignores later same-day changes. This prevents buy+sell round trips on the same day.
 - Transaction costs and slippage are charged in basis points on one-way turnover.
 - Multi-asset strategy portfolios use equal capital sleeves by default: each asset receives `1/N` when its signal is long and cash otherwise.
 - Equal-weight buy-and-hold benchmark is modeled as a daily rebalanced equal-weight universe with zero costs.
@@ -105,7 +187,35 @@ The first version is deliberately simple and auditable:
    - Long if past `N`-day return is positive.
    - Default lookback: 252 days.
 
-4. **Optional volatility targeting**
+4. **Donchian breakout**
+   - Long after price makes an entry-window high, and exit after an exit-window low.
+   - Default entry/exit lookbacks: 252/126 days.
+
+5. **Regression slope trend**
+   - Long if a rolling regression slope on log adjusted prices is positive.
+   - Default window: 126 days.
+
+6. **Kalman/state-estimated trend**
+   - Long if a transparent local-linear Kalman filter estimates a positive latent trend slope.
+   - Default minimum warm-up: 20 observations.
+
+7. **Cross-sectional momentum**
+   - Long the strongest assets by trailing return across the universe.
+   - Default lookback/top-N: 126 days / top 3 assets, with positive absolute momentum required.
+
+8. **QQQ regime switch**
+   - Classifies QQQ into `trend`, `mean_reversion`, `risk_off`, or `neutral` using only close/return features.
+   - The default `trend` regime is QQQ above a rising 200-day SMA; variance ratio is not required for trend by default, but it remains available for mean-reversion classification.
+   - In trend regimes it applies a 50/200 SMA crossover; in mean-reversion regimes it buys oversold QQQ pullbacks; otherwise it holds cash.
+   - Outputs a regime table to `reports/tables/regime_switch_regimes.csv` and a regime diagnostic plot.
+
+9. **Mixed-frequency QQQ regime + hourly trend**
+   - Keeps the regime classifier on daily QQQ adjusted closes.
+   - Trades an hourly QQQ crossover only when yesterday's daily regime estimate is `trend`.
+   - The crossover keeps the classic 50/200 **trading-day** reference by converting to hourly bars; for 60-minute Alpha Vantage data this defaults to 300/1200 hourly bars using 6 bars per day.
+   - Uses `configs/regime_hourly_qqq.yaml` and writes outputs with the `regime_switch_hourly_daily_regime` prefix.
+
+10. **Optional volatility targeting**
    - Can scale positions to a target annualized volatility.
    - Default target: 10% annualized volatility.
    - Leverage is capped at 1.0 in v1.
@@ -118,6 +228,11 @@ The parameter sweep evaluates in-sample and out-of-sample performance without se
 - Time-series momentum lookbacks: `[63, 126, 189, 252]`
 - Moving-average crossover short windows: `[20, 50, 100]`
 - Moving-average crossover long windows: `[100, 150, 200, 250]`
+- Donchian entry lookbacks: `[63, 126, 252]`
+- Donchian exit lookbacks: `[21, 63, 126]`
+- Regression slope windows: `[63, 126, 189, 252]`
+- Cross-sectional momentum lookbacks: `[63, 126, 252]`
+- Cross-sectional momentum top-N values: `[2, 3, 5]`
 
 Results are saved to `reports/tables/parameter_sweep.csv` and plots/tables are saved under `reports/figures` and `reports/tables`.
 
@@ -138,6 +253,7 @@ Results are saved to `reports/tables/parameter_sweep.csv` and plots/tables are s
 - Parameter sweep: `reports/tables/parameter_sweep.csv`
 - Figures: `reports/figures/*.png`
 - Research memo: `reports/summary.md`
+- Research/project log: `reports/project_log.md`
 
 ## Example interview explanation
 

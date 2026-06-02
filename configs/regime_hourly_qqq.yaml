@@ -1,14 +1,17 @@
 project:
   name: trend-following-real-data
 
+# Mixed-frequency config:
+# - data.* is the intraday trading panel.
+# - strategies.regime_switch.daily_regime_raw_dir is the daily regime panel.
 data:
-  source: yfinance
-  tickers: [SPY, UPRO, QQQ, TQQQ, IWM, URTY, TLT, TMF, GLD, EFA, EEM, EDC, VNQ, DRN]
-  start_date: "2005-01-01"
+  source: alpha_vantage
+  tickers: [QQQ]
+  start_date: "2000-01-01"
   end_date: null
-  interval: 1d
-  raw_dir: data/raw
-  processed_dir: data/processed
+  interval: 60min
+  raw_dir: data/raw/alpha_vantage_60min
+  processed_dir: data/processed/regime_hourly_60min
   alignment: inner
   suspicious_gap_days: 7
 
@@ -16,7 +19,9 @@ backtest:
   initial_capital: 1.0
   transaction_cost_bps: 1.0
   slippage_bps: 1.0
-  annualization: 252
+  # Alpha Vantage 60min US equity bars usually have six regular-session bars
+  # per full day in this cache: 10:00, 11:00, ..., 15:00.
+  annualization: 1512
   return_convention: close_to_close
   execution_delay_days: 1
   max_trades_per_day: 1
@@ -24,32 +29,12 @@ backtest:
   train_end_date: "2018-12-31"
 
 strategies:
-  sma_trend:
-    window: 200
-  sma_crossover:
-    short_window: 50
-    long_window: 200
-  tsmom:
-    lookback: 252
-  donchian_breakout:
-    entry_lookback: 252
-    exit_lookback: 126
-  regression_slope:
-    window: 126
-    min_r_squared: 0.0
-  kalman_trend:
-    process_level_var: 0.00001
-    process_trend_var: 0.0000001
-    observation_var: 0.001
-    min_periods: 20
-  cross_sectional_momentum:
-    lookback: 126
-    top_n: 3
-    require_positive: true
-    portfolio_mode: active_equal
   regime_switch:
     target_ticker: QQQ
     regime_ticker: QQQ
+    daily_regime_raw_dir: data/raw/alpha_vantage_daily_adjusted
+    daily_regime_lag_days: 1
+    daily_regime_fill_method: ffill
     sma_window: 200
     sma_slope_window: 20
     variance_window: 63
@@ -63,6 +48,12 @@ strategies:
     zscore_window: 20
     entry_zscore: -1.5
     exit_zscore: 0.0
+    # Hourly trend leg, gated by yesterday's daily regime.
+    # Keep the classic 50/200 trading-day reference while using hourly bars:
+    # 50 days * 6 hourly bars/day = 300 bars; 200 days * 6 = 1200 bars.
+    intraday_bars_per_day: 6
+    intraday_trend_short_days: 50
+    intraday_trend_long_days: 200
     trend_short_window: 50
     trend_long_window: 200
   volatility_targeting:

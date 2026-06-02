@@ -2,13 +2,13 @@ project:
   name: trend-following-real-data
 
 data:
-  source: yfinance
+  source: alpha_vantage
   tickers: [SPY, UPRO, QQQ, TQQQ, IWM, URTY, TLT, TMF, GLD, EFA, EEM, EDC, VNQ, DRN]
-  start_date: "2005-01-01"
+  start_date: "2017-01-01"
   end_date: null
-  interval: 1d
-  raw_dir: data/raw
-  processed_dir: data/processed
+  interval: 60min
+  raw_dir: data/raw/alpha_vantage_hourly
+  processed_dir: data/processed/alpha_vantage_hourly
   alignment: inner
   suspicious_gap_days: 7
 
@@ -16,12 +16,11 @@ backtest:
   initial_capital: 1.0
   transaction_cost_bps: 1.0
   slippage_bps: 1.0
-  annualization: 252
+  annualization: 1764
   return_convention: close_to_close
   execution_delay_days: 1
-  max_trades_per_day: 1
   portfolio_mode: equal_sleeves
-  train_end_date: "2018-12-31"
+  train_end_date: "2022-12-31"
 
 strategies:
   sma_trend:
@@ -47,24 +46,6 @@ strategies:
     top_n: 3
     require_positive: true
     portfolio_mode: active_equal
-  regime_switch:
-    target_ticker: QQQ
-    regime_ticker: QQQ
-    sma_window: 200
-    sma_slope_window: 20
-    variance_window: 63
-    variance_horizon: 5
-    use_variance_ratio_for_trend: false
-    trend_variance_ratio_threshold: 1.05
-    mean_reversion_variance_ratio_threshold: 0.98
-    volatility_window: 20
-    volatility_percentile_window: 252
-    volatility_percentile_threshold: 0.80
-    zscore_window: 20
-    entry_zscore: -1.5
-    exit_zscore: 0.0
-    trend_short_window: 50
-    trend_long_window: 200
   volatility_targeting:
     enabled: false
     target_vol: 0.10

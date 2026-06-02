@@ -12,15 +12,32 @@ from trend_following.backtest import BacktestResult, backtest, buy_and_hold_weig
 from trend_following.config import ProjectConfig
 from trend_following.metrics import calculate_metrics, metrics_to_frame
 from trend_following.plots import plot_heatmap
+from trend_following.regime import regime_switch_signal
 from trend_following.signals import (
     apply_volatility_targeting,
+    cross_sectional_momentum_signal,
+    donchian_breakout_signal,
+    kalman_trend_signal,
+    limit_trades_per_day,
     make_executable_positions,
+    regression_slope_signal,
     signals_to_equal_weight_positions,
     sma_crossover_signal,
     sma_trend_signal,
     time_series_momentum_signal,
 )
 from trend_following.utils import ensure_directory
+
+STRATEGY_NAMES = [
+    "sma_trend",
+    "sma_crossover",
+    "tsmom",
+    "donchian_breakout",
+    "regression_slope",
+    "kalman_trend",
+    "cross_sectional_momentum",
+    "regime_switch",
+]
 
 
 def raw_signal_for_strategy(
@@ -39,6 +56,33 @@ def raw_signal_for_strategy(
         )
     if strategy == "tsmom":
         return time_series_momentum_signal(prices, lookback=int(params.get("lookback", 252)))
+    if strategy == "donchian_breakout":
+        return donchian_breakout_signal(
+            prices,
+            entry_lookback=int(params.get("entry_lookback", 252)),
+            exit_lookback=int(params.get("exit_lookback", 126)),
+        )
+    if strategy == "regression_slope":
+        return regression_slope_signal(
+            prices,
+            window=int(params.get("window", 126)),
+            min_r_squared=float(params.get("min_r_squared", 0.0)),
+        )
+    if strategy == "kalman_trend":
+        return kalman_trend_signal(
+            prices,
+            process_level_var=float(params.get("process_level_var", 1e-5)),
+            process_trend_var=float(params.get("process_trend_var", 1e-7)),
+            observation_var=float(params.get("observation_var", 1e-3)),
+            min_periods=int(params.get("min_periods", 20)),
+        )
+    if strategy == "cross_sectional_momentum":
+        return cross_sectional_momentum_signal(
+            prices,
+            lookback=int(params.get("lookback", 126)),
+            top_n=int(params.get("top_n", 3)),
+            require_positive=bool(params.get("require_positive", True)),
+        )
     raise ValueError(f"Unknown strategy: {strategy}")
 
 
@@ -50,7 +94,10 @@ def build_strategy_positions(
     config: ProjectConfig,
 ) -> pd.DataFrame:
     """Create executable portfolio weights for a strategy."""
-    raw_signal = raw_signal_for_strategy(prices, strategy=strategy, params=params)
+    if strategy == "regime_switch":
+        raw_signal = regime_switch_signal(prices, returns, params=params)
+    else:
+        raw_signal = raw_signal_for_strategy(prices, strategy=strategy, params=params)
 
     if config.strategies.volatility_targeting.enabled:
         vol = config.strategies.volatility_targeting
@@ -63,11 +110,16 @@ def build_strategy_positions(
             annualization=config.backtest.annualization,
         )
 
-    raw_weights = signals_to_equal_weight_positions(raw_signal, mode=config.backtest.portfolio_mode)
+    portfolio_mode = str(params.get("portfolio_mode", config.backtest.portfolio_mode))
+    raw_weights = signals_to_equal_weight_positions(raw_signal, mode=portfolio_mode)
     positions = make_executable_positions(
         raw_weights,
         execution_delay_days=config.backtest.execution_delay_days,
         return_convention=config.backtest.return_convention,
+    )
+    positions = limit_trades_per_day(
+        positions,
+        max_trades_per_day=config.backtest.max_trades_per_day,
     )
     return positions.reindex_like(returns).fillna(0.0)
 
@@ -116,6 +168,16 @@ def strategy_default_params(config: ProjectConfig, strategy: str) -> dict[str, A
         return dict(config.strategies.sma_crossover)
     if strategy == "tsmom":
         return dict(config.strategies.tsmom)
+    if strategy == "donchian_breakout":
+        return dict(config.strategies.donchian_breakout)
+    if strategy == "regression_slope":
+        return dict(config.strategies.regression_slope)
+    if strategy == "kalman_trend":
+        return dict(config.strategies.kalman_trend)
+    if strategy == "cross_sectional_momentum":
+        return dict(config.strategies.cross_sectional_momentum)
+    if strategy == "regime_switch":
+        return dict(config.strategies.regime_switch)
     raise ValueError(f"Unknown strategy: {strategy}")
 
 
@@ -181,6 +243,37 @@ def run_parameter_sweep(
             params = {"short_window": int(short_window), "long_window": int(long_window)}
             result = run_strategy_backtest(prices, returns, "sma_crossover", params, config)
             rows.extend(_metrics_for_segments(result, "sma_crossover", params, config))
+
+    for entry_lookback in config.experiments.breakout_entry_lookbacks:
+        for exit_lookback in config.experiments.breakout_exit_lookbacks:
+            params = {
+                "entry_lookback": int(entry_lookback),
+                "exit_lookback": int(exit_lookback),
+            }
+            result = run_strategy_backtest(prices, returns, "donchian_breakout", params, config)
+            rows.extend(_metrics_for_segments(result, "donchian_breakout", params, config))
+
+    for window in config.experiments.regression_windows:
+        params = {"window": int(window), "min_r_squared": 0.0}
+        result = run_strategy_backtest(prices, returns, "regression_slope", params, config)
+        rows.extend(_metrics_for_segments(result, "regression_slope", params, config))
+
+    kalman_params = dict(config.strategies.kalman_trend)
+    kalman_result = run_strategy_backtest(prices, returns, "kalman_trend", kalman_params, config)
+    rows.extend(_metrics_for_segments(kalman_result, "kalman_trend", kalman_params, config))
+
+    for lookback in config.experiments.cross_sectional_lookbacks:
+        for top_n in config.experiments.cross_sectional_top_ns:
+            params = {
+                "lookback": int(lookback),
+                "top_n": int(top_n),
+                "require_positive": True,
+                "portfolio_mode": "active_equal",
+            }
+            result = run_strategy_backtest(
+                prices, returns, "cross_sectional_momentum", params, config
+            )
+            rows.extend(_metrics_for_segments(result, "cross_sectional_momentum", params, config))
 
     table = metrics_to_frame(rows)
     ensure_directory(config.reports.tables_dir)

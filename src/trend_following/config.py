@@ -19,6 +19,7 @@ class DataConfig:
     tickers: list[str] = field(default_factory=list)
     start_date: str = "2005-01-01"
     end_date: str | None = None
+    interval: str = "1d"
     raw_dir: Path = Path("data/raw")
     processed_dir: Path = Path("data/processed")
     alignment: str = "inner"
@@ -33,6 +34,7 @@ class BacktestConfig:
     annualization: int = 252
     return_convention: str = "close_to_close"
     execution_delay_days: int = 1
+    max_trades_per_day: int | None = 1
     portfolio_mode: str = "equal_sleeves"
     train_end_date: str = "2018-12-31"
 
@@ -52,6 +54,49 @@ class StrategiesConfig:
         default_factory=lambda: {"short_window": 50, "long_window": 200}
     )
     tsmom: dict[str, Any] = field(default_factory=lambda: {"lookback": 252})
+    donchian_breakout: dict[str, Any] = field(
+        default_factory=lambda: {"entry_lookback": 252, "exit_lookback": 126}
+    )
+    regression_slope: dict[str, Any] = field(
+        default_factory=lambda: {"window": 126, "min_r_squared": 0.0}
+    )
+    kalman_trend: dict[str, Any] = field(
+        default_factory=lambda: {
+            "process_level_var": 1e-5,
+            "process_trend_var": 1e-7,
+            "observation_var": 1e-3,
+            "min_periods": 20,
+        }
+    )
+    cross_sectional_momentum: dict[str, Any] = field(
+        default_factory=lambda: {
+            "lookback": 126,
+            "top_n": 3,
+            "require_positive": True,
+            "portfolio_mode": "active_equal",
+        }
+    )
+    regime_switch: dict[str, Any] = field(
+        default_factory=lambda: {
+            "target_ticker": "QQQ",
+            "regime_ticker": "QQQ",
+            "sma_window": 200,
+            "sma_slope_window": 20,
+            "variance_window": 63,
+            "variance_horizon": 5,
+            "use_variance_ratio_for_trend": False,
+            "trend_variance_ratio_threshold": 1.05,
+            "mean_reversion_variance_ratio_threshold": 0.98,
+            "volatility_window": 20,
+            "volatility_percentile_window": 252,
+            "volatility_percentile_threshold": 0.80,
+            "zscore_window": 20,
+            "entry_zscore": -1.5,
+            "exit_zscore": 0.0,
+            "trend_short_window": 50,
+            "trend_long_window": 200,
+        }
+    )
     volatility_targeting: VolatilityTargetConfig = field(default_factory=VolatilityTargetConfig)
 
 
@@ -61,6 +106,11 @@ class ExperimentsConfig:
     tsmom_lookbacks: list[int] = field(default_factory=lambda: [63, 126, 189, 252])
     crossover_short_windows: list[int] = field(default_factory=lambda: [20, 50, 100])
     crossover_long_windows: list[int] = field(default_factory=lambda: [100, 150, 200, 250])
+    breakout_entry_lookbacks: list[int] = field(default_factory=lambda: [63, 126, 252])
+    breakout_exit_lookbacks: list[int] = field(default_factory=lambda: [21, 63, 126])
+    regression_windows: list[int] = field(default_factory=lambda: [63, 126, 189, 252])
+    cross_sectional_lookbacks: list[int] = field(default_factory=lambda: [63, 126, 252])
+    cross_sectional_top_ns: list[int] = field(default_factory=lambda: [2, 3, 5])
 
 
 @dataclass(frozen=True)
@@ -129,6 +179,7 @@ def load_config(config_path: str | Path) -> ProjectConfig:
         start_date=_parse_date_string(data_raw.get("start_date", "2005-01-01"), "start_date")
         or "2005-01-01",
         end_date=_parse_date_string(data_raw.get("end_date"), "end_date"),
+        interval=str(data_raw.get("interval", "1d")).lower(),
         raw_dir=resolve_path(root, data_raw.get("raw_dir", "data/raw")),
         processed_dir=resolve_path(root, data_raw.get("processed_dir", "data/processed")),
         alignment=str(data_raw.get("alignment", "inner")).lower(),
@@ -136,6 +187,32 @@ def load_config(config_path: str | Path) -> ProjectConfig:
     )
     if data.alignment not in {"inner", "outer"}:
         raise ValueError("data.alignment must be either 'inner' or 'outer'")
+    if data.source not in {"yfinance", "alpha_vantage", "stooq"}:
+        raise ValueError("data.source must be one of: yfinance, alpha_vantage, stooq")
+    supported_intervals = {
+        "1m",
+        "1min",
+        "2m",
+        "5m",
+        "5min",
+        "15m",
+        "15min",
+        "30m",
+        "30min",
+        "60min",
+        "60m",
+        "90m",
+        "1h",
+        "1d",
+        "d",
+        "daily",
+        "5d",
+        "1wk",
+        "1mo",
+        "3mo",
+    }
+    if data.interval not in supported_intervals:
+        raise ValueError(f"Unsupported data interval: {data.interval}")
 
     backtest = BacktestConfig(
         initial_capital=float(backtest_raw.get("initial_capital", 1.0)),
@@ -144,6 +221,11 @@ def load_config(config_path: str | Path) -> ProjectConfig:
         annualization=int(backtest_raw.get("annualization", 252)),
         return_convention=str(backtest_raw.get("return_convention", "close_to_close")),
         execution_delay_days=int(backtest_raw.get("execution_delay_days", 1)),
+        max_trades_per_day=(
+            None
+            if backtest_raw.get("max_trades_per_day", 1) in {None, "null"}
+            else int(backtest_raw.get("max_trades_per_day", 1))
+        ),
         portfolio_mode=str(backtest_raw.get("portfolio_mode", "equal_sleeves")),
         train_end_date=str(backtest_raw.get("train_end_date", "2018-12-31")),
     )
@@ -151,6 +233,8 @@ def load_config(config_path: str | Path) -> ProjectConfig:
         raise ValueError("Transaction cost and slippage assumptions must be non-negative")
     if backtest.execution_delay_days < 0:
         raise ValueError("execution_delay_days must be non-negative")
+    if backtest.max_trades_per_day is not None and backtest.max_trades_per_day < 0:
+        raise ValueError("max_trades_per_day must be non-negative or null")
 
     vol_raw = strategies_raw.get("volatility_targeting", {})
     volatility_targeting = VolatilityTargetConfig(
@@ -166,6 +250,58 @@ def load_config(config_path: str | Path) -> ProjectConfig:
             strategies_raw.get("sma_crossover", {"short_window": 50, "long_window": 200})
         ),
         tsmom=dict(strategies_raw.get("tsmom", {"lookback": 252})),
+        donchian_breakout=dict(
+            strategies_raw.get("donchian_breakout", {"entry_lookback": 252, "exit_lookback": 126})
+        ),
+        regression_slope=dict(
+            strategies_raw.get("regression_slope", {"window": 126, "min_r_squared": 0.0})
+        ),
+        kalman_trend=dict(
+            strategies_raw.get(
+                "kalman_trend",
+                {
+                    "process_level_var": 1e-5,
+                    "process_trend_var": 1e-7,
+                    "observation_var": 1e-3,
+                    "min_periods": 20,
+                },
+            )
+        ),
+        cross_sectional_momentum=dict(
+            strategies_raw.get(
+                "cross_sectional_momentum",
+                {
+                    "lookback": 126,
+                    "top_n": 3,
+                    "require_positive": True,
+                    "portfolio_mode": "active_equal",
+                },
+            )
+        ),
+        regime_switch=dict(
+            strategies_raw.get(
+                "regime_switch",
+                {
+                    "target_ticker": "QQQ",
+                    "regime_ticker": "QQQ",
+                    "sma_window": 200,
+                    "sma_slope_window": 20,
+                    "variance_window": 63,
+                    "variance_horizon": 5,
+                    "use_variance_ratio_for_trend": False,
+                    "trend_variance_ratio_threshold": 1.05,
+                    "mean_reversion_variance_ratio_threshold": 0.98,
+                    "volatility_window": 20,
+                    "volatility_percentile_window": 252,
+                    "volatility_percentile_threshold": 0.80,
+                    "zscore_window": 20,
+                    "entry_zscore": -1.5,
+                    "exit_zscore": 0.0,
+                    "trend_short_window": 50,
+                    "trend_long_window": 200,
+                },
+            )
+        ),
         volatility_targeting=volatility_targeting,
     )
 
@@ -179,6 +315,21 @@ def load_config(config_path: str | Path) -> ProjectConfig:
         ],
         crossover_long_windows=[
             int(x) for x in experiments_raw.get("crossover_long_windows", [100, 150, 200, 250])
+        ],
+        breakout_entry_lookbacks=[
+            int(x) for x in experiments_raw.get("breakout_entry_lookbacks", [63, 126, 252])
+        ],
+        breakout_exit_lookbacks=[
+            int(x) for x in experiments_raw.get("breakout_exit_lookbacks", [21, 63, 126])
+        ],
+        regression_windows=[
+            int(x) for x in experiments_raw.get("regression_windows", [63, 126, 189, 252])
+        ],
+        cross_sectional_lookbacks=[
+            int(x) for x in experiments_raw.get("cross_sectional_lookbacks", [63, 126, 252])
+        ],
+        cross_sectional_top_ns=[
+            int(x) for x in experiments_raw.get("cross_sectional_top_ns", [2, 3, 5])
         ],
     )
 

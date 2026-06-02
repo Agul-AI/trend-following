@@ -1,0 +1,196 @@
+project:
+  name: trend-following-real-data
+
+data:
+  source: alpha_vantage
+  # Regular + preferred long leveraged ETF research universe.
+  # For Alpha Vantage Premium bootstrap, use scripts/download_alpha_vantage_bulk.py
+  # to download 15min, 30min, 60min, and daily adjusted datasets into separate caches.
+  tickers:
+    # Broad equity
+    - SPY
+    - QQQ
+    - DIA
+    - IWM
+    - MDY
+    - VTI
+
+    # Sectors
+    - XLK
+    - XLF
+    - XLV
+    - XLE
+    - XLI
+    - XLY
+    - XLP
+    - XLU
+    - XLB
+    - XLRE
+    - XLC
+
+    # Industries / themes
+    - SOXX
+    - SMH
+    - FDN
+    - IGV
+    - XBI
+    - IBB
+    - XPH
+    - KRE
+    - KBE
+    - XOP
+    - OIH
+    - GDX
+    - GDXJ
+    - ITB
+    - XHB
+    - XRT
+    - XTN
+    - IYT
+    - ITA
+
+    # Bonds / rates
+    - BIL
+    - SHY
+    - IEI
+    - IEF
+    - TLT
+    - TIP
+    - LQD
+    - HYG
+    - MBB
+    - BND
+
+    # International
+    - EFA
+    - EEM
+    - VGK
+    - FXI
+    - MCHI
+    - INDA
+    - EWJ
+    - EWZ
+    - EWW
+    - EWC
+    - EWA
+    - EWY
+    - EWT
+
+    # Commodities / currencies
+    - GLD
+    - SLV
+    - USO
+    - UNG
+    - DBC
+    - DBA
+    - CPER
+    - FXE
+    - FXY
+    - UUP
+
+    # Preferred long leveraged ETFs: prefer +3x when a clean +3x exists.
+    - UPRO
+    - SPXL
+    - TQQQ
+    - UDOW
+    - URTY
+    - TNA
+    - MIDU
+    - TECL
+    - FAS
+    - CURE
+    - ERX
+    - DUSL
+    - WANT
+    - UTSL
+    - DRN
+    - SOXL
+    - WEBL
+    - LABU
+    - PILL
+    - DPST
+    - GUSH
+    - NUGT
+    - JNUG
+    - NAIL
+    - RETL
+    - TPOR
+    - TMF
+    - TYD
+    - EDC
+    - YINN
+    - INDL
+    - EZJ
+    - UBR
+    - UPV
+    - MEXX
+    - UGL
+    - AGQ
+    - UCO
+    - BOIL
+    - UCOP
+    - ULE
+    - YCL
+  start_date: "1995-01-01"
+  end_date: null
+  interval: 60min
+  raw_dir: data/raw/alpha_vantage_60min
+  processed_dir: data/processed/alpha_vantage_60min
+  alignment: outer
+  suspicious_gap_days: 7
+
+backtest:
+  initial_capital: 1.0
+  transaction_cost_bps: 1.0
+  slippage_bps: 1.0
+  annualization: 1764
+  return_convention: close_to_close
+  execution_delay_days: 1
+  portfolio_mode: equal_sleeves
+  train_end_date: "2018-12-31"
+
+strategies:
+  sma_trend:
+    window: 200
+  sma_crossover:
+    short_window: 50
+    long_window: 200
+  tsmom:
+    lookback: 252
+  donchian_breakout:
+    entry_lookback: 252
+    exit_lookback: 126
+  regression_slope:
+    window: 126
+    min_r_squared: 0.0
+  kalman_trend:
+    process_level_var: 0.00001
+    process_trend_var: 0.0000001
+    observation_var: 0.001
+    min_periods: 20
+  cross_sectional_momentum:
+    lookback: 126
+    top_n: 3
+    require_positive: true
+    portfolio_mode: active_equal
+  volatility_targeting:
+    enabled: false
+    target_vol: 0.10
+    lookback: 63
+    max_leverage: 1.0
+
+experiments:
+  sma_windows: [50, 100, 150, 200, 250]
+  tsmom_lookbacks: [63, 126, 189, 252]
+  crossover_short_windows: [20, 50, 100]
+  crossover_long_windows: [100, 150, 200, 250]
+  breakout_entry_lookbacks: [63, 126, 252]
+  breakout_exit_lookbacks: [21, 63, 126]
+  regression_windows: [63, 126, 189, 252]
+  cross_sectional_lookbacks: [63, 126, 252]
+  cross_sectional_top_ns: [2, 3, 5]
+
+reports:
+  figures_dir: reports/figures
+  tables_dir: reports/tables
+  summary_path: reports/summary.md

@@ -34,6 +34,10 @@ Raw data is cached under `/Users/cosdis/Desktop/job/quant_projects/trend_followi
 - **SMA trend:** long if adjusted close is above its moving average; otherwise cash.
 - **SMA crossover:** long if short SMA is above long SMA; otherwise cash.
 - **Time-series momentum:** long if the past lookback-day return is positive; otherwise cash.
+- **Donchian breakout:** long after an entry-window high breakout until an exit-window low is hit.
+- **Regression slope:** long when the rolling log-price regression slope is positive.
+- **Kalman trend:** long when a local-linear Kalman filter estimates a positive latent trend slope.
+- **Cross-sectional momentum:** long the strongest assets by trailing return, optionally requiring positive absolute momentum.
 
 ## Assumptions
 
@@ -48,6 +52,18 @@ Raw data is cached under `/Users/cosdis/Desktop/job/quant_projects/trend_followi
 
 | name | cumulative_return | annualized_return | annualized_volatility | sharpe_ratio | max_drawdown | average_daily_turnover | exposure_percentage |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| cross_sectional_momentum | 2.8095 | 0.1534 | 0.3548 | 0.5813 | -0.6000 | 0.1502 | 0.9030 |
+| Buy & Hold SPY | 2.8597 | 0.1551 | 0.1830 | 0.8799 | -0.3372 | 0.0004 | 1.0000 |
+| Equal-Weight Buy & Hold | 2.9751 | 0.1587 | 0.2779 | 0.6704 | -0.4884 | 0.0004 | 1.0000 |
+| donchian_breakout | 0.5554 | 0.0483 | 0.1294 | 0.4295 | -0.2109 | 0.0040 | 0.4296 |
+| Buy & Hold SPY | 2.8597 | 0.1551 | 0.1830 | 0.8799 | -0.3372 | 0.0004 | 1.0000 |
+| Equal-Weight Buy & Hold | 2.9751 | 0.1587 | 0.2779 | 0.6704 | -0.4884 | 0.0004 | 1.0000 |
+| kalman_trend | 1.2401 | 0.0899 | 0.1509 | 0.6463 | -0.2597 | 0.0294 | 0.6098 |
+| Buy & Hold SPY | 2.8597 | 0.1551 | 0.1830 | 0.8799 | -0.3372 | 0.0004 | 1.0000 |
+| Equal-Weight Buy & Hold | 2.9751 | 0.1587 | 0.2779 | 0.6704 | -0.4884 | 0.0004 | 1.0000 |
+| regression_slope | 0.8855 | 0.0700 | 0.1817 | 0.4652 | -0.4127 | 0.0069 | 0.6043 |
+| Buy & Hold SPY | 2.8597 | 0.1551 | 0.1830 | 0.8799 | -0.3372 | 0.0004 | 1.0000 |
+| Equal-Weight Buy & Hold | 2.9751 | 0.1587 | 0.2779 | 0.6704 | -0.4884 | 0.0004 | 1.0000 |
 | sma_crossover | 0.6156 | 0.0525 | 0.1884 | 0.3685 | -0.4681 | 0.0054 | 0.5895 |
 | Buy & Hold SPY | 2.8597 | 0.1551 | 0.1830 | 0.8799 | -0.3372 | 0.0004 | 1.0000 |
 | Equal-Weight Buy & Hold | 2.9751 | 0.1587 | 0.2779 | 0.6704 | -0.4884 | 0.0004 | 1.0000 |
@@ -64,6 +80,16 @@ Top out-of-sample rows by strategy, if the sweep has been run:
 
 | strategy | parameters | annualized_return | sharpe_ratio | max_drawdown |
 | --- | --- | --- | --- | --- |
+| cross_sectional_momentum | {"lookback": 252, "portfolio_mode": "active_equal", "require_positive": true, "top_n": 5} | 0.2082 | 0.8005 | -0.4709 |
+| cross_sectional_momentum | {"lookback": 252, "portfolio_mode": "active_equal", "require_positive": true, "top_n": 2} | 0.2710 | 0.7959 | -0.5221 |
+| cross_sectional_momentum | {"lookback": 252, "portfolio_mode": "active_equal", "require_positive": true, "top_n": 3} | 0.2273 | 0.7685 | -0.4965 |
+| donchian_breakout | {"entry_lookback": 126, "exit_lookback": 126} | 0.1001 | 0.7014 | -0.2109 |
+| donchian_breakout | {"entry_lookback": 252, "exit_lookback": 126} | 0.0709 | 0.5820 | -0.2109 |
+| donchian_breakout | {"entry_lookback": 63, "exit_lookback": 126} | 0.0902 | 0.5716 | -0.3757 |
+| kalman_trend | {"min_periods": 20, "observation_var": 0.001, "process_level_var": 1e-05, "process_trend_var": 1e-07} | 0.1072 | 0.7130 | -0.2597 |
+| regression_slope | {"min_r_squared": 0.0, "window": 252} | 0.0878 | 0.5140 | -0.4357 |
+| regression_slope | {"min_r_squared": 0.0, "window": 189} | 0.0838 | 0.5008 | -0.4619 |
+| regression_slope | {"min_r_squared": 0.0, "window": 126} | 0.0746 | 0.4712 | -0.4127 |
 | sma_crossover | {"long_window": 200, "short_window": 100} | 0.1099 | 0.5957 | -0.4706 |
 | sma_crossover | {"long_window": 100, "short_window": 20} | 0.0868 | 0.5802 | -0.2885 |
 | sma_crossover | {"long_window": 250, "short_window": 20} | 0.0839 | 0.5518 | -0.3530 |

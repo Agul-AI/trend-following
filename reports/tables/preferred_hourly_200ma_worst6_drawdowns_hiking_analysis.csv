@@ -1,0 +1,7 @@
+rank,peak,start,trough,recovery,max_drawdown,duration_calendar_days_peak_to_trough,duration_calendar_days_peak_to_recovery,overlaps_effective_hiking_cycle,bottom_in_effective_hiking_cycle,matching_effective_hiking_cycle,effective_hiking_overlap_days_peak_to_trough,overlaps_announced_hiking_window,bottom_in_announced_hiking_window,matching_announced_hiking_window,announced_hiking_overlap_days_peak_to_trough
+1,2007-10-31 15:00:00,2007-11-01 10:00:00,2009-07-08 12:00:00,2009-12-24 11:00:00,-0.5636324477760993,615,784,False,False,,0,False,False,,0
+2,2010-04-23 14:00:00,2010-04-23 15:00:00,2010-08-11 12:00:00,2011-02-14 10:00:00,-0.5214743527254782,109,296,False,False,,0,False,False,,0
+3,2018-10-01 10:00:00,2018-10-01 11:00:00,2019-08-05 14:00:00,2020-02-10 15:00:00,-0.5204243080669104,308,497,True,False,2015-2018 normalization/hike cycle,81,True,False,2015-2018 announced hike window,81
+4,2021-11-22 10:00:00,2021-11-22 11:00:00,2023-03-10 13:00:00,2023-06-15 11:00:00,-0.5133176007538696,473,570,True,True,2022-2023 hike cycle,359,True,True,2022-2023 announced hike window,409
+5,2020-02-19 14:00:00,2020-02-19 15:00:00,2020-04-07 15:00:00,2020-07-06 10:00:00,-0.5086190178259301,48,137,False,False,,0,False,False,,0
+6,2004-01-20 14:00:00,2004-01-20 15:00:00,2005-10-28 10:00:00,2007-07-12 12:00:00,-0.5073024430784292,646,1268,True,True,2004-2006 hike cycle,486,True,True,2004-2006 announced hike window,543

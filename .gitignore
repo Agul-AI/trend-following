@@ -16,11 +16,21 @@ venv/
 .matplotlib_cache/
 .cache/
 
+# Local job/runtime logs
+/logs/
+
 # Data caches: keep directory structure, not downloaded market data
 /data/raw/*
 !/data/raw/.gitkeep
 /data/processed/*
 !/data/processed/.gitkeep
+
+# Generated research artifacts can become very large. Keep curated examples by
+# force-adding them when they are intentionally part of a commit.
+/reports/figures/*
+!/reports/figures/.gitkeep
+/reports/tables/*
+!/reports/tables/.gitkeep
 
 # OS/editor
 .DS_Store
