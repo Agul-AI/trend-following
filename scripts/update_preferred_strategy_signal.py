@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 """Update Yahoo Finance data and report the current preferred QQQ/TQQQ signal.
 
-Preferred strategy as of 2026-06-02:
+Preferred strategy as of 2026-06-03:
 - Signal source: QQQ 60-minute bars.
 - Exposure: synthetic +3x QQQ (QQQ_3X_CALC) for research evaluation.
 - Entry: QQQ hourly MACD histogram > 0 and QQQ hourly close > QQQ hourly 200-day MA.
 - Exit: QQQ hourly close < QQQ hourly 200-day MA.
-- No daily regime gate, no profit lock, max one trade per day.
+- Profit lock: +300% synthetic-3x trade gain -> 75%; +400% -> 50%.
+- Stop: exit if synthetic QQQ_3X_CALC falls 40% from the current trade peak.
+- No daily regime gate, max one trade per day.
 
 This updater intentionally uses Yahoo Finance through yfinance, not Alpha
 Vantage. It refreshes newest available Yahoo data and merges it into local
@@ -37,6 +39,9 @@ from trend_following.synthetic_leverage import (  # noqa: E402
     synthetic_intraday_leveraged_ohlcv,
 )
 from trend_following.utils import ensure_directory, resolve_path  # noqa: E402
+
+PROFIT_LOCK_SCHEME: list[tuple[float, float]] = [(3.0, 0.75), (4.0, 0.50)]
+PEAK_STOP_DRAWDOWN = 0.40
 
 
 def parse_args() -> argparse.Namespace:
@@ -318,8 +323,124 @@ def _rebuild_synthetic(
     return daily_synth, intraday_synth
 
 
-def _last_transition_time(weights: pd.Series, from_value: float, to_value: float) -> pd.Timestamp | pd.NaT:
-    transitions = weights[(weights.shift(1).fillna(0.0).eq(from_value)) & weights.eq(to_value)]
+def _raw_with_peak_drawdown_stop(
+    base_raw: pd.Series,
+    traded_price: pd.Series,
+    *,
+    stop_drawdown: float,
+) -> tuple[pd.Series, pd.DataFrame]:
+    """Force raw signal to cash if trade-level peak drawdown breaches threshold.
+
+    The stop is observed on a completed bar and then passed through
+    ``executable_weights`` below, preserving the no-lookahead timing convention.
+    """
+    base = base_raw.fillna(0.0).astype(float)
+    price = traded_price.reindex(base.index).astype(float)
+    threshold = -abs(float(stop_drawdown))
+    in_trade = False
+    stopped_until_base_exit = False
+    peak = np.nan
+    values: list[float] = []
+    peaks: list[float] = []
+    drawdowns: list[float] = []
+    triggers: list[bool] = []
+
+    for base_signal, current_price in zip(base, price, strict=True):
+        current_price = float(current_price) if np.isfinite(current_price) else np.nan
+        trigger = False
+        if base_signal <= 0.0 or not np.isfinite(current_price):
+            in_trade = False
+            stopped_until_base_exit = False
+            peak = np.nan
+            value = 0.0
+            drawdown = np.nan
+        else:
+            if not in_trade:
+                in_trade = True
+                stopped_until_base_exit = False
+                peak = current_price
+            else:
+                peak = max(float(peak), current_price)
+            drawdown = current_price / peak - 1.0 if peak > 0 else np.nan
+            if stopped_until_base_exit:
+                value = 0.0
+            elif np.isfinite(drawdown) and drawdown <= threshold:
+                trigger = True
+                stopped_until_base_exit = True
+                value = 0.0
+            else:
+                value = 1.0
+        values.append(value)
+        peaks.append(peak)
+        drawdowns.append(drawdown)
+        triggers.append(trigger)
+
+    stopped = pd.Series(values, index=base.index, name=base_raw.name, dtype=float)
+    diagnostics = pd.DataFrame(
+        {
+            "base_raw": base,
+            "stopped_raw": stopped,
+            "trade_peak_price": peaks,
+            "trade_peak_drawdown": drawdowns,
+            "stop_trigger": triggers,
+        },
+        index=base.index,
+    )
+    return stopped, diagnostics
+
+
+def _trade_profit_lock_tiers(
+    base_raw: pd.Series,
+    price: pd.Series,
+    *,
+    thresholds_to_weights: list[tuple[float, float]],
+) -> pd.Series:
+    """Reduce target size within a trade after unrealized-gain thresholds hit."""
+    thresholds_to_weights = sorted(thresholds_to_weights)
+    in_trade = False
+    entry_price = np.nan
+    current_weight = 0.0
+    values: list[float] = []
+
+    for signal, current_price in zip(base_raw.fillna(0.0), price.reindex(base_raw.index), strict=True):
+        if signal <= 0.0 or not np.isfinite(current_price):
+            in_trade = False
+            entry_price = np.nan
+            current_weight = 0.0
+            values.append(0.0)
+            continue
+
+        if not in_trade:
+            in_trade = True
+            entry_price = float(current_price)
+            current_weight = 1.0
+
+        gain = float(current_price) / entry_price - 1.0 if entry_price > 0 else 0.0
+        for threshold, weight in thresholds_to_weights:
+            if gain >= threshold:
+                current_weight = min(current_weight, weight)
+        values.append(current_weight)
+
+    return pd.Series(values, index=base_raw.index, name=base_raw.name, dtype=float)
+
+
+def _last_open_transition_time(weights: pd.Series) -> pd.Timestamp | pd.NaT:
+    transitions = weights[(weights.shift(1).fillna(0.0).le(0.0)) & weights.gt(0.0)]
+    if transitions.empty:
+        return pd.NaT
+    return pd.Timestamp(transitions.index[-1])
+
+
+def _last_close_transition_time(weights: pd.Series) -> pd.Timestamp | pd.NaT:
+    transitions = weights[(weights.shift(1).fillna(0.0).gt(0.0)) & weights.le(0.0)]
+    if transitions.empty:
+        return pd.NaT
+    return pd.Timestamp(transitions.index[-1])
+
+
+def _last_reduce_transition_time(weights: pd.Series) -> pd.Timestamp | pd.NaT:
+    previous = weights.shift(1).fillna(0.0)
+    transitions = weights[weights.gt(0.0) & previous.gt(0.0) & weights.lt(previous)]
     if transitions.empty:
         return pd.NaT
     return pd.Timestamp(transitions.index[-1])
@@ -334,7 +455,7 @@ def _float_or_nan(value: Any) -> float:
 
 
 def _format_position(value: float) -> str:
-    return "long synthetic TQQQ exposure" if value >= 0.5 else "cash / out of market"
+    return f"long synthetic TQQQ exposure at {value:.0%} target weight" if value > 0.0 else "cash / out of market"
 
 
 def _full_days_bar_count(index: pd.DatetimeIndex) -> int:
@@ -393,7 +514,18 @@ def main() -> None:
         exit_confirm_bars=args.exit_confirm_bars,
         exit_ma_days=args.exit_ma_days,
     )
-    raw_weights = raw.rename(args.target_ticker).to_frame(args.target_ticker)
+    synthetic_close = intraday_synth["adj_close"].astype(float)
+    stopped_raw, stop_diag = _raw_with_peak_drawdown_stop(
+        raw.rename(args.target_ticker),
+        synthetic_close,
+        stop_drawdown=PEAK_STOP_DRAWDOWN,
+    )
+    raw_profit_locked_weight = _trade_profit_lock_tiers(
+        stopped_raw.rename(args.target_ticker),
+        synthetic_close,
+        thresholds_to_weights=PROFIT_LOCK_SCHEME,
+    ).rename(args.target_ticker)
+    raw_weights = raw_profit_locked_weight.to_frame(args.target_ticker)
     weights = executable_weights(raw_weights, config=config)[args.target_ticker]
 
     latest = pd.Timestamp(qqq_close.index[-1])
@@ -401,13 +533,18 @@ def main() -> None:
     latest_diag = diag.loc[latest]
     latest_weight = _float_or_nan(weights.loc[latest])
     prev_weight = _float_or_nan(weights.loc[prev]) if pd.notna(prev) else float("nan")
-    latest_raw = _float_or_nan(raw.loc[latest])
-    previous_raw = _float_or_nan(raw.loc[prev]) if pd.notna(prev) else float("nan")
+    latest_base_raw = _float_or_nan(raw.loc[latest])
+    previous_base_raw = _float_or_nan(raw.loc[prev]) if pd.notna(prev) else float("nan")
+    latest_stopped_raw = _float_or_nan(stopped_raw.loc[latest])
+    previous_stopped_raw = _float_or_nan(stopped_raw.loc[prev]) if pd.notna(prev) else float("nan")
+    latest_raw_weight = _float_or_nan(raw_profit_locked_weight.loc[latest])
+    previous_raw_weight = (
+        _float_or_nan(raw_profit_locked_weight.loc[prev]) if pd.notna(prev) else float("nan")
+    )
     qqq_latest = _float_or_nan(qqq_close.loc[latest])
     qqq_ma = _float_or_nan(latest_diag.get("exit_ma"))
     distance_to_exit = qqq_latest / qqq_ma - 1.0 if qqq_ma and np.isfinite(qqq_ma) else float("nan")
 
-    synthetic_close = intraday_synth["adj_close"].astype(float)
     tqqq_frame = read_price_file(tqqq_intraday_path).sort_index() if tqqq_intraday_path.exists() else pd.DataFrame()
     tqqq_close = (
         tqqq_frame["adj_close"].astype(float)
@@ -419,8 +556,9 @@ def main() -> None:
         if latest in synthetic_close.index
         else float("nan")
     )
-    last_buy_time = _last_transition_time(weights, 0.0, 1.0)
-    last_sell_time = _last_transition_time(weights, 1.0, 0.0)
+    last_buy_time = _last_open_transition_time(weights)
+    last_sell_time = _last_close_transition_time(weights)
+    last_reduce_time = _last_reduce_transition_time(weights)
     synthetic_at_last_buy = (
         _float_or_nan(synthetic_close.reindex([last_buy_time]).iloc[0])
         if pd.notna(last_buy_time) and last_buy_time in synthetic_close.index
@@ -455,9 +593,16 @@ def main() -> None:
     )
     qqq_pe_latest = _float_or_nan(pe_info.get("qqq_pe_yfinance_trailing_pe"))
 
-    action = "hold long / buy if currently out" if latest_weight >= 0.5 else "hold cash / sell if currently long"
+    action = "hold long / buy if currently out" if latest_weight > 0.0 else "hold cash / sell if currently long"
     if np.isfinite(prev_weight) and latest_weight != prev_weight:
-        action = "BUY signal became executable" if latest_weight >= 0.5 else "SELL signal became executable"
+        if prev_weight <= 0.0 and latest_weight > 0.0:
+            action = f"BUY signal became executable; target weight {latest_weight:.0%}"
+        elif prev_weight > 0.0 and latest_weight <= 0.0:
+            action = "SELL signal became executable"
+        elif latest_weight < prev_weight:
+            action = f"REDUCE exposure signal became executable; target weight {latest_weight:.0%}"
+        else:
+            action = f"INCREASE exposure signal became executable; target weight {latest_weight:.0%}"
 
     bar_count_mode = _full_days_bar_count(qqq_close.index)
     inconsistency_notes = (
@@ -476,21 +621,37 @@ def main() -> None:
         "data_source": "yfinance",
         "asof_intraday_bar": latest,
         "previous_intraday_bar": prev,
-        "strategy_label": "new_candidate_no_daily_gate__qqq_hourly_200ma_entry_exit",
+        "strategy_label": "preferred_qqq_hourly_200ma_macd_profit_lock_300_400_stop40",
         "signal_source": args.ticker,
         "target_exposure": args.target_ticker,
-        "raw_desired_position_latest_bar": latest_raw,
-        "raw_desired_position_previous_bar": previous_raw,
+        "base_raw_position_latest_bar": latest_base_raw,
+        "base_raw_position_previous_bar": previous_base_raw,
+        "stopped_raw_position_latest_bar": latest_stopped_raw,
+        "stopped_raw_position_previous_bar": previous_stopped_raw,
+        "raw_desired_position_latest_bar": latest_raw_weight,
+        "raw_desired_position_previous_bar": previous_raw_weight,
         "executable_position_latest_bar": latest_weight,
         "executable_position_previous_bar": prev_weight,
         "position_interpretation": _format_position(latest_weight),
         "action_if_following_strategy": action,
-        "pending_raw_vs_executable_difference": bool(latest_raw != latest_weight),
+        "pending_raw_vs_executable_difference": bool(latest_raw_weight != latest_weight),
         "qqq_latest_close": qqq_latest,
         "qqq_200d_hourly_ma": qqq_ma,
         "distance_to_exit_trigger_pct": distance_to_exit,
-        "sell_trigger_rule": f"exit after {args.exit_confirm_bars} confirmed hourly closes below QQQ 200-day hourly MA",
+        "sell_trigger_rule": (
+            f"exit after {args.exit_confirm_bars} confirmed hourly closes below QQQ 200-day hourly MA, "
+            f"or after synthetic QQQ_3X_CALC falls {PEAK_STOP_DRAWDOWN:.0%} from its current trade peak"
+        ),
         "approx_qqq_sell_trigger_close": qqq_ma,
+        "profit_lock_rule": "+300% synthetic-3x trade gain -> 75%; +400% -> 50%",
+        "profit_lock_first_threshold": PROFIT_LOCK_SCHEME[0][0],
+        "profit_lock_first_target_weight": PROFIT_LOCK_SCHEME[0][1],
+        "profit_lock_second_threshold": PROFIT_LOCK_SCHEME[1][0],
+        "profit_lock_second_target_weight": PROFIT_LOCK_SCHEME[1][1],
+        "peak_stop_drawdown_threshold": -PEAK_STOP_DRAWDOWN,
+        "trade_peak_price_raw_latest": _float_or_nan(stop_diag.loc[latest].get("trade_peak_price")),
+        "trade_peak_drawdown_raw_latest": _float_or_nan(stop_diag.loc[latest].get("trade_peak_drawdown")),
+        "peak_stop_trigger_raw_latest": bool(stop_diag.loc[latest].get("stop_trigger")),
         "macd_hist_latest": _float_or_nan(latest_diag.get("macd_hist")),
         "entry_flag_latest": bool(_float_or_nan(latest_diag.get("entry_flag")) >= 0.5),
         "above_200ma_latest": bool(_float_or_nan(latest_diag.get("above_exit_ma")) >= 0.5),
@@ -500,6 +661,7 @@ def main() -> None:
         "actual_tqqq_latest_close": actual_tqqq_latest_close,
         "last_buy_time": last_buy_time,
         "last_sell_time": last_sell_time,
+        "last_reduce_time": last_reduce_time,
         "qqq_at_last_buy": qqq_at_last_buy,
         "synthetic_3x_at_last_buy": synthetic_at_last_buy,
         "actual_tqqq_at_last_buy": actual_tqqq_at_last_buy,

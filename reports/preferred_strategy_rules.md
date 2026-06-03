@@ -1,6 +1,6 @@
 # Preferred Strategy Rules
 
-_Last updated: 2026-06-02_
+_Last updated: 2026-06-03_
 
 This file records the **confirmed preferred strategy rules so far**. Experimental ideas are not promoted into the confirmed rule set unless explicitly confirmed.
 
@@ -8,14 +8,15 @@ This is for research/backtesting only, not live trading or financial advice.
 
 ## Current preferred strategy
 
-**Name:** QQQ hourly-200MA-gated synthetic-TQQQ trend strategy  
-**Short label:** `new_candidate_no_daily_gate__qqq_hourly_200ma_entry_exit`
+**Name:** QQQ hourly-200MA-gated synthetic-TQQQ trend strategy with profit lock and 40% peak stop  
+**Short label:** `preferred_qqq_hourly_200ma_macd_profit_lock_300_400_stop40`
 
 ## Summary bullets
 
 - QQQ entry + QQQ exit
 - Synthetic TQQQ exposure
-- No profit lock
+- Profit lock: +300% unrealized trade gain -> 75%; +400% -> 50%
+- Trade-peak stop: exit if synthetic TQQQ falls 40% from its current trade peak
 - Hourly MACD histogram > 0 entry
 - QQQ hourly 200-day MA entry gate
 - QQQ hourly 200-day MA exit
@@ -56,21 +57,57 @@ Important limitation:
 - Synthetic TQQQ is not the same as real TQQQ.
 - Real TQQQ can differ because of fees, financing, daily rebalancing, spreads, tracking error, and market microstructure.
 
-### No profit lock
+### Profit lock: +300% -> 75%, +400% -> 50%
 
-The preferred strategy currently does **not** reduce position size after large unrealized gains.
+The preferred strategy now includes a simple intra-trade profit-lock overlay on synthetic TQQQ exposure.
 
-This means:
+Current rule:
 
-- No `+150% gain -> reduce to 75%` rule.
-- No `+200% gain -> reduce to 75%` rule.
-- No `+250%` or `+300%` profit-lock rule.
-- Position stays at the normal target size until the exit signal triggers.
+```text
+If unrealized synthetic-TQQQ trade gain >= +300%:
+    reduce exposure to 75%
+If unrealized synthetic-TQQQ trade gain >= +400%:
+    reduce exposure to 50%
+```
+
+This is evaluated within each base trade and resets on the next new entry.
 
 Reason:
 
-- Profit-lock variants were useful in some mixed-source cases, but they added complexity and more trades.
-- The current preference is for a simple rule that is easier to monitor manually.
+- The `+300% -> 75%, +400% -> 50%` overlay improved return and Sharpe versus the no-lock base in the latest test.
+- It reduced the number of large drawdown episodes, although it did **not** reduce the single worst max drawdown.
+- It triggered only a few times historically, so it preserves relatively low manual trading frequency.
+
+No-lookahead convention:
+
+- The profit-lock condition is detected at the close of the bar where the unrealized gain threshold is observed.
+- The executable exposure reduction happens after the signal shift; it cannot earn the same bar's return.
+
+### Trade-peak stop: synthetic TQQQ -40% from current trade peak
+
+The preferred strategy now includes a trade-level peak-drawdown stop on the synthetic TQQQ exposure.
+
+Current rule:
+
+```text
+Within each open base trade:
+    track the highest synthetic-TQQQ price since entry
+    if synthetic TQQQ falls 40% or more from that trade peak:
+        exit to cash
+        stay out until the base QQQ 200MA/MACD state resets
+```
+
+Reason:
+
+- The stop improved the latest preferred-strategy test versus the same profit-lock strategy without the stop.
+- It reduced the number of >50% strategy drawdown episodes from 4 to 3 in the historical test.
+- It triggered only once historically, so it does not materially increase trading frequency.
+
+Important interpretation:
+
+- This is a **trade-level synthetic-TQQQ peak stop**, not an account-level drawdown stop.
+- It does **not** guarantee the portfolio max drawdown will stay above -40%.
+- The stop is observed at a completed bar and then shifted through the executable-position conversion, preserving the no-lookahead convention.
 
 ### Hourly MACD histogram > 0 entry
 
@@ -219,6 +256,10 @@ For QQQ PE snapshots, if used later:
 A snapshot saved on date D is usable starting on the next business day, not on D.
 ```
 
+## Benchmark reporting convention
+
+All future strategy comparison tables should include a **QQQ buy-and-hold (QQQ BH)** benchmark over the same date range and data frequency. For synthetic/actual TQQQ strategy work, QQQ BH is the primary unlevered reference row; TQQQ buy-and-hold can be included only when explicitly useful, but QQQ BH should not be omitted.
+
 ## Current evaluation assumptions
 
 Recent comparisons use:
@@ -233,17 +274,19 @@ Annualization: 1512 hourly bars/year
 
 ## Reference performance
 
-From `reports/tables/tqqq_cash_yield_preferred_vs_hourly_200ma_candidate.csv`:
+From `reports/tables/preferred_profit_lock_stop_exit_comparison_compact.csv`, row `profit_lock_300_400_stop_40pct`:
 
 ```text
-Candidate: New candidate / current preferred hourly 200MA gate
-Annualized return: 24.68%
-Sharpe ratio:       0.734
+Candidate: Preferred hourly 200MA gate +300/+400 profit lock + 40% trade-peak stop
+Final return:       43,107.1%
+Annualized return:  25.92%
+Sharpe ratio:       0.776
 Max drawdown:      -56.36%
-Number of trades:  109
-Exposure:           68.97%
-Average cash:       31.03%
-DD episodes >20/>30/>40/>50%: 26/17/9/6
+Number of trades:  115
+Exposure:           65.37%
+Average cash:       34.63%
+DD episodes >20/>30/>40/>50%: 24/13/7/3
+40% stop triggers:  1
 ```
 
 ## Confirmed dropped or replaced rules
@@ -254,9 +297,9 @@ These were tested but are **not** part of the current preferred strategy:
 - VIX percentile exit overlay.
 - Gradual entry sizing.
 - 10MA / 20MA entry variants.
-- Profit-lock rules for the preferred strategy.
 - Option A QQQ PE proxy based on a stale fact-sheet anchor.
 - Separate daily QQQ 200-day trend regime gate; replaced by the QQQ hourly 200MA entry/exit gate.
+- No-stop version of the +300/+400 profit-lock strategy; replaced by the 40% trade-peak stop version.
 
 ## Candidate ideas not yet confirmed
 

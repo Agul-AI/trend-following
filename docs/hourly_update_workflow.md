@@ -1,6 +1,6 @@
 # Hourly Update Workflow for Preferred QQQ / Synthetic-TQQQ Strategy
 
-_Last updated: 2026-06-02_
+_Last updated: 2026-06-03_
 
 This document records how to refresh the data and rerun the current preferred strategy signal during each trading hour. In this workflow, "update the data" means pulling the newest vendor data available and merging it into the project's local history files, not just overwriting a one-off snapshot.
 
@@ -15,8 +15,9 @@ Current preferred rule:
 - Entry: QQQ hourly MACD histogram > 0.
 - Entry gate: QQQ hourly close > QQQ hourly 200-day MA.
 - Exit: QQQ hourly close < QQQ hourly 200-day MA.
+- Profit lock: +300% unrealized synthetic-3x trade gain -> 75%; +400% -> 50%.
+- Trade-peak stop: exit if synthetic `QQQ_3X_CALC` falls 40% from its current trade peak.
 - No daily regime gate.
-- No profit lock.
 - Max one trade per day.
 - Out-of-market cash earns 3% annualized in evaluation.
 
@@ -55,8 +56,10 @@ Use `executable_position_latest_bar`, not the raw signal, as the actionable no-l
 | Field | Meaning |
 |---|---|
 | `asof_intraday_bar` | Latest available completed hourly bar from the data vendor. |
-| `raw_desired_position_latest_bar` | Strategy state implied by the latest bar before execution shifting. |
-| `executable_position_latest_bar` | No-lookahead executable position after shifting and max-one-trade-per-day logic. |
+| `base_raw_position_latest_bar` | Base QQQ MACD + QQQ 200MA state before profit lock or peak stop. |
+| `stopped_raw_position_latest_bar` | Base raw state after applying the 40% synthetic-3x trade-peak stop. |
+| `raw_desired_position_latest_bar` | Profit-lock-adjusted target weight before execution shifting. |
+| `executable_position_latest_bar` | No-lookahead executable position after shifting and max-one-trade-per-day logic; can be 0%, 50%, 75%, or 100%. |
 | `position_interpretation` | Human-readable long/cash interpretation. |
 | `action_if_following_strategy` | Suggested research action implied by the executable state. |
 | `qqq_latest_close` | QQQ close on the latest hourly bar. |
@@ -66,6 +69,8 @@ Use `executable_position_latest_bar`, not the raw signal, as the actionable no-l
 | `macd_hist_latest` | Current QQQ MACD histogram. |
 | `entry_flag_latest` | Whether entry conditions fired on the latest bar. |
 | `exit_flag_latest` | Whether the exit condition fired on the latest bar. |
+| `trade_peak_drawdown_raw_latest` | Current raw synthetic-3x drawdown from the open trade peak. |
+| `peak_stop_trigger_raw_latest` | Whether the 40% peak stop fired on the latest raw bar. |
 | `qqq_pe_yfinance_trailing_pe` | Latest locally recorded Yahoo Finance QQQ trailing P/E snapshot. |
 | `qqq_pe_snapshot_date` | Date of the P/E snapshot. |
 | `qqq_pe_update_status` | Whether the updater downloaded a new P/E snapshot or reused today's existing one. |

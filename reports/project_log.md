@@ -1177,3 +1177,571 @@ A separate monitoring thread should use the no-lookahead `executable_position_la
 **Main interpretation.**
 
 The current preferred strategy has the best return and lowest trade count among the retained candidates, while the two profit-lock alternatives reduce drawdown but require substantially more trades.
+
+### 2026-06-02 — QQQ P/E rolling percentiles at preferred-strategy worst drawdowns
+
+**Question.** For the six worst drawdowns of the current preferred hourly-200MA-gate synthetic-TQQQ strategy, what was QQQ P/E's percentile within its trailing 3-year and 5-year history at the strategy peak and bottom, and can this improve the strategy?
+
+**Method.** Used a complete monthly Nasdaq-100/QQQ P/E history from WorldPERatio as a QQQ valuation proxy because the local Option-B look-through QQQ P/E history only contains current/live snapshots. For no-lookahead alignment, each intraday event date uses the previous completed calendar month's P/E. Rolling percentiles are computed within the previous 36 or 60 monthly observations, including the known lookup month.
+
+**Outputs.**
+- Saved monthly P/E history: `reports/tables/qqq_pe_worldperatio_monthly_history.csv`.
+- Saved event table: `reports/tables/preferred_hourly_200ma_worst6_qqq_pe_percentiles.csv`.
+- Saved simple PE-filter sensitivity table: `reports/tables/preferred_hourly_200ma_pe_filter_sensitivity.csv`.
+
+**Result.** High QQQ P/E percentile was not a reliable standalone warning across the six worst drawdowns. Only 1/6 peaks were above the trailing 3-year 80th percentile; 3/6 were above the trailing 5-year 80th percentile; only 1/6 was above the trailing 5-year 90th percentile. P/E usually fell by the bottom, but 2007-2009 is an exception where the P/E percentile rose into the bottom because earnings fell faster than price.
+
+**Sensitivity check.** Simple rules that cut exposure to cash or half-size when QQQ P/E percentile was high reduced annualized return materially and did not consistently improve max drawdown. The base preferred strategy remained best in annualized return in this quick sensitivity. Conclusion: do not add a hard P/E percentile exit/filter yet. If valuation is used later, treat it as a slow sizing/context variable, possibly combined with macro/liquidity/hiking-cycle information, not as an exclusive sell signal.
+
+### 2026-06-02 — Cross-check free sources for QQQ trailing P/E history and current updates
+
+**Question.** Cross-check options for historical and up-to-date QQQ trailing P/E, try Alpha Vantage for history, and choose the best free option.
+
+**Checks.**
+- Alpha Vantage `ETF_PROFILE` for QQQ returned current ETF metrics and holdings, but not historical QQQ P/E.
+- Alpha Vantage fund-level `OVERVIEW`, `EARNINGS`, and `INCOME_STATEMENT` for QQQ returned empty objects in the local test; constituent-level data exists, but reconstructing historical QQQ P/E without point-in-time holdings would be lookahead-biased.
+- WorldPERatio provides a free QQQ/Nasdaq-100 monthly P/E history and current monthly value.
+- StockAnalysis provides a free current QQQ PE value and holdings as-of date.
+- Yahoo Finance via yfinance provides a free current trailingPE snapshot suitable for daily local archival, but methodology is vendor black-box and unofficial.
+
+**Decision.** Best free historical source: WorldPERatio monthly QQQ/Nasdaq-100 P/E history. Best free up-to-date automation source: Yahoo/yfinance daily `trailingPE`, cross-checked against StockAnalysis and WorldPERatio. For the most robust workflow, append Yahoo/yfinance current P/E daily into our local snapshot history and periodically cross-check against StockAnalysis/WorldPERatio; do not use Alpha Vantage for ongoing updates after cancellation.
+
+**Output.** `reports/tables/qqq_pe_source_crosscheck_2026_06_02.csv`.
+
+### 2026-06-02 — Benchmark reporting convention
+
+**User preference.** In future strategy comparison tables, always include the QQQ buy-and-hold option.
+
+**Decision.** QQQ BH is now the mandatory unlevered benchmark row for all QQQ/TQQQ candidate comparison tables over the same sample window. TQQQ BH can be optional, but QQQ BH should not be omitted.
+
+**2026-06-02 update — comparison table convention applied.** Updated the P/E filter sensitivity comparison output to include `final_return` (cumulative ending return) and an explicit `QQQ_BH` benchmark row. Output table: `reports/tables/preferred_hourly_200ma_pe_filter_sensitivity.csv`.
+
+### 2026-06-02 — Apply current preferred hourly-200MA strategy to synthetic +3x S&P 500
+
+**Question.** Apply the current preferred QQQ/synthetic-TQQQ rule to 3x S&P 500 over the same historical period and include QQQ buy-and-hold in the comparison table.
+
+**Implementation.** Added `scripts/run_spy_3x_preferred_strategy.py`. The SPY analogue uses SPY hourly data for both entry and exit signals, trades synthetic `SPY_3X_CALC`, uses MACD histogram > 0 plus SPY hourly 200-day MA entry gate, exits when SPY falls below the same hourly 200-day MA, and keeps the same no-lookahead executable-weight shift, max-one-trade-per-day convention, 1 bp transaction cost, 5 bps slippage, 24% short-term tax approximation, and 3% out-of-market cash yield. The table includes QQQ BH per the benchmark convention.
+
+**Output.** `reports/tables/spy_3x_preferred_strategy_comparison.csv`.
+
+**Result.** Over 2000-01-03 10:00 to 2026-05-28 15:00, synthetic `SPY_3X_CALC` with the preferred rule returned 5,835.0% cumulative / 16.78% annualized with Sharpe 0.648 and max drawdown -60.44%. It beat SPY 3x buy-and-hold on return and drawdown, but materially lagged the QQQ 3x preferred-strategy reference.
+
+### 2026-06-02 — Profit-lock variants applied to current preferred strategy
+
+**Question.** Apply possible profit-lock rules to the current preferred strategy.
+
+**Implementation.** Added `scripts/run_preferred_profit_lock_comparison.py`. Base is the current preferred no-daily-gate QQQ hourly 200MA entry/exit strategy trading synthetic TQQQ. Tested a grid of intra-trade profit locks: after synthetic-TQQQ unrealized trade gain reaches the first threshold, reduce exposure to 75%; after the second threshold, reduce exposure to 50%. Threshold grid: first threshold +100%, +150%, +200%, +250%; second threshold +200%, +250%, +300%, +400%, +500%, with second > first. All variants keep the no-lookahead executable-weight shift, max-one-trade-per-day convention, 1 bp transaction cost, 5 bps slippage, 24% short-term tax approximation, and 3% annual cash yield. QQQ BH is included as the required benchmark row.
+
+**Outputs.**
+- `reports/tables/preferred_profit_lock_comparison_compact.csv`
+- `reports/tables/preferred_profit_lock_comparison_metrics.csv`
+- `reports/tables/preferred_profit_lock_comparison_returns.csv`
+- `reports/tables/preferred_profit_lock_comparison_weights.csv`
+- `reports/figures/preferred_profit_lock_comparison_equity_drawdown.png`
+
+**Result.** The best final-return variant was `lock_250_500_to_75_50` with +24.95% annualized return vs +24.79% for no-lock base, Sharpe 0.755 vs 0.736, and the same -56.36% max drawdown. It reduced DD episode counts from 26/17/9/6 to 24/12/7/4 for >20/>30/>40/>50%. The best Sharpe variant was `lock_100_400_to_75_50` with Sharpe 0.766 but lower annualized return of 24.46%. Interpretation: profit locks can slightly improve Sharpe and reduce the number of large drawdown episodes, but they did not reduce the single worst max drawdown. Treat `lock_250_500_to_75_50` as a candidate enhancement, not a confirmed rule yet.
+
+**2026-06-02 update — +300/+500 profit lock added.** Added `+300% unrealized trade gain -> 75% exposure` and `+500% unrealized trade gain -> 50% exposure` to the preferred profit-lock grid. It became the best final-return variant in this test: final return 39,250.8%, annualized return 25.47%, Sharpe 0.765, max drawdown -56.36%, 114 trades, exposure 65.90%, and DD episode counts 24/13/7/4 for >20/>30/>40/>50%. It improves annualized return and Sharpe versus the no-lock base but still does not improve the single worst max drawdown.
+
+**2026-06-02 update — +300-only, +400-only, and +400/+600 locks tested.** Added single-step `+300% -> 75%`, single-step `+400% -> 75%`, and two-step `+400% -> 75%, +600% -> 50%`. The `+400% -> 75%, +600% -> 50%` result equals `+400% -> 75%` because the +600% threshold was never hit. Among the newly requested cases, `+400% -> 75%` produced final return 37,647.6%, annualized return 25.27%, Sharpe 0.749, max drawdown -56.36%, 111 trades, exposure 68.25%, DD episode counts 25/16/9/5. However, `+400% -> 75%, +500% -> 50%` remains the best final-return variant in the expanded grid: final return 41,145.6%, annualized return 25.69%, Sharpe 0.758, max drawdown -56.36%, 112 trades, exposure 68.04%, DD counts 25/16/8/5.
+
+### 2026-06-02 — Preferred +300/+400 profit lock and stop-exit tests
+
+**Question.** Use the preferred `+300% -> 75%, +400% -> 50%` profit-lock overlay, list the periods when the +300% threshold was hit, and test extra trade-level peak-drawdown exits at -30%, -35%, -40%, -45%, and -50% in addition to the QQQ 200MA exit.
+
+**Implementation.** Added `scripts/run_preferred_profit_lock_stop_exit_comparison.py`. The stop is measured on synthetic TQQQ from each open trade's peak price. A stop trigger forces the raw trade state to cash until the base 200MA/MACD trade resets; executable weights are still shifted, preserving no-lookahead timing. QQQ BH is included as the benchmark row.
+
+**Outputs.**
+- `reports/tables/preferred_profit_lock_stop_exit_comparison_compact.csv`
+- `reports/tables/preferred_profit_lock_300_hit_periods.csv`
+- `reports/tables/preferred_profit_lock_300_hit_periods_with_executable.csv`
+- `reports/figures/preferred_profit_lock_stop_exit_comparison_equity_drawdown.png`
+
+**Result.** The +300% threshold hit 4 historical trade periods: 2014-11-28, 2018-03-12, 2021-02-05, and 2024-06-17. The +400% threshold hit in the 2020-2022 and 2023-2025 trades. Stop exits at -40% and -45% gave identical best results in this test: final return 43,107.1%, annualized return 25.92%, Sharpe 0.776, max drawdown -56.36%, 115 trades, and DD episode counts 24/13/7/3. The -50% stop never triggered and matches no-stop; the -30% and -35% stops were too aggressive and reduced return materially. Interpretation: -40%/-45% stop is a candidate overlay, but it still did not improve the single worst max drawdown.
+
+### 2026-06-02 — Entry-loss stops tested for preferred +300/+400 profit-lock strategy
+
+**Question.** Test -30%, -35%, -40%, -45%, and -50% loss stops measured from the current synthetic-TQQQ trade entry price, rather than from the trade peak.
+
+**Implementation.** Added `scripts/run_preferred_profit_lock_loss_stop_comparison.py`. The entry-loss stop exits only if synthetic TQQQ unrealized return from the current trade entry falls below the threshold. It is combined with the preferred `+300% -> 75%, +400% -> 50%` profit-lock overlay and the existing QQQ 200MA exit. Raw stop signals are still shifted through executable weights.
+
+**Outputs.**
+- `reports/tables/preferred_profit_lock_loss_stop_comparison_compact.csv`
+- `reports/tables/preferred_profit_lock_loss_stop_comparison_stop_events.csv`
+- `reports/figures/preferred_profit_lock_loss_stop_comparison_equity_drawdown.png`
+
+**Result.** No entry-loss stop from -30% through -50% triggered in the historical test. Therefore all entry-loss-stop variants produced identical performance to the no-entry-loss-stop +300/+400 profit-lock strategy: final return 38,856.1%, annualized return 25.42%, Sharpe 0.766, max drawdown -56.36%, 115 trades, and DD episode counts 24/13/7/4. Interpretation: losses in this preferred strategy mostly occur as givebacks after trades are already profitable, not as immediate losses below trade entry. Entry-loss stops do not address that pattern; peak-drawdown stops are the relevant form if we want to protect large accumulated gains.
+
+### 2026-06-03 — Single-trade loss stats for preferred +300/+400 profit-lock plus 40% peak stop
+
+**Question.** For the current preferred QQQ-hourly-200MA synthetic-TQQQ strategy, with `+300% -> 75%, +400% -> 50%` profit lock and an additional 40% synthetic-TQQQ trade-peak stop, quantify max single-trade loss.
+
+**Definition used.** A trade is one continuous executable exposure period from weight `0 -> >0` until weight returns to `0`; partial profit-lock reductions stay inside the same trade. Trade P&L is measured on synthetic `QQQ_3X_CALC` with the executable no-lookahead weights. The primary loss statistic is pre-tax sized trade return, including the 1 bp transaction cost + 5 bps slippage approximation, but excluding cash yield and year-end tax effects because those can contaminate individual trade attribution.
+
+**Output.** Detailed trade table saved to `reports/tables/preferred_plus_40pct_peak_stop_trade_stats.csv`.
+
+**Result.** Over the local 60-minute sample through 2026-06-01 15:00, there were 55 round-trip/active exposure periods. The worst entry-to-exit synthetic-TQQQ trade loss was -14.66% after sizing/cost approximation (-14.61% on the underlying synthetic-TQQQ price path). The worst max adverse excursion from entry was -16.72%. The 40% peak stop triggered once, on the 2019-06 to 2020-03 trade, after synthetic TQQQ fell -45.54% from that trade's peak; that trade still exited with a +25.8% trade return because the stop was measured from the trade peak, not from entry. Interpretation: the 40% peak stop can protect large accumulated gains, but it does not guarantee the strategy/equity curve max drawdown stays below 40% because the stop is trade-level, delayed by no-lookahead execution, and separate from account-level drawdown.
+
+### 2026-06-03 — Log-scale round-trip trade return plot and loss-streak totals
+
+**Question.** Replot all 55 round-trip trade returns on a log y-axis and summarize all consecutive loss streaks.
+
+**Implementation.** Because raw percentage returns can be negative and cannot be directly shown on a standard log scale, the plot uses gross return multiple `1 + sized_pre_tax_return` on the y-axis. Values below `1.0x` are losing trades and values above `1.0x` are winning trades. Consecutive loss streaks are defined as chronological runs of trades with negative sized pre-tax returns, reset by any non-negative trade.
+
+**Outputs.**
+- `reports/figures/preferred_plus_40pct_peak_stop_round_trip_trade_returns_log_scale.png`
+- `reports/tables/preferred_plus_40pct_peak_stop_loss_streaks.csv`
+
+**Result.** There were 13 loss streaks among 55 round-trip exposure periods. The longest loss streak was 6 trades. The worst compounded loss streak was trades 1-5, losing -36.22% compounded. Compounding all losing trades together gives -89.70%, while the arithmetic sum of losing trade returns is -217.11%; this emphasizes that many small/moderate losses are offset by a few large winners in the trend-following profile.
+
+### 2026-06-03 — Locations of >40% and >50% drawdown episodes
+
+**Question.** Locate the 7 drawdown episodes over 40% and 4 episodes over 50% reported for the preferred `+300% -> 75%, +400% -> 50%` profit-lock strategy.
+
+**Definition.** These are strategy equity-curve drawdown episodes, measured from the last equity peak to the trough before recovery. They are not single-trade entry-to-exit losses.
+
+**Outputs.**
+- `reports/tables/profit_lock_300_400_no_stop_drawdown_episodes_gt40.csv`
+- `reports/tables/profit_lock_300_400_no_stop_drawdown_episodes_gt50.csv`
+- `reports/tables/profit_lock_300_400_stop_40pct_drawdown_episodes_gt40.csv`
+- `reports/tables/profit_lock_300_400_stop_40pct_drawdown_episodes_gt50.csv`
+
+**Result.** For the no-stop `+300/+400` profit-lock strategy, the seven >40% episodes are: 2001-12 to 2003-03, 2004-01 to 2005-10, 2007-10 to 2009-07, 2010-04 to 2010-08, 2011-05 to 2012-01, 2018-10 to 2019-08, and 2020-02 to 2020-04. Four of those exceeded 50%: 2004-2005, 2007-2009, 2010, and 2020. With the additional 40% peak stop, the 2020 episode is reduced to -45.54%, so the >50% count becomes three while the >40% count remains seven.
+
+### 2026-06-03 — Labeled drawdown episodes on closed-trade return plot
+
+**Question.** Label the strategy-level >40%/>50% drawdown episodes on the closed round-trip trade return plot and explain why these do not match compounded closed-trade loss streaks.
+
+**Implementation.** Added a labeled log-scale plot where each point is a closed round-trip gross return (`1 + sized_pre_tax_return`), red shaded regions are strategy equity drawdown episodes, darker red regions are >50% drawdowns, and gray bottom bands are consecutive losing closed-trade streaks.
+
+**Outputs.**
+- `reports/figures/preferred_plus_40pct_peak_stop_trade_returns_log_dd_vs_loss_streaks_labeled.png`
+- `reports/tables/preferred_plus_40pct_peak_stop_dd_vs_loss_streak_mapping.csv`
+
+**Result/interpretation.** The large drawdown episodes are strategy equity peak-to-trough events measured on every hourly bar. They do not need to coincide with consecutive losing closed trades. Several drawdown troughs occur inside trades that later close profitably, and a drawdown episode can span profitable trades that still do not recover the prior high-water mark. Loss streaks, by contrast, are only consecutive negative completed round trips. This is why the >40%/>50% drawdown labels do not match the compounded closed-trade loss streak totals.
+
+### 2026-06-03 — Gain-activated exit overlays after +100% unrealized trade gain
+
+**Question.** Instead of the current 40% trade-peak stop, test exits that become active only after synthetic TQQQ has been up more than +100% in the current base trade: exit on QQQ 100-day MA, QQQ 50-day MA, or a 30% stop from synthetic-TQQQ trade peak.
+
+**Implementation.** Added `scripts/run_preferred_gain100_exit_overlay_comparison.py`. The base strategy remains QQQ MACD histogram > 0 entry, QQQ hourly 200-day MA entry/exit gate, synthetic `QQQ_3X_CALC` exposure, no daily regime gate, max one trade per day, 3% cash yield, 1 bp transaction cost, 5 bps slippage, 24% short-term tax approximation, and the `+300% -> 75%, +400% -> 50%` profit lock. The new overlays activate after +100% unrealized synthetic-TQQQ trade gain and then exit on either QQQ 100MA, QQQ 50MA, or synthetic TQQQ -30% from trade peak. Overlay exits are still shifted by the no-lookahead executable-weight conversion. After an overlay exit, the strategy stays in cash until the base 200MA/MACD state resets.
+
+**Outputs.**
+- `reports/tables/preferred_gain100_exit_overlay_comparison_compact.csv`
+- `reports/tables/preferred_gain100_exit_overlay_comparison_metrics.csv`
+- `reports/tables/preferred_gain100_exit_overlay_comparison_returns.csv`
+- `reports/tables/preferred_gain100_exit_overlay_comparison_weights.csv`
+- `reports/tables/preferred_gain100_exit_overlay_comparison_diagnostics.parquet`
+- `reports/figures/preferred_gain100_exit_overlay_comparison_equity_drawdown.png`
+
+**Result.** The current `+300/+400 profit lock + 40% peak stop` remained best: final return 43,107.1%, annualized return 25.92%, Sharpe 0.776, max drawdown -56.36%, and DD episodes 24/13/7/3 for >20/>30/>40/>50%. The +100%-activated exits cut major winners too early: `gain100_peak_stop_30pct` fell to 18.57% annualized, `gain100_exit_qqq_50ma` to 16.46%, and `gain100_exit_qqq_100ma` to 16.04%. The 50MA version reduced >50% DD episodes to 1, but at a large return cost. Interpretation: these +100%-activated exits are too aggressive under the current re-entry convention; do not promote them into the preferred rule.
+
+### 2026-06-03 — 40% trade-peak stop without profit lock
+
+**Question.** Test the preferred hourly-200MA strategy with only a synthetic-TQQQ 40% trade-peak stop and no `+300%/+400%` profit-lock sizing overlay.
+
+**Implementation.** Reused the current preferred QQQ MACD + QQQ hourly 200MA entry/exit base strategy trading synthetic `QQQ_3X_CALC`, with 3% cash yield, 1 bp transaction cost, 5 bps slippage, and 24% short-term tax approximation. The stop is measured from each open synthetic-TQQQ trade peak and is shifted through the no-lookahead executable-weight conversion.
+
+**Outputs.**
+- `reports/tables/preferred_stop40_without_profit_lock_comparison.csv`
+- `reports/tables/preferred_stop40_without_profit_lock_returns.csv`
+- `reports/tables/preferred_stop40_without_profit_lock_weights.csv`
+- `reports/tables/preferred_stop40_without_profit_lock_stop_events.csv`
+
+**Result.** The 40% peak stop without profit lock improved the no-lock base from 34,014.8% final return / 24.79% annualized to 37,696.1% final return / 25.28% annualized, and reduced >50% drawdown episodes from 6 to 5. However, it still lagged the `+300/+400 profit lock + 40% peak stop` version at 43,107.1% final return / 25.92% annualized, and it did not improve the single worst max drawdown (-56.36%). The 40% stop triggered once, on 2020-03-09 10:00.
+
+### 2026-06-03 — Gain-activated exit overlays after +200% unrealized trade gain
+
+**Question.** Repeat the gain-activated exit overlay test, but activate only after synthetic TQQQ has been up more than +200% in the current base trade. Test QQQ 100-day MA exit, QQQ 50-day MA exit, and synthetic-TQQQ -30% from trade-peak stop, as alternatives to the current -40% trade-peak stop.
+
+**Implementation.** Reused `scripts/run_preferred_gain100_exit_overlay_comparison.py` with `--activation-gain 2.0 --output-prefix preferred_gain200_exit_overlay_comparison`. The script was adjusted so output names/plot titles reflect the activation threshold dynamically. All no-lookahead timing, max-one-trade-per-day, 3% cash yield, 1 bp transaction cost, 5 bps slippage, 24% short-term tax approximation, QQQ signal source, synthetic `QQQ_3X_CALC` exposure, and `+300% -> 75%, +400% -> 50%` profit lock assumptions remain unchanged.
+
+**Outputs.**
+- `reports/tables/preferred_gain200_exit_overlay_comparison_compact.csv`
+- `reports/tables/preferred_gain200_exit_overlay_comparison_metrics.csv`
+- `reports/tables/preferred_gain200_exit_overlay_comparison_returns.csv`
+- `reports/tables/preferred_gain200_exit_overlay_comparison_weights.csv`
+- `reports/tables/preferred_gain200_exit_overlay_comparison_diagnostics.parquet`
+- `reports/figures/preferred_gain200_exit_overlay_comparison_equity_drawdown.png`
+
+**Result.** The current `+300/+400 profit lock + 40% peak stop` still remained best: final return 43,107.1%, annualized return 25.92%, Sharpe 0.776, max drawdown -56.36%, DD episodes 24/13/7/3 for >20/>30/>40/>50%. The +200%-activated alternatives were materially worse: `gain200_peak_stop_30pct` annualized 20.35%, `gain200_exit_qqq_50ma` annualized 19.15%, and `gain200_exit_qqq_100ma` annualized 17.54%. Interpretation: waiting until +200% is less damaging than +100%, but these exits still cut the large winners too early and did not reduce the worst max drawdown. Do not promote these overlays into the preferred rule.
+
+### 2026-06-03 — Gain-activated exits after +300% unrealized trade gain
+
+**Question.** Replace the current 40% synthetic-TQQQ trade-peak stop with exits that activate only after the current trade has gained more than +300%: QQQ 100-day MA exit, QQQ 50-day MA exit, or synthetic-TQQQ -30% from trade peak.
+
+**Implementation.** Reused and generalized `scripts/run_preferred_gain100_exit_overlay_comparison.py` so the activation threshold is dynamic. Ran it with `--activation-gain 3.0 --output-prefix preferred_gain300_exit_overlay_comparison`. The base remains QQQ MACD histogram > 0 entry, QQQ hourly 200-day MA entry/exit gate, synthetic `QQQ_3X_CALC` exposure, no daily regime gate, max one trade per day, 3% cash yield, 1 bp transaction cost, 5 bps slippage, 24% short-term tax approximation, and the `+300% -> 75%, +400% -> 50%` profit lock. The new overlays activate after +300% unrealized synthetic-TQQQ trade gain and then exit on QQQ 100MA, QQQ 50MA, or synthetic TQQQ -30% from trade peak.
+
+**Outputs.**
+- `reports/tables/preferred_gain300_exit_overlay_comparison_compact.csv`
+- `reports/tables/preferred_gain300_exit_overlay_comparison_metrics.csv`
+- `reports/tables/preferred_gain300_exit_overlay_comparison_returns.csv`
+- `reports/tables/preferred_gain300_exit_overlay_comparison_weights.csv`
+- `reports/tables/preferred_gain300_exit_overlay_comparison_diagnostics.parquet`
+- `reports/figures/preferred_gain300_exit_overlay_comparison_equity_drawdown.png`
+
+**Result.** The current `+300/+400 profit lock + 40% peak stop` remained best: final return 43,107.1%, annualized return 25.92%, Sharpe 0.776, max drawdown -56.36%, and DD episodes 24/13/7/3 for >20/>30/>40/>50%. The +300%-activated overlays materially reduced return without improving max drawdown: 50MA exit returned 24,977.6% / 23.34% annualized, peak-stop-30 returned 18,885.2% / 22.05%, and 100MA exit returned 18,116.9% / 21.85%. All kept max drawdown at -56.36%; their DD episode counts were 21/14/7/4. Interpretation: after +300%, switching to the 50MA/100MA/-30% peak stop exits still cuts the big winners too early and does not reduce the worst strategy-level drawdown. Do not promote this rule.
+
+### 2026-06-03 — Post-winner loss streaks after >100% round-trip winners
+
+**Question.** Among round-trip trades with final return greater than +100%, what percentage were immediately followed by more than three losing round-trip trades?
+
+**Output.** `reports/tables/preferred_plus_40pct_peak_stop_gt100_winners_following_loss_streaks.csv`.
+
+**Result.** There were 4 completed round-trip trades with final return greater than +100%. One of the four was immediately followed by more than three losing round trips: trade 42 was followed by losing trades 43-46. Conditional percentage: 25.0%. As a percentage of all 55 round-trip trades, this pattern occurred once, or 1.82%.
+
+### 2026-06-03 — Next-4-trade risk after trades with >100% unrealized peak
+
+**Question.** Among round-trip trades whose intra-trade synthetic-TQQQ peak return exceeded +100%, calculate how often they were followed by more than 3 consecutive losing trades or by more than a 30% compounded loss over the next 4 trades.
+
+**Definition.** Used the current preferred `+300/+400 profit lock + 40% peak stop` trade table. A qualifying trade has `max_favorable_from_entry > +100%`. For each qualifying trade, inspected the next four completed round trips. The loss-streak condition means the immediate following completed-trade streak has at least 4 losers. The next-4 loss condition means the compounded return of the next four completed trades is <= -30%.
+
+**Output.** `reports/tables/preferred_plus_40pct_peak_stop_peak100_next4_risk_stats.csv`.
+
+**Result.** 8 of 55 trades had an intra-trade peak above +100%. Of those 8, 2 were followed by at least 4 immediate losing trades and 1 had next-four-trade compounded return below -30%. The union of the two conditions was 2 of 8, or 25.0% of the >100%-peak trades; relative to all 55 trades, that is 3.64%.
+
+### 2026-06-03 — +100% peak trades followed by >20% pullback before a new high
+
+**Question.** Among round-trip trades whose synthetic-TQQQ path reached more than +100% unrealized gain, measure how often the trade then suffered a >20% pullback from a running peak before making a new running peak.
+
+**Implementation.** Scanned the synthetic `QQQ_3X_CALC` price path inside each of the 55 round-trip exposure periods from `reports/tables/preferred_plus_40pct_peak_stop_trade_stats.csv`. A trade qualified if its maximum unrealized price return exceeded +100%. A hit occurred if, after the running peak was already above +100% from entry, price fell at least 20% from that running peak before a newer high-water mark.
+
+**Output.** `reports/tables/preferred_plus_40pct_peak_stop_peak100_pullback20_by_trade.csv`.
+
+**Result.** 8 of 55 trades reached more than +100% peak unrealized return. All 8 of those trades later had a >20% pullback from a running peak before making a new peak or before exit. Therefore the hit rate is 100.0% among >100%-peak trades, or 14.5% of all 55 trades. Interpretation: in this leveraged trend strategy, every major winner historically required tolerating at least one >20% intratrade giveback after the trade had already doubled.
+
+### 2026-06-03 — Frequency of >30% peak-loss after trades exceed +100% unrealized gain
+
+**Question.** Among round-trip trades whose synthetic-TQQQ exposure first reaches more than +100% unrealized gain, how often is that followed by more than a 30% loss from a running trade peak before a new peak is made?
+
+**Definition.** Denominator is completed/active round-trip trades with max favorable synthetic-TQQQ return above +100%. The loss event is a running trade-peak drawdown of at least -30% after the first +100% threshold is reached. This is measured on synthetic `QQQ_3X_CALC` price path during the executable trade.
+
+**Output.** `reports/tables/preferred_plus_40pct_peak_stop_gain100_then_30pct_peak_loss_stats.csv`.
+
+**Result.** 8 of 55 round-trip trades reached a >+100% peak. Of those 8, 6 had a >30% drawdown from a running trade peak after crossing +100%, so the conditional rate is 75.0% (6/8). As a share of all round-trip trades, this is 10.9% (6/55). If requiring the trade to later make a new higher peak after the >30% drawdown, only 3 of the 8 qualify: trades 42, 49, and 52.
+
+### 2026-06-03 — Post-big-winner stay-out/cooldown rule
+
+**Question.** After exiting a round-trip trade whose synthetic-TQQQ peak gain exceeded +100%, stay out of market while continuing to run the usual strategy in the background. Resume only after either a blocked/paper trade experiences a -20% synthetic-TQQQ loss or three calendar months pass.
+
+**Implementation.** Added `scripts/run_preferred_post_big_trade_cooldown.py`. The cooldown is applied at the raw-signal level and then passed through the existing no-lookahead executable-weight shift. A completed actual raw trade whose full synthetic-TQQQ peak gain reaches +100% starts the cooldown. During cooldown, desired raw entries are ignored but paper-tracked; the cooldown ends on a -20% paper loss or after three calendar months. Tested both the profit-lock-only baseline and the `+300/+400 profit lock + 40% peak stop` version.
+
+**Outputs.**
+- `reports/tables/preferred_post_big_trade_cooldown_compact.csv`
+- `reports/tables/preferred_post_big_trade_cooldown_metrics.csv`
+- `reports/tables/preferred_post_big_trade_cooldown_returns.csv`
+- `reports/tables/preferred_post_big_trade_cooldown_weights.csv`
+- `reports/tables/preferred_post_big_trade_cooldown_events.csv`
+- `reports/tables/preferred_post_big_trade_cooldown_diagnostics.parquet`
+- `reports/figures/preferred_post_big_trade_cooldown_equity_drawdown.png`
+
+**Result.** The cooldown triggered 8 times historically, but every cooldown ended by the three-month time rule; the -20% paper-loss release never triggered. The current `+300/+400 profit lock + 40% peak stop` remained best: final return 43,107.1%, annualized return 25.92%, Sharpe 0.776, max drawdown -56.36%, and DD episodes 24/13/7/3. Adding the post-peak100 cooldown to the stop40 version reduced final return to 29,357.7% / 24.10% annualized and did not improve max drawdown; DD episodes became 26/14/8/2. Interpretation: this cooldown cut some productive re-entries, reduced one >50% DD episode, but did not improve the worst drawdown and reduced return. Do not promote it into the preferred rule.
+
+### 2026-06-03 — Stay-out-after-big-winner rule
+
+**Question.** After exiting a completed round-trip trade whose synthetic TQQQ peak gain exceeded +100%, stay out of the market while continuing to run the usual strategy on paper. Re-entry is allowed only after the imaginary paper strategy experiences another 20% drawdown, or after six calendar months, whichever comes first.
+
+**Implementation.** Added `scripts/run_preferred_stay_out_after_big_winner.py`. The rule is applied to raw close-bar signals before profit-lock sizing and before the existing executable-weight shift, preserving the no-lookahead convention. Tested two versions: (1) replacing the 40% peak stop with this stay-out rule using the no-stop base, and (2) adding the stay-out rule on top of the 40% peak-stop base. The base remains QQQ MACD histogram > 0 entry, QQQ hourly 200-day MA entry/exit gate, synthetic `QQQ_3X_CALC` exposure, no daily regime gate, max one trade per day, 3% cash yield, 1 bp transaction cost, 5 bps slippage, 24% short-term tax approximation, and the `+300% -> 75%, +400% -> 50%` profit lock.
+
+**Outputs.**
+- `reports/tables/preferred_stay_out_after_big_winner_compact.csv`
+- `reports/tables/preferred_stay_out_after_big_winner_metrics.csv`
+- `reports/tables/preferred_stay_out_after_big_winner_returns.csv`
+- `reports/tables/preferred_stay_out_after_big_winner_weights.csv`
+- `reports/tables/preferred_stay_out_after_big_winner_events.csv`
+- `reports/tables/preferred_stay_out_after_big_winner_diagnostics.parquet`
+- `reports/figures/preferred_stay_out_after_big_winner_equity_drawdown.png`
+
+**Result.** The stay-out rule triggered 8 times; 3 releases came from the imaginary strategy hitting a 20% drawdown and 5 releases came from the six-month timeout. It reduced trades from 115 to 87, but it materially reduced return and did not improve the worst drawdown. Current `+300/+400 profit lock + 40% peak stop` remained best at 43,107.1% final return / 25.92% annualized / Sharpe 0.776 / max DD -56.36%. The stay-out rule on the 40%-stop base returned 15,156.7% / 21.04% annualized / Sharpe 0.687 / max DD -55.82%. Replacing the 40% stop with stay-out returned 13,821.1% / 20.62% annualized / Sharpe 0.678 / max DD -58.29%. Interpretation: the stay-out rule lowers activity and may suit manual behavior, but it sits out too much post-trend continuation and does not solve the main drawdown problem. Do not promote as a return/improvement rule; consider only if the goal is lower psychological/manual trading burden.
+
+### 2026-06-03 — Post-big-win cooldown / stay-out rule
+
+**Question.** After exiting a round-trip trade whose synthetic-TQQQ peak gain exceeded +100%, stay out of the market while still running the usual strategy as an imaginary account. Re-enable entries after either the imaginary account suffers a 20% drawdown or 12/18 months pass.
+
+**Implementation.** Added `scripts/run_preferred_post_bigwin_cooldown_comparison.py`. The test applies the cooldown to the current `+300/+400 profit lock + 40% trade-peak stop` base. A big winner is an actual raw round trip whose synthetic `QQQ_3X_CALC` max price gain from entry was at least +100%. During cooldown, actual raw exposure is forced to cash; meanwhile an imaginary version of the usual current strategy continues to run using pre-tax returns with trading costs. Cooldown ends when that imaginary equity has a 20% drawdown from its post-exit high-water mark, or after 12/18 calendar months. After that, entries again follow the usual rule. Signals are still passed through the existing executable-position shift and max-one-trade-per-day convention.
+
+**Outputs.**
+- `reports/tables/preferred_post_bigwin_cooldown_comparison_compact.csv`
+- `reports/tables/preferred_post_bigwin_cooldown_comparison_metrics.csv`
+- `reports/tables/preferred_post_bigwin_cooldown_comparison_returns.csv`
+- `reports/tables/preferred_post_bigwin_cooldown_comparison_weights.csv`
+- `reports/tables/preferred_post_bigwin_cooldown_comparison_diagnostics.parquet`
+- `reports/figures/preferred_post_bigwin_cooldown_comparison_equity_drawdown.png`
+
+**Result.** The current `+300/+400 profit lock + 40% peak stop` remained best: final return 43,107.1%, annualized return 25.92%, Sharpe 0.776, max drawdown -56.36%, and DD episodes 24/13/7/3 for >20/>30/>40/>50%. The cooldown overlays started 8 times and reduced exposure/trades, but materially reduced return without improving max drawdown. The 18-month variant returned 20,104.7% / 22.33% annualized with Sharpe 0.720 and DD counts 22/12/8/3. The 12-month variant returned 19,454.6% / 22.18% annualized with Sharpe 0.715 and DD counts 22/12/8/3. Interpretation: the cooldown avoids some ordinary churn but skips too much of the next uptrend and does not reduce the worst drawdown. Do not promote this rule.
+
+### 2026-06-03 — Stay-out rule after exiting a >100% peak-gain trade
+
+**Question.** After exiting a round-trip trade whose unrealized peak gain exceeded +100%, stay out of the market, keep running the strategy on paper, and only re-enter after the imaginary/paper strategy experiences a 20% drawdown; after that, resume normal rules.
+
+**Implementation.** Added `scripts/run_preferred_stay_out_after_big_peak.py`. A qualifying trade is an actual completed raw exposure period whose synthetic `QQQ_3X_CALC` max unrealized gain exceeded +100% before exit. During cooldown, actual raw exposure is forced to cash while a paper strategy continues to follow the unsuppressed base signal. Paper drawdown is measured from the paper equity high-water mark since cooldown start. Once paper drawdown reaches -20%, the cooldown ends and normal raw trading resumes; executable weights are still shifted, preserving no-lookahead timing. Tested the stay-out rule both as a replacement for the 40% peak stop and combined with the 40% peak stop, while keeping the `+300% -> 75%, +400% -> 50%` profit-lock sizing.
+
+**Outputs.**
+- `reports/tables/preferred_stay_out_after_big_peak_compact.csv`
+- `reports/tables/preferred_stay_out_after_big_peak_metrics.csv`
+- `reports/tables/preferred_stay_out_after_big_peak_returns.csv`
+- `reports/tables/preferred_stay_out_after_big_peak_weights.csv`
+- `reports/tables/preferred_stay_out_after_big_peak_diagnostics.parquet`
+- `reports/figures/preferred_stay_out_after_big_peak_equity_drawdown.png`
+
+**Result.** The current `+300/+400 profit lock + 40% peak stop` remained best: final return 43,107.1%, annualized return 25.92%, Sharpe 0.776, max drawdown -56.36%, 115 trades, and DD episodes 24/13/7/3 for >20/>30/>40/>50%. The stay-out rule triggered 8 cooldowns and 8 paper-DD releases. As a replacement for the 40% peak stop, it returned 17,876.6% / 21.79% annualized, Sharpe 0.708, max drawdown -58.07%, 85 trades, and DD episodes 22/12/8/3. Combined with the 40% peak stop, it returned 19,597.7% / 22.22% annualized, Sharpe 0.718, max drawdown -56.40%, 85 trades, and DD episodes 22/12/8/3. Interpretation: the stay-out rule lowers trade count and exposure, but it misses too much upside after large trends and does not improve worst drawdown enough. Do not promote this rule.
+
+### 2026-06-03 — Stay-out overlay after >100% peak winning trades
+
+**Question.** After exiting a round-trip trade whose intratrade synthetic-TQQQ peak gain was more than +100%, stay out of the market. Continue running the base strategy as an imaginary strategy, then re-enter only after the imaginary trade has a 10% drawdown from its imaginary peak. After re-entry, behavior returns to normal.
+
+**Implementation.** Added `scripts/run_preferred_stay_out_after_big_peak.py`. The base is the current preferred QQQ hourly-200MA strategy trading synthetic `QQQ_3X_CALC`, with `+300% -> 75%, +400% -> 50%` profit lock and the -40% synthetic-TQQQ trade-peak stop. The stay-out overlay is applied at raw-signal level, then passed through the same no-lookahead executable-weight shift and max-one-trade-per-day rule. A release is observed at bar close and cannot earn same-bar return.
+
+**Outputs.**
+- `reports/tables/preferred_stay_out_after_big_peak_compact.csv`
+- `reports/tables/preferred_stay_out_after_big_peak_metrics.csv`
+- `reports/tables/preferred_stay_out_after_big_peak_returns.csv`
+- `reports/tables/preferred_stay_out_after_big_peak_weights.csv`
+- `reports/tables/preferred_stay_out_after_big_peak_diagnostics.parquet`
+- `reports/tables/preferred_stay_out_after_big_peak_stay_out_records.csv`
+- `reports/tables/preferred_stay_out_after_big_peak_release_summary.csv`
+- `reports/figures/preferred_stay_out_after_big_peak_equity_drawdown.png`
+
+**Result.** The stay-out rule activated 8 times and released 8 times after a 10% imaginary drawdown. It reduced trades from 115 to 98 and exposure from 65.4% to 63.0%, but reduced final return from 43,107.1% to 29,845.4% and annualized return from 25.92% to 24.18%. Sharpe fell from 0.776 to 0.746. Max drawdown stayed -56.36%. DD episode counts worsened from 24/13/7/3 to 25/15/9/3 for >20/>30/>40/>50%. Interpretation: this rule reduces trading and forces post-big-win patience, but it misses too much early re-entry return and does not reduce the worst drawdown; do not promote it into the preferred rule in this form.
+
+### 2026-06-03 — Seven worst drawdown plots for current preferred + 40% peak stop
+
+**Question.** For the current preferred strategy with the `+300% -> 75%, +400% -> 50%` profit lock and the -40% synthetic-TQQQ trade-peak stop, make plots for the seven worst drawdowns with two-month extensions and label buy/sell locations, round-trip returns, and profit-lock hits.
+
+**Implementation.** Added `scripts/plot_preferred_worst7_dd_trade_events.py`. Each plot shows synthetic `QQQ_3X_CALC` price in the top panel and strategy equity drawdown in the bottom panel. The drawdown peak-to-trough region and trough-to-recovery region are shaded. Buy markers, sell markers with sized pre-tax round-trip returns, and profit-lock hit stars are annotated. The plot window has at least two months before the drawdown peak and after recovery; when needed, it is extended further to include the full buy/sell markers for trades overlapping the drawdown episode.
+
+**Outputs.**
+- Plot folder: `reports/figures/preferred_stop40_worst7_dd_trade_events/`
+- Episode table: `reports/tables/preferred_stop40_worst7_dd_episodes_for_plots.csv`
+- Plot index: `reports/tables/preferred_stop40_worst7_dd_plot_index.csv`
+- Profit-lock events: `reports/tables/preferred_stop40_profit_lock_events.csv`
+
+**Result.** Generated seven separate plots for DD severity ranks 1-7. Profit-lock hit markers appear in DD5, DD6, and DD7; the earlier drawdown plots have no profit-lock hits in the displayed/overlapping trade windows.
+
+### 2026-06-03 — Seven worst drawdown plots for current preferred +40% peak-stop strategy
+
+**Question.** For the current preferred strategy with `+300% -> 75%, +400% -> 50%` profit lock and the -40% synthetic-TQQQ trade-peak stop, create seven plots for the seven worst strategy-level drawdowns. Extend each plot two months before the drawdown peak and two months after recovery, label round-trip entries/exits with trade return, label profit-lock hits, and include the MA line relevant to entry/exit.
+
+**Implementation.** Added `scripts/plot_preferred_peak_stop_worst7_drawdowns.py`. Each plot has three panels: QQQ hourly close with the QQQ hourly 200-day MA (1200 bars) used by the entry gate and base exit, synthetic TQQQ price with executable weight plus entry/exit labels and round-trip returns, and strategy equity/drawdown. Profit-lock hits are marked when present; for these exact seven worst drawdown windows no +300/+400 profit-lock hit falls inside the two-month-extended plot windows, so the plots explicitly note that.
+
+**Outputs.**
+- `reports/figures/preferred_peak_stop_worst7_drawdowns/preferred_peak_stop_worst_dd_01.png`
+- `reports/figures/preferred_peak_stop_worst7_drawdowns/preferred_peak_stop_worst_dd_02.png`
+- `reports/figures/preferred_peak_stop_worst7_drawdowns/preferred_peak_stop_worst_dd_03.png`
+- `reports/figures/preferred_peak_stop_worst7_drawdowns/preferred_peak_stop_worst_dd_04.png`
+- `reports/figures/preferred_peak_stop_worst7_drawdowns/preferred_peak_stop_worst_dd_05.png`
+- `reports/figures/preferred_peak_stop_worst7_drawdowns/preferred_peak_stop_worst_dd_06.png`
+- `reports/figures/preferred_peak_stop_worst7_drawdowns/preferred_peak_stop_worst_dd_07.png`
+- `reports/tables/preferred_peak_stop_worst7_drawdown_plot_summary.csv`
+- `reports/tables/preferred_peak_stop_worst7_drawdown_episodes.csv`
+
+**Result.** The seven plotted drawdowns are -56.36%, -52.15%, -50.73%, -49.77%, -48.77%, -45.54%, and -44.83%. No profit-lock hit occurred inside these two-month-extended windows; profit locks in the full sample occurred on 2014-11-28, 2018-03-12, 2021-02-05, 2021-07-13, 2024-06-17, and 2024-12-06, which are outside the displayed windows for these worst drawdown episodes.
+
+### 2026-06-03 — Add trade DD/RT labels and footer tables to worst-drawdown plots
+
+**Question.** For the seven worst drawdown plots of the current preferred `+300/+400 profit lock + -40% peak stop` strategy, label each entry/exit with the related trade DD in addition to round-trip return, and add a table summary of all trade DD/RT plus compounded DD/RT at the end of each plot.
+
+**Implementation.** Updated `scripts/plot_preferred_peak_stop_worst7_drawdowns.py`. Entry/exit annotations now show `RT` and `DD`; trade DD is defined as that round trip's maximum drawdown from its own synthetic-TQQQ trade peak. Each plot now has a footer table listing all visible overlapping round trips with trade ID, entry date, exit date, trade DD, and RT. The final `Comp` row compounds the visible trade DD proxy and visible round-trip returns using `product(1 + value) - 1`. Per-plot footer tables are also saved next to each PNG as CSV files.
+
+**Outputs.** Updated plots in `reports/figures/preferred_peak_stop_worst7_drawdowns/`, updated `reports/tables/preferred_peak_stop_worst7_drawdown_plot_summary.csv`, and per-plot CSV files such as `reports/figures/preferred_peak_stop_worst7_drawdowns/preferred_peak_stop_worst_dd_01_trade_table.csv`.
+
+**Important interpretation.** The footer's compounded trade-DD value is a trade-level DD proxy, not the same object as strategy equity drawdown. Strategy drawdown is measured continuously from account equity high-water mark to trough; trade DD is measured inside each round trip from that trade's own price peak.
+
+### 2026-06-03 — Combined worst-drawdown and best-winning-trade tables
+
+**Question.** Combine `reports/tables/preferred_peak_stop_worst7_drawdown_plot_summary.csv` with the best 12 round-trip winning-trade table.
+
+**Implementation/outputs.** Created a long-form combined CSV, a crosswalk CSV, a best-winners-with-DD-crossrefs CSV, and a Markdown combined report:
+- `reports/tables/preferred_peak_stop_worst7_and_best12_combined.csv`
+- `reports/tables/preferred_peak_stop_worst7_best12_crosswalk.csv`
+- `reports/tables/preferred_best12_winners_with_worst7_dd_crossrefs.csv`
+- `reports/tables/preferred_peak_stop_worst7_and_best12_combined.md`
+
+**Result.** The crosswalk shows which of the top-12 winning round trips appear inside each of the worst-7 drawdown windows. Several worst drawdowns include major winning trades, reinforcing that strategy drawdowns are high-water-mark equity events rather than simply strings of losing round trips.
+
+### 2026-06-03 — Rename worst-DD labels by chronological order
+
+**Question.** Rename the worst-drawdown ranks by time order and print the best 12 round-trip winning trades in chronological order.
+
+**Implementation/outputs.** Created time-ranked versions of the worst-DD summary/crosswalk and a chronological best-winner table:
+- `reports/tables/preferred_peak_stop_worst7_drawdown_plot_summary_time_ranked.csv`
+- `reports/tables/preferred_peak_stop_worst7_best12_crosswalk_time_ranked.csv`
+- `reports/tables/preferred_best12_winning_trades_time_order.csv`
+- updated `reports/tables/preferred_peak_stop_worst7_and_best12_combined.md`
+
+**Result.** DD labels are now chronological: DD1 = 2001-2003, DD2 = 2004-2007, DD3 = 2007-2009, DD4 = 2010-2011, DD5 = 2011-2013, DD6 = 2018-2020, DD7 = 2020-2020. The original severity rank is preserved in the time-ranked tables.
+
+### 2026-06-03 — Check whether Top8 winning trades are followed by weak/loss streaks
+
+**Question.** Do all Top8 round-trip winners get followed by at least 3 or 4 loss/weak trades?
+
+**Definition.** Used the current weak/loss definition `round-trip RT < +3%`; checked the immediate next weak/loss streak after each Top8 winner.
+
+**Output.** `reports/tables/preferred_top8_following_weak_streaks_rt_lt_3pct.csv`.
+
+**Result.** No. Among the 8 Top8 winners, 5 were followed immediately by at least 3 weak/loss trades, and 4 were followed by at least 4. Excluding the still-recent/open-ended 2026 winner T55, it is 5/7 and 4/7. The exceptions were T49, followed by only 2 weak trades; T52, followed by only 1; and T55, with no following completed weak streak yet.
+
+### 2026-06-03 — Check weak/loss streaks after Top8 winning round trips
+
+**Question.** Check whether each Top8 winning round trip, excluding the current trade and trades that already experienced more than 30% trade-level peak drawdown, is followed by at least 3-4 weak/loss trades.
+
+**Definition.** A weak/loss trade is a completed round trip with RT < +3%. The post-winner streak is the immediate consecutive sequence of such trades after the Top8 trade exits. A trade is considered to have already contained >30% DD if its trade-level max drawdown from peak was <= -30%.
+
+**Output.** `reports/tables/preferred_top8_following_weak_streak_check.csv`.
+
+**Result.** Yes for the filtered set. After excluding current T55 and Top8 trades whose own trade DD was worse than -30%, the remaining Top8 trades are T26 and T36. T26 was followed by four weak/loss trades (T27-T30), and T36 was followed by five weak/loss trades (T37-T41). Across all non-current Top8 trades, the pattern is not universal because T49 was followed by only two weak/loss trades and T52 by only one; both of those had already experienced >30% trade-level DD.
+
+### 2026-06-03 — Immediate weak/loss streaks after Top8 winning trades
+
+**Question.** Check whether all Top8 winning trades, excluding the current/latest trade, are immediately followed by weak/loss streaks that realize more than 10%, 15%, or 20% loss, and summarize the threshold for Top-N winners (`N <= 8`).
+
+**Definition.** A weak/loss trade is a completed round trip with RT < +3%. The immediate weak/loss streak is the consecutive run of RT < +3% trades immediately after the Top8 winner exits. Realized loss is the compounded RT of that immediate streak.
+
+**Outputs.**
+- `reports/tables/preferred_top8_immediate_weak_streak_loss_thresholds.csv`
+- `reports/tables/preferred_topN_immediate_weak_streak_threshold_summary.csv`
+
+**Result.** Every non-current Top8 winner was immediately followed by at least one weak/loss trade, but not all had a weak/loss streak deeper than 10%, 15%, or 20%. T49 was followed by only -4.5% and T52 by only -2.3%. Therefore no Top-N set starting from the largest winner satisfies an all-trades >10%, >15%, or >20% immediate realized-loss rule. The maximum loss threshold satisfied by all non-current Top8 winners is only about 2.3%.
+
+### 2026-06-03 — Top8 winning trades with three largest intratrade drawdowns
+
+**Question.** For the Top8 winning round-trip trades, excluding the current/latest trade, replace the single trade-DD column with the biggest three intratrade drawdown episodes.
+
+**Definition.** `Peak from entry` remains the maximum unrealized gain from that round trip's entry price. The three DD columns are the three largest local high-water-mark drawdown episodes within that same round trip, measured on synthetic `QQQ_3X_CALC` price from each intratrade peak to trough. `rec no rec` means the trade exited before that intratrade high was recovered.
+
+**Outputs.**
+- `reports/tables/preferred_top8_ex_current_winning_trades_biggest3_dds.csv`
+- `reports/tables/preferred_top8_ex_current_winning_trades_biggest3_dds_raw.csv`
+
+### 2026-06-03 — Top8 winners excluding current: top three intratrade drawdowns and QQQ 200MA distance
+
+**Question.** For the Top8 winning round trips except the current/latest trade, replace the single Trade DD column with the biggest three intratrade drawdown percentages, and include QQQ's distance from its hourly 200-day MA at the beginning/peak of each drawdown.
+
+**Definition.** For each completed round trip, intratrade drawdown episodes are computed from synthetic `QQQ_3X_CALC` price using that trade's own running peak. The largest three episodes are ranked by max drawdown. `QQQ dist 200MA @ DD start` is `QQQ / QQQ_hourly_200d_MA - 1` at the drawdown episode's starting peak. Dates for individual DD episodes are saved only in the detail CSV, not in the printed summary.
+
+**Outputs.**
+- `reports/tables/preferred_top8_ex_current_top3_trade_dd_q200ma_distance.csv`
+- `reports/tables/preferred_top8_ex_current_top3_trade_dd_q200ma_distance_detail.csv`
+
+**Result.** The largest intratrade drawdowns in the biggest winners usually started while QQQ was still well above its hourly 200-day MA, typically by about +9% to +33%, which explains why a 200MA exit alone does not catch those givebacks early.
+
+### 2026-06-03 — Distribution of QQQ distance from hourly 200-day MA during Top8 winners
+
+**Question.** For the Top8 winning round-trip trades, excluding the current/latest trade, summarize the distribution of QQQ's distance from its hourly 200-day moving average across the trades together.
+
+**Definition.** Distance is `QQQ close / QQQ hourly 200-day MA - 1`, with the hourly 200-day MA implemented as 1,200 hourly bars. The sample includes completed Top8 trades T6, T22, T26, T36, T42, T49, and T52; the current/latest T55 is excluded.
+
+**Outputs.**
+- `reports/figures/preferred_top8_ex_current_qqq_200ma_distance_distribution.png`
+- `reports/tables/preferred_top8_ex_current_qqq_200ma_distance_distribution_summary.csv`
+- `reports/tables/preferred_top8_ex_current_qqq_200ma_distance_by_trade_summary.csv`
+- `reports/tables/preferred_top8_ex_current_qqq_200ma_distance_bar_observations.csv`
+
+**Result.** Across 17,681 hourly bars, QQQ was typically meaningfully above its 200-day MA during the large winning trades: median distance was +10.7%, mean +11.4%, 75th percentile +14.3%, and 90th percentile +19.4%. Only 0.3% of bars were below the MA. At the start of the largest intratrade DD episodes, QQQ was even more extended: median +16.0% and 95.2% of those DD starts occurred with QQQ more than +10% above the 200-day MA. This supports using QQQ/200MA as a broad trend gate, but suggests it is too slow to protect gains after strongly extended advances.
+
+### 2026-06-03 — Distribution of QQQ distance from hourly 200-day MA during Top8 winners including current
+
+**Question.** Repeat the QQQ distance-from-200MA distribution analysis for the Top8 winning round-trip trades together, this time including the current/latest Top8 trade T55.
+
+**Definition.** Distance is `QQQ close / QQQ hourly 200-day MA - 1`, with the hourly 200-day MA implemented as 1,200 hourly bars. The sample includes Top8 trades T6, T22, T26, T36, T42, T49, T52, and current/latest T55.
+
+**Implementation.** Added `scripts/analyze_top8_qqq_200ma_distance_distribution.py` so the analysis can be regenerated from the cached Alpha Vantage 60min QQQ data and the preferred Top8 trade table.
+
+**Outputs.**
+- `reports/figures/preferred_top8_including_current_qqq_200ma_distance_distribution.png`
+- `reports/tables/preferred_top8_including_current_qqq_200ma_distance_distribution_summary.csv`
+- `reports/tables/preferred_top8_including_current_qqq_200ma_distance_by_trade_summary.csv`
+- `reports/tables/preferred_top8_including_current_qqq_200ma_distance_bar_observations.csv`
+
+**Result.** Including T55 barely changes the pooled distribution because T55 is short relative to the older large winners. Across 17,903 hourly bars, mean distance was +11.4%, median +10.7%, p10 +5.0%, and p90 +19.4%. Only 0.3% of bars were below the hourly 200-day MA. Most bars were between +5% and +20% above the MA, while +20% or more above the MA occurred 8.6% of the time.
+
+### 2026-06-03 — Normalized-time plot of QQQ distance from 200MA for all Top8 winners
+
+**Question.** Plot QQQ's distance from the hourly 200-day MA as a function of time for all Top8 winning round-trip trades, renormalizing every trade's x-axis to the same 0-to-1 range. For the current/latest trade, use today as the normalization endpoint. Mark the peak position for the 7 completed trades.
+
+**Definition.** The y-axis is `QQQ close / QQQ hourly 200-day MA - 1`. The x-axis is normalized trade progress: entry equals 0, completed-trade exit equals 1, and current/latest T55 uses today at 15:00 as 1. Peak markers are the synthetic `QQQ_3X_CALC` trade-price peaks for the 7 completed Top8 trades, not the peak QQQ/200MA-distance points.
+
+**Implementation.** Added `scripts/plot_top8_normalized_qqq_200ma_distance.py`.
+
+**Outputs.**
+- `reports/figures/preferred_top8_normalized_qqq_200ma_distance.png`
+- `reports/tables/preferred_top8_normalized_qqq_200ma_distance_series.csv`
+- `reports/tables/preferred_top8_normalized_qqq_200ma_distance_peak_markers.csv`
+
+**Result.** The completed-trade synthetic-3x price peaks mostly occurred late in the normalized trade life, around 0.74 to 0.97 of the trade duration. At those peak points, QQQ was still above its hourly 200-day MA by about +9.1% to +19.7%, reinforcing that the 200MA exit is a slow trend gate rather than a profit-protection signal for extended winners.
+
+### 2026-06-03 — QQQ/200MA-distance stats before first +100% synthetic-3x gain
+
+**Question.** For the Top8 winning trades, check whether QQQ's distance-from-hourly-200MA statistics differ a lot if each trade only uses data before it first reaches +100% synthetic `QQQ_3X_CALC` unrealized gain. If a trade never reaches +100%, keep its available data in the inclusive pre-100 sample and also report a hit-only sample.
+
+**Implementation.** Added `scripts/analyze_top8_pre100_qqq_200ma_distance.py`.
+
+**Outputs.**
+- `reports/tables/preferred_top8_pre100_qqq_200ma_distance_comparison.csv`
+- `reports/tables/preferred_top8_pre100_qqq_200ma_distance_by_trade_summary.csv`
+- `reports/tables/preferred_top8_pre100_qqq_200ma_distance_observations.csv`
+- `reports/figures/preferred_top8_pre100_qqq_200ma_distance_comparison.png`
+
+**Result.** The center of the distribution does not change much. Full Top8 mean/median QQQ distance was +11.42%/+10.70%; the pre-first-100 sample was +11.58%/+10.63%. The main difference is in the tails/buckets: pre-100 has no >=30% observations, a slightly higher p90 (+20.56% vs +19.40%), and a larger 20-30% share (11.56% vs 8.50%). Interpretation: before the first +100% synthetic-3x gain, QQQ is already typically extended above its 200MA; this statistic is not materially different enough by itself to define a clean "early big winner" filter.
+
+### 2026-06-03 — Promote +300/+400 profit lock plus 40% peak stop to preferred strategy
+
+**User decision.** Promote the strategy variant `profit_lock_300_400_stop_40pct` to the updated preferred strategy.
+
+**Confirmed preferred rule.** QQQ hourly MACD histogram entry, QQQ hourly 200-day MA entry/exit gate, no daily regime gate, synthetic `QQQ_3X_CALC` exposure, max one trade per day, 3% out-of-market cash assumption, +300% unrealized synthetic-3x trade gain -> 75% exposure, +400% -> 50% exposure, and a 40% synthetic-3x trade-peak stop.
+
+**Reference result.** Final return +43,107.1%, annualized return 25.92%, Sharpe 0.776, max drawdown -56.36%, 115 trades, exposure 65.37%, and drawdown episodes >20/>30/>40/>50% = 24/13/7/3. The 40% peak stop triggered once historically.
+
+**Files updated.** `reports/preferred_strategy_rules.md`, `README.md`, `docs/qqq_tqqq_case_study.md`, `docs/hourly_update_workflow.md`, and `scripts/update_preferred_strategy_signal.py`.
+
+### 2026-06-03 — +100% split-to-MACD sleeve overlay on preferred +40% stop strategy
+
+**Question.** Starting from the current preferred strategy plus a synthetic-3x 40% trade-peak stop, test this rule: whenever an open trade reaches +100% unrealized return, split capital into two halves. One half keeps following the preferred strategy; the other half switches to a faster MACD exit/re-entry sleeve until the QQQ 200MA/base-trade exit signal sends everything to cash.
+
+**Implementation.** Added `scripts/run_preferred_split100_macd_sleeve.py`. The preferred half keeps the existing `+300% -> 75%, +400% -> 50%` profit-lock sizing within that half. The fast sleeve uses QQQ SMA-MACD histogram: confirmed `hist > 0` to be invested and confirmed `hist <= 0` to be out. The split trigger is based on synthetic `QQQ_3X_CALC` return from the current base-trade entry. Raw split and MACD sleeve decisions are shifted by the existing no-lookahead executable-weight convention and still obey max-one-trade-per-day.
+
+**Variants.**
+- `split100_macd_sleeve_global_stop40`: the 40% trade-peak stop forces both sleeves to cash.
+- `split100_macd_sleeve_branch_stop40`: the stop applies to the preferred sleeve; the fast sleeve exits on MACD/200MA.
+- `split100_macd_sleeve_future_exit_global_stop40`: same as global stop, but the fast sleeve is not allowed to exit on the same bar that first triggers the +100% split.
+
+**Outputs.**
+- `reports/tables/preferred_split100_macd_sleeve_compact.csv`
+- `reports/tables/preferred_split100_macd_sleeve_metrics.csv`
+- `reports/tables/preferred_split100_macd_sleeve_returns.csv`
+- `reports/tables/preferred_split100_macd_sleeve_weights.csv`
+- `reports/tables/preferred_split100_macd_sleeve_diagnostics.parquet`
+- `reports/figures/preferred_split100_macd_sleeve_equity_drawdown.png`
+
+**Result.** No improvement. The current preferred `+300/+400 profit lock + 40% stop` stayed best: final return 43,107.1%, annualized return 25.92%, Sharpe 0.776, max drawdown -56.36%, and 115 trades. The best split variant returned 19,192.0%, annualized 22.12%, Sharpe 0.731, max drawdown still -56.36%, and 263 trades. It reduced large drawdown episode counts to 18/12/6/1 for >20/>30/>40/>50%, but the return cost and extra trading were too large. Interpretation: after a trade is already up +100%, forcing half the capital into a faster MACD sleeve cuts too much exposure during the biggest winners; it improves some drawdown-count statistics but does not improve the worst max drawdown or return quality. Do not promote this rule.
+
+### 2026-06-03 — Normalized-time QQQ distance paths for all Top8 winners
+
+**Question.** For all Top8 winning trades, plot QQQ's distance from its hourly 200-day MA as a function of time, renormalizing each trade's x-axis to the same range. For the current/latest trade, use today as the end time.
+
+**Definition.** For every Top8 trade, x-axis is normalized trade time: `entry = 0`, `exit = 1`. For the current/latest T55 trade, the normalization endpoint is today's market close, `2026-06-03 16:00`. Distance is `QQQ close / QQQ hourly 200-day MA - 1`. The long-history Alpha Vantage 60min QQQ cache is used, with the local Yahoo 60min QQQ cache appended only for newer bars. The current-trade plotted line stops at the latest available local bar rather than forward-filling missing bars.
+
+**Implementation.** Added `scripts/plot_top8_normalized_qqq_200ma_distance.py`.
+
+**Outputs.**
+- `reports/figures/preferred_top8_normalized_qqq_200ma_distance.png`
+- `reports/tables/preferred_top8_normalized_qqq_200ma_distance_paths.csv`
+- `reports/tables/preferred_top8_normalized_qqq_200ma_distance_summary.csv`
+
+**Result.** The current/latest T55 trade is still far above the hourly 200-day MA versus the historical Top8 end conditions. With normalization endpoint `2026-06-03 16:00`, the latest local plotted bar was `2026-06-02 15:30`, at normalized time 0.982 and QQQ distance +20.6%. Most completed Top8 trades ended near or below the 200MA, while the current trade remains extended above it.
+
+### 2026-06-03 — Normalized-time plot of QQQ distance from hourly 200-day MA during completed Top8 winners
+
+**Question.** For all Top8 winning trades except the current/latest one, plot QQQ's distance from its hourly 200-day MA as a function of time, renormalizing all seven trades' x-axes into the same range and overlaying them in one plot.
+
+**Definition.** The x-axis is normalized trading-time progress from 0% at the first hourly bar of each round trip to 100% at the final hourly bar. Distance remains `QQQ close / QQQ hourly 200-day MA - 1`.
+
+**Implementation.** Added `scripts/plot_top8_qqq_200ma_distance_normalized_time.py`. The script interpolates each completed Top8 trade onto a common 0-100% grid, overlays all seven paths, and adds a cross-trade median line plus 25th-75th percentile band.
+
+**Outputs.**
+- `reports/figures/preferred_top8_ex_current_qqq_200ma_distance_normalized_time.png`
+- `reports/tables/preferred_top8_ex_current_qqq_200ma_distance_normalized_time_summary.csv`
+- `reports/tables/preferred_top8_ex_current_qqq_200ma_distance_normalized_time_grid.csv`
+- `reports/tables/preferred_top8_ex_current_qqq_200ma_distance_normalized_time_observations.csv`
+
+**Result.** The cross-trade median distance starts near +1.1%, rises to about +15.7% near the normalized midpoint, and ends near -0.7%. The completed Top8 winners generally begin close to the 200MA gate, become strongly extended above it during the middle of the trade, and exit close to or slightly below the 200MA.

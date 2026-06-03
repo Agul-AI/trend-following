@@ -22,8 +22,9 @@ The main research application is a long-only strategy that uses **QQQ as the sig
 - Entry: QQQ hourly MACD histogram > 0.
 - Entry gate: QQQ hourly close > QQQ hourly 200-day moving average.
 - Exit: QQQ hourly close < QQQ hourly 200-day moving average.
+- Profit lock: +300% unrealized synthetic-TQQQ trade gain -> 75%; +400% -> 50%.
+- Trade-peak stop: exit if synthetic TQQQ falls 40% from the current trade peak.
 - No daily regime gate.
-- No profit lock.
 - Max one trade per day.
 - Out-of-market cash earns 3% annualized in evaluation.
 

@@ -1,6 +1,6 @@
 # QQQ / Synthetic-TQQQ Case Study
 
-_Last updated: 2026-06-02_
+_Last updated: 2026-06-03_
 
 This case study is the current flagship research application of the broader trend-following pipeline. The repo still contains a general ETF data/backtesting framework, but the deepest research thread now focuses on using **QQQ as the signal asset** and **synthetic +3x QQQ exposure** as the risk asset.
 
@@ -38,15 +38,16 @@ The confirmed preferred rule is maintained in [`reports/preferred_strategy_rules
 - **Entry gate:** QQQ hourly close > QQQ hourly 200-day moving average.
 - **Exit rule:** QQQ hourly close < QQQ hourly 200-day moving average.
 - **Daily regime gate:** removed.
-- **Profit lock:** none.
-- **Position size:** 100% target exposure when long.
+- **Profit lock:** +300% unrealized synthetic-TQQQ trade gain -> 75%; +400% -> 50%.
+- **Trade-peak stop:** exit if synthetic TQQQ falls 40% from its current trade peak.
+- **Position size:** 100% target exposure on entry; can reduce to 75% or 50% after profit-lock thresholds.
 - **Trading constraint:** max one trade per day.
 - **Cash assumption:** out-of-market cash earns 3% annualized in evaluation.
 
 Short label:
 
 ```text
-new_candidate_no_daily_gate__qqq_hourly_200ma_entry_exit
+preferred_qqq_hourly_200ma_macd_profit_lock_300_400_stop40
 ```
 
 ## No-lookahead timing convention
@@ -71,16 +72,17 @@ This is the main long-history research comparison using `QQQ_3X_CALC` as the tar
 
 | Candidate | Annualized return | Sharpe | Max drawdown | Trades | Approx. trades/year | Exposure | DD >20 / >30 / >40 / >50 |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| **Current preferred: QQQ hourly 200MA gate, no daily gate, no lock** | **24.68%** | 0.734 | -56.36% | **109** | **4.13** | 68.97% | 26 / 17 / 9 / 6 |
+| **Current preferred: QQQ hourly 200MA gate +300/+400 lock + 40% peak stop** | **25.92%** | **0.776** | -56.36% | 115 | 4.35 | 65.37% | 24 / 13 / 7 / 3 |
 | Candidate A: QQQ entry + TQQQ/synthetic exit + 200/300 profit lock | 23.57% | **0.753** | **-48.83%** | 184 | 6.97 | 59.75% | 22 / 10 / 4 / 0 |
 | Candidate B: TQQQ/synthetic entry + TQQQ/synthetic exit + 200/300 profit lock | 23.50% | 0.751 | **-48.83%** | 188 | 7.12 | 60.02% | 20 / 9 / 3 / 0 |
 
 Source tables:
 
 - [`reports/tables/qqq_tqqq_retained_candidate_performance_synthetic.csv`](../reports/tables/qqq_tqqq_retained_candidate_performance_synthetic.csv)
+- [`reports/tables/preferred_profit_lock_stop_exit_comparison_compact.csv`](../reports/tables/preferred_profit_lock_stop_exit_comparison_compact.csv)
 - [`reports/tables/tqqq_cash_yield_candidate_comparison_compact.csv`](../reports/tables/tqqq_cash_yield_candidate_comparison_compact.csv)
 
-Interpretation: the current preferred rule has the highest annualized return and lowest turnover among these three. The profit-lock candidates have lower drawdowns and slightly higher Sharpe, but require substantially more trades.
+Interpretation: the updated preferred rule has the highest annualized return and lowest turnover among these three retained candidates. The two mixed-source alternatives have lower drawdowns, but require substantially more trades.
 
 ### Actual TQQQ available-history sanity check
 
