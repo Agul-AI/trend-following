@@ -1,6 +1,6 @@
 # Hourly Update Workflow for Preferred QQQ / Synthetic-TQQQ Strategy
 
-_Last updated: 2026-06-03_
+_Last updated: 2026-06-04_
 
 This document records how to refresh the data and rerun the current preferred strategy signal during each trading hour. In this workflow, "update the data" means pulling the newest vendor data available and merging it into the project's local history files, not just overwriting a one-off snapshot.
 
@@ -12,10 +12,12 @@ Current preferred rule:
 
 - Signal source: QQQ 60-minute bars.
 - Exposure target: synthetic +3x QQQ exposure, `QQQ_3X_CALC`.
-- Entry: QQQ hourly MACD histogram > 0.
+- Entry: QQQ hourly SMA-MACD histogram > 0, currently using the 12/24/9 trading-day MACD option.
 - Entry gate: QQQ hourly close > QQQ hourly 200-day MA.
 - Exit: QQQ hourly close < QQQ hourly 200-day MA.
 - Profit lock: +300% unrealized synthetic-3x trade gain -> 75%; +400% -> 50%.
+- Dynamic q100 trim: after +110% unrealized synthetic-3x trade gain, learn the max QQQ distance above its hourly 200MA up to that point; later trim to 50% if QQQ revisits/exceeds it, and re-add on a QQQ 20MA pullback.
+- Best robustness bear filter: if QQQ's hourly 200MA slope is negative, delay new entries until QQQ is at least 1% above the 200MA, QQQ 50MA slope over 30 trading days is positive, and QQQ 20MA > QQQ 50MA.
 - Trade-peak stop: exit if synthetic `QQQ_3X_CALC` falls 40% from its current trade peak.
 - No daily regime gate.
 - Max one trade per day.
@@ -24,7 +26,7 @@ Current preferred rule:
 ## Manual one-shot update
 
 ```bash
-cd /Users/cosdis/Desktop/job/quant_projects/trend_following
+cd /path/to/trend-following
 source ~/.venvs/myenv/bin/activate
 python scripts/update_preferred_strategy_signal.py
 cat reports/tables/preferred_strategy_current_signal.csv
@@ -58,7 +60,8 @@ Use `executable_position_latest_bar`, not the raw signal, as the actionable no-l
 | `asof_intraday_bar` | Latest available completed hourly bar from the data vendor. |
 | `base_raw_position_latest_bar` | Base QQQ MACD + QQQ 200MA state before profit lock or peak stop. |
 | `stopped_raw_position_latest_bar` | Base raw state after applying the 40% synthetic-3x trade-peak stop. |
-| `raw_desired_position_latest_bar` | Profit-lock-adjusted target weight before execution shifting. |
+| `dynamic_trimmed_position_latest_bar` | Position after profit lock, peak stop, and q110 dynamic q100 trim, before the bear filter and execution shifting. |
+| `raw_desired_position_latest_bar` | Final raw target weight after all raw overlays, including the best robustness bear filter, before execution shifting. |
 | `executable_position_latest_bar` | No-lookahead executable position after shifting and max-one-trade-per-day logic; can be 0%, 50%, 75%, or 100%. |
 | `position_interpretation` | Human-readable long/cash interpretation. |
 | `action_if_following_strategy` | Suggested research action implied by the executable state. |
@@ -71,6 +74,8 @@ Use `executable_position_latest_bar`, not the raw signal, as the actionable no-l
 | `exit_flag_latest` | Whether the exit condition fired on the latest bar. |
 | `trade_peak_drawdown_raw_latest` | Current raw synthetic-3x drawdown from the open trade peak. |
 | `peak_stop_trigger_raw_latest` | Whether the 40% peak stop fired on the latest raw bar. |
+| `bear_filter_blocked_entry_raw_latest` | Whether the best robustness bear filter blocked a new raw entry on the latest bar. |
+| `bear_filter_distance_to_200ma_latest` | QQQ's latest distance above/below its hourly 200MA. |
 | `qqq_pe_yfinance_trailing_pe` | Latest locally recorded Yahoo Finance QQQ trailing P/E snapshot. |
 | `qqq_pe_snapshot_date` | Date of the P/E snapshot. |
 | `qqq_pe_update_status` | Whether the updater downloaded a new P/E snapshot or reused today's existing one. |
@@ -88,7 +93,7 @@ crontab -e
 Add:
 
 ```cron
-20 10-15 * * 1-5 cd /Users/cosdis/Desktop/job/quant_projects/trend_following && mkdir -p logs && /bin/zsh -lc 'source ~/.venvs/myenv/bin/activate && python scripts/update_preferred_strategy_signal.py' >> /Users/cosdis/Desktop/job/quant_projects/trend_following/logs/preferred_signal_update.log 2>&1
+20 10-15 * * 1-5 cd /path/to/trend-following && mkdir -p logs && /bin/zsh -lc 'source ~/.venvs/myenv/bin/activate && python scripts/update_preferred_strategy_signal.py' >> /path/to/trend-following/logs/preferred_signal_update.log 2>&1
 ```
 
 This runs Monday-Friday at 10:20, 11:20, 12:20, 13:20, 14:20, and 15:20 local machine time.
@@ -105,7 +110,7 @@ cat reports/tables/preferred_strategy_current_signal.csv
 A reusable Codex skill has been created at:
 
 ```text
-/Users/cosdis/.codex/skills/qqq-tqqq-hourly-updater
+$CODEX_HOME/skills/qqq-tqqq-hourly-updater
 ```
 
 In a separate thread, ask Codex to use the `qqq-tqqq-hourly-updater` skill to update/check the current signal or set up a recurring trading-hour monitor.

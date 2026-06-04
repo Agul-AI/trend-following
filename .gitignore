@@ -22,6 +22,8 @@ venv/
 # Local-only notification helpers may include personal chat names/preferences.
 /scripts/send_preferred_strategy_wechat_update.py
 /scripts/run_preferred_strategy_update_and_wechat.sh
+/scripts/send_preferred_strategy_messages_update.py
+/scripts/run_preferred_strategy_update_and_message.sh
 
 # Data caches: keep directory structure, not downloaded market data
 /data/raw/*

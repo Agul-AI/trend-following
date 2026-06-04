@@ -1,6 +1,6 @@
 # QQQ / Synthetic-TQQQ Case Study
 
-_Last updated: 2026-06-03_
+_Last updated: 2026-06-04_
 
 This case study is the current flagship research application of the broader trend-following pipeline. The repo still contains a general ETF data/backtesting framework, but the deepest research thread now focuses on using **QQQ as the signal asset** and **synthetic +3x QQQ exposure** as the risk asset.
 
@@ -28,6 +28,12 @@ Synthetic TQQQ exposure is calculated from QQQ returns under a simplified daily-
 
 Important limitation: synthetic TQQQ is not real TQQQ. Real TQQQ differs because of fees, financing, swap/futures implementation, daily rebalancing details, market impact, spreads, tracking error, and liquidity conditions.
 
+## Date range convention
+
+The default requested backtest start is now **1990-01-01**. For the QQQ/synthetic-TQQQ hourly case study, the effective start remains limited by available QQQ/proxy data. The current local Alpha Vantage 60-minute QQQ cache starts at **2000-01-03 10:00**, and the first executable long entry in the latest preferred-strategy table is **2002-01-10 15:00** after indicator warmup and entry conditions.
+
+Extending the actual QQQ-like research history to 1990 will use Nasdaq-100 index data as a documented pre-QQQ proxy where available. This is a proxy, not actual QQQ ETF data. The project policy is recorded in [`docs/pre_qqq_proxy.md`](pre_qqq_proxy.md).
+
 ## Current preferred strategy
 
 The confirmed preferred rule is maintained in [`reports/preferred_strategy_rules.md`](../reports/preferred_strategy_rules.md). Summary:
@@ -39,15 +45,17 @@ The confirmed preferred rule is maintained in [`reports/preferred_strategy_rules
 - **Exit rule:** QQQ hourly close < QQQ hourly 200-day moving average.
 - **Daily regime gate:** removed.
 - **Profit lock:** +300% unrealized synthetic-TQQQ trade gain -> 75%; +400% -> 50%.
+- **Dynamic q100 trim:** after +110% trade gain, learn the max QQQ distance above its hourly 200MA up to that point; later trim to 50% if QQQ revisits/exceeds it, and re-add on a QQQ 20MA pullback.
+- **Best robustness bear filter:** when QQQ's hourly 200MA slope is negative, a new entry also requires QQQ to be at least 1% above the 200MA, QQQ 50MA slope over 30 trading days to be positive, and QQQ 20MA > QQQ 50MA.
 - **Trade-peak stop:** exit if synthetic TQQQ falls 40% from its current trade peak.
-- **Position size:** 100% target exposure on entry; can reduce to 75% or 50% after profit-lock thresholds.
+- **Position size:** 100% target exposure on entry; can reduce to 75% or 50% after profit-lock/dynamic-trim overlays.
 - **Trading constraint:** max one trade per day.
 - **Cash assumption:** out-of-market cash earns 3% annualized in evaluation.
 
 Short label:
 
 ```text
-preferred_qqq_hourly_200ma_macd_profit_lock_300_400_stop40
+preferred_qqq_hourly_200ma_macd_profit_lock_300_400_stop40_q110_best_bear_filter
 ```
 
 ## No-lookahead timing convention
@@ -72,7 +80,8 @@ This is the main long-history research comparison using `QQQ_3X_CALC` as the tar
 
 | Candidate | Annualized return | Sharpe | Max drawdown | Trades | Approx. trades/year | Exposure | DD >20 / >30 / >40 / >50 |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| **Current preferred: QQQ hourly 200MA gate +300/+400 lock + 40% peak stop** | **25.92%** | **0.776** | -56.36% | 115 | 4.35 | 65.37% | 24 / 13 / 7 / 3 |
+| Prior current preferred: 12/26/9 MACD + QQQ hourly 200MA gate +300/+400 lock + q110 q100 trim + best robustness bear filter + 40% peak stop | 29.41% | 0.857 | -52.15% | 128 | 4.86 | 63.09% | 23 / 8 / 5 / 3 |
+| **Updated preferred MACD option: 12/24/9 (`macd_slow_24d`) in the same rule stack** | **32.62%** | **0.897** | -52.79% | 124 | 5.10 | 68.58% | 22 / 7 / 4 / 2 |
 | Candidate A: QQQ entry + TQQQ/synthetic exit + 200/300 profit lock | 23.57% | **0.753** | **-48.83%** | 184 | 6.97 | 59.75% | 22 / 10 / 4 / 0 |
 | Candidate B: TQQQ/synthetic entry + TQQQ/synthetic exit + 200/300 profit lock | 23.50% | 0.751 | **-48.83%** | 188 | 7.12 | 60.02% | 20 / 9 / 3 / 0 |
 
@@ -81,16 +90,25 @@ Source tables:
 - [`reports/tables/qqq_tqqq_retained_candidate_performance_synthetic.csv`](../reports/tables/qqq_tqqq_retained_candidate_performance_synthetic.csv)
 - [`reports/tables/preferred_profit_lock_stop_exit_comparison_compact.csv`](../reports/tables/preferred_profit_lock_stop_exit_comparison_compact.csv)
 - [`reports/tables/tqqq_cash_yield_candidate_comparison_compact.csv`](../reports/tables/tqqq_cash_yield_candidate_comparison_compact.csv)
+- [`reports/tables/preferred_q100_activation_sweep_2010plus.csv`](../reports/tables/preferred_q100_activation_sweep_2010plus.csv)
+- [`reports/tables/bear_filter_variant_experiments_compact.csv`](../reports/tables/bear_filter_variant_experiments_compact.csv)
 
-Interpretation: the updated preferred rule has the highest annualized return and lowest turnover among these three retained candidates. The two mixed-source alternatives have lower drawdowns, but require substantially more trades.
+Interpretation: the updated q110 + best robustness bear-filter rule has the highest annualized return among these retained candidates, while preserving moderate turnover. The two mixed-source alternatives have lower drawdowns, but require substantially more trades and lower return.
+
+
+### Promoted candidate: best robustness bear re-entry filter
+
+The previous serious bear-filter candidate has now been promoted into the preferred rule, but using the more robust 30-day slope variant rather than the initial 20-day version.
+
+The promoted variant is `robust_buf010bp_slope30_20gt50` with q100 activation moved from +100% to +110%. It improved the long-history synthetic test to 29.41% annualized return with 0.857 Sharpe, reduced max drawdown from -56.36% to -52.15%, and reduced approximate trades/year from 5.70 to 4.86. See [`reports/serious_candidates.md`](../reports/serious_candidates.md) for the older candidate history.
 
 ### Actual TQQQ available-history sanity check
 
-This check applies the same signal rules to **actual TQQQ** hourly returns over actual TQQQ's available Alpha Vantage 60-minute history.
+This older sanity check applied previous QQQ-signal rules to **actual TQQQ** hourly returns over actual TQQQ's available Alpha Vantage 60-minute history. It has not yet been refreshed for the newly promoted q110 + best robustness bear-filter preferred rule.
 
 | Candidate | Annualized return | Sharpe | Max drawdown | Trades | Approx. trades/year | Exposure | DD >20 / >30 / >40 / >50 |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| **Current preferred: QQQ hourly 200MA gate, no daily gate, no lock** | **32.07%** | **0.853** | -53.34% | **61** | **3.74** | 78.85% | 18 / 13 / 5 / 4 |
+| Previous preferred: QQQ hourly 200MA gate, no daily gate, no lock | **32.07%** | **0.853** | -53.34% | **61** | **3.74** | 78.85% | 18 / 13 / 5 / 4 |
 | Candidate A: QQQ entry + TQQQ/synthetic exit + 200/300 profit lock | 23.28% | 0.716 | **-48.83%** | 157 | 9.63 | 73.10% | 16 / 10 / 5 / 0 |
 | Candidate B: TQQQ/synthetic entry + TQQQ/synthetic exit + 200/300 profit lock | 23.10% | 0.712 | -49.50% | 161 | 9.88 | 73.27% | 16 / 10 / 5 / 0 |
 
@@ -101,7 +119,22 @@ Source tables:
 
 ![Actual TQQQ current vs retained candidates](../reports/figures/actual_tqqq_current_previous_preferred_equity_drawdown.png)
 
-Interpretation: on actual TQQQ's available period, the current preferred rule had the highest annualized return, highest Sharpe, and lowest trade count among the retained candidates, while the profit-lock candidates reduced maximum drawdown at the cost of many more trades and lower return.
+Interpretation at the time of that older test: the prior preferred rule had the highest annualized return, highest Sharpe, and lowest trade count among the retained candidates, while the profit-lock candidates reduced maximum drawdown at the cost of many more trades and lower return. The actual-TQQQ check should be rerun after the new preferred rule is fully wired into the retained-candidate comparison script.
+
+
+## Start-date and parameter robustness checks
+
+The project now includes start-date and walk-forward cross-validation for the preferred QQQ/synthetic-TQQQ rule. These checks vary major parameters around the current preferred rule and compare performance from multiple official evaluation start dates, with QQQ buy-and-hold aligned to each same start.
+
+Key outputs:
+
+- [`reports/tables/preferred_start_date_cv_summary.csv`](../reports/tables/preferred_start_date_cv_summary.csv)
+- [`reports/tables/preferred_parameter_robustness_rank.csv`](../reports/tables/preferred_parameter_robustness_rank.csv)
+- [`reports/tables/preferred_walk_forward_cv.csv`](../reports/tables/preferred_walk_forward_cv.csv)
+- [`reports/figures/preferred_start_date_cv_heatmap.png`](../reports/figures/preferred_start_date_cv_heatmap.png)
+- [`reports/figures/preferred_walk_forward_cv_equity_drawdown.png`](../reports/figures/preferred_walk_forward_cv_equity_drawdown.png)
+
+Current interpretation: the active preferred MACD option is now `macd_slow_24d` / 12-24-9, because it had the strongest official-start and robustness performance among the very close MACD variants. However, the 12-24-9, 12-26-9, and 12-26-8 choices remain documented together as near-equivalent MACD options; the differences are small enough that this may be overfit parameter noise rather than a robust edge.
 
 ## Worst drawdowns and hiking-cycle context
 

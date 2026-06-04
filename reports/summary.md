@@ -8,7 +8,7 @@ Configured universe: SPY, UPRO, QQQ, TQQQ, IWM, URTY, TLT, TMF, GLD, EFA, EEM, E
 
 Configured range: `2017-01-01` to `latest available`.
 
-Raw data is cached under `/Users/cosdis/Desktop/job/quant_projects/trend_following/data/raw` and processed adjusted-price panels are stored under `/Users/cosdis/Desktop/job/quant_projects/trend_following/data/processed`.
+Raw data is cached under `data/raw` and processed adjusted-price panels are stored under `data/processed`.
 
 ## Data validation summary
 

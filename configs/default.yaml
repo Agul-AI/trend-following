@@ -4,7 +4,9 @@ project:
 data:
   source: yfinance
   tickers: [SPY, UPRO, QQQ, TQQQ, IWM, URTY, TLT, TMF, GLD, EFA, EEM, EDC, VNQ, DRN]
-  start_date: "2005-01-01"
+  # Requested start; effective start depends on data availability.
+  # For QQQ-like history before actual QQQ, use documented Nasdaq-100 proxy data, not overwritten QQQ.
+  start_date: "1990-01-01"
   end_date: null
   interval: 1d
   raw_dir: data/raw

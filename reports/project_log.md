@@ -1078,11 +1078,11 @@ This framing is stronger for GitHub/interviews: the project demonstrates general
   - a local macOS cron schedule for weekday trading-hour updates,
   - operational cautions about no-lookahead interpretation and delayed vendor data.
 - Created a reusable Codex skill:
-  - `/Users/cosdis/.codex/skills/qqq-tqqq-hourly-updater`
+  - `$CODEX_HOME/skills/qqq-tqqq-hourly-updater`
 - The skill tells a future thread to run:
 
 ```bash
-cd /Users/cosdis/Desktop/job/quant_projects/trend_following
+cd /path/to/trend-following
 source ~/.venvs/myenv/bin/activate
 python scripts/update_preferred_strategy_signal.py --pause-seconds 0.85
 cat reports/tables/preferred_strategy_current_signal.csv
@@ -1107,7 +1107,7 @@ A separate monitoring thread should use the no-lookahead `executable_position_la
   - Synthetic +3x QQQ into `data/raw/synthetic_3x_60min/QQQ_3X_CALC.parquet` and daily synthetic history.
   - QQQ Option-B P/E into `data/processed/valuation/qqq_pe_option_b_daily_history.parquet` and `reports/tables/qqq_pe_option_b_daily_history.csv`.
 - Added actual TQQQ and QQQ P/E fields to `reports/tables/preferred_strategy_current_signal.csv` and `reports/tables/preferred_strategy_current_signal_history.csv`.
-- Updated `docs/hourly_update_workflow.md` and the local Codex skill `/Users/cosdis/.codex/skills/qqq-tqqq-hourly-updater`.
+- Updated `docs/hourly_update_workflow.md` and the local Codex skill `$CODEX_HOME/skills/qqq-tqqq-hourly-updater`.
 
 **Operational detail.**
 
@@ -1136,7 +1136,7 @@ A separate monitoring thread should use the no-lookahead `executable_position_la
   - QQQ daily bars: `data/raw/yfinance_daily/QQQ.parquet`
   - Synthetic +3x QQQ from Yahoo QQQ: `data/raw/synthetic_yfinance_3x_60min/QQQ_3X_CALC.parquet` and `data/raw/synthetic_yfinance_3x_1d/QQQ_3X_CALC.parquet`
   - Yahoo-reported QQQ trailing P/E snapshot history: `data/processed/valuation/qqq_pe_yfinance_snapshot_history.parquet` and `reports/tables/qqq_pe_yfinance_snapshot_history.csv`
-- Updated `docs/hourly_update_workflow.md` and `/Users/cosdis/.codex/skills/qqq-tqqq-hourly-updater`.
+- Updated `docs/hourly_update_workflow.md` and `$CODEX_HOME/skills/qqq-tqqq-hourly-updater`.
 
 **Important inconsistency/inaccuracy notes.**
 
@@ -1694,6 +1694,33 @@ The current preferred strategy has the best return and lowest trade count among 
 
 **Files updated.** `reports/preferred_strategy_rules.md`, `README.md`, `docs/qqq_tqqq_case_study.md`, `docs/hourly_update_workflow.md`, and `scripts/update_preferred_strategy_signal.py`.
 
+### 2026-06-03 — Drawdown-reduction overlay experiment suite and local website
+
+**Question.** Starting from the updated preferred strategy, test whether mean-reversion overlays and Fed hiking-cycle overlays can reduce max drawdown and large drawdown counts without materially hurting annualized return. Also create a local website to review the backtesting results.
+
+**Implementation.**
+- Added `src/trend_following/risk_overlays.py` for reusable profit-lock, peak-stop, extension-trim/rebuy, soft peak-drawdown trim/rebuy, and QQQ mean-reversion feature helpers.
+- Added `src/trend_following/fed_cycles.py` for no-lookahead Fed-cycle flags and monthly QQQ P/E alignment.
+- Added `configs/fed_hiking_cycles.yaml` with effective, announced, and oracle-pre-announcement hiking windows.
+- Added `scripts/run_preferred_drawdown_reduction_experiments.py`.
+- Generated a static local website at `reports/site/index.html`.
+
+**Outputs.**
+- `reports/tables/preferred_dd_reduction_experiments_compact.csv`
+- `reports/tables/preferred_dd_reduction_experiments_metrics.csv`
+- `reports/tables/preferred_dd_reduction_experiments_returns.csv`
+- `reports/tables/preferred_dd_reduction_experiments_weights.parquet`
+- `reports/tables/preferred_dd_reduction_experiments_fed_cycles.csv`
+- `reports/tables/preferred_dd_reduction_experiments_fed_and_pe_flags.csv`
+- `reports/figures/preferred_dd_reduction_experiments_return_vs_drawdown.png`
+- `reports/figures/preferred_dd_reduction_experiments_top_candidates_equity_drawdown.png`
+- `reports/figures/preferred_dd_reduction_experiments_worst_dd_comparison.png`
+- `reports/site/index.html`
+
+**Result.** The first compact pass did not find an overlay that materially improves the single worst max drawdown while preserving return. The best extension mean-reversion variants improved annualized return and Sharpe, and some reduced the count of >30% or >40% drawdown episodes, but the worst max drawdown stayed around -56%. The best objective-row was `extension_trim_g200_dist22_to50_rema20`: final return +55,001%, annualized return 27.08%, Sharpe 0.801, max drawdown -56.36%, 127 trades, and DD episode counts 25/12/7/3. The baseline remains +43,107%, 25.92% annualized, Sharpe 0.776, max drawdown -56.36%, 115 trades, and DD counts 24/13/7/3. Hiking-cycle overlays reduced some >50% episode counts but generally reduced annualized return and did not improve max drawdown in this pass.
+
+**Interpretation.** The Top-8 distance-to-200MA mean-reversion information is useful for return/Sharpe and drawdown-episode tuning, but it is not yet enough to solve the worst max-drawdown problem. The next serious direction should isolate the specific worst drawdown path and test targeted earlier exits or hedges that activate before those episodes, rather than broad cycle caps.
+
 ### 2026-06-03 — +100% split-to-MACD sleeve overlay on preferred +40% stop strategy
 
 **Question.** Starting from the current preferred strategy plus a synthetic-3x 40% trade-peak stop, test this rule: whenever an open trade reaches +100% unrealized return, split capital into two halves. One half keeps following the preferred strategy; the other half switches to a faster MACD exit/re-entry sleeve until the QQQ 200MA/base-trade exit signal sends everything to cash.
@@ -1745,3 +1772,205 @@ The current preferred strategy has the best return and lowest trade count among 
 - `reports/tables/preferred_top8_ex_current_qqq_200ma_distance_normalized_time_observations.csv`
 
 **Result.** The cross-trade median distance starts near +1.1%, rises to about +15.7% near the normalized midpoint, and ends near -0.7%. The completed Top8 winners generally begin close to the 200MA gate, become strongly extended above it during the middle of the trade, and exit close to or slightly below the 200MA.
+
+### 2026-06-03 — Dynamic pre-+100% QQQ/200MA-distance trim overlay
+
+**Question.** Replace the fixed QQQ distance threshold used by the mean-reversion trim overlay with a dynamic threshold learned from each trade's own data up to the first +100% synthetic-3x unrealized return. Only allow the trim logic after the trade is already up at least +100%, count how many of the 55 baseline trades trigger it, and evaluate the best candidate during hiking-cycle windows defined from one month before hike-announcement guidance to one month before the first cut.
+
+**Implementation.** Added `dynamic_pre100_distance_trim_rebuy_cap` to `src/trend_following/risk_overlays.py` and `scripts/run_preferred_dynamic_trim_experiments.py`. For each baseline trade, the overlay learns the selected quantile of QQQ's hourly distance from its 200-day MA using bars from trade entry through the first +100% synthetic-3x gain. After that point, if QQQ revisits/exceeds the learned threshold, exposure is capped at 50%; full exposure is restored when QQQ pulls back to its 20-day MA. The raw overlay is still shifted through the existing no-lookahead executable-weight convention.
+
+**Outputs.**
+- `reports/tables/preferred_dynamic_trim_experiments_compact.csv`
+- `reports/tables/preferred_dynamic_trim_experiments_metrics.csv`
+- `reports/tables/preferred_dynamic_trim_trade_triggers.csv`
+- `reports/tables/preferred_dynamic_trim_hiking_cycle_performance.csv`
+- `reports/tables/preferred_dynamic_trim_fed_cycles.csv`
+
+**Result.** The best objective candidate was `dynamic_pre100_q100_to50_rema20`, meaning the threshold is the maximum QQQ/200MA distance observed before the first +100% trade gain. It triggered in 6 of 55 baseline trades with 21 total trim events. Full-sample result: final return +55,241%, annualized return 27.11%, Sharpe 0.805, max drawdown -56.36%, 150 trades, and DD episode counts 25/10/6/4. Lower quantiles trigger more often and slightly reduce max drawdown, but they add many trades and reduce annualized return; for example q50 triggered in 7/55 trades with 890 trim events, annualized return 24.26%, max drawdown -55.40%, and DD counts 18/10/6/2.
+
+**Hiking-cycle result.** For diagnostic windows from one month before hike-announcement guidance to one month before the first cut, the best dynamic candidate matched baseline in 2004-2007, improved 2015-2019 cumulative return from +111.6% to +138.2% and max drawdown from -47.4% to -44.1%, and improved 2021-2024 cumulative return from +166.4% to +184.8% and max drawdown from -37.6% to -32.1%. This is encouraging for cycle-specific behavior, but it still does not solve the full-sample worst max drawdown.
+
+### 2026-06-03 — Promoted dynamic q100 trim into preferred strategy
+
+**Decision.** Promoted `dynamic_pre100_q100_to50_rema20` into the confirmed preferred strategy. The preferred rule is now the QQQ hourly 200MA/MACD synthetic-TQQQ strategy with +300/+400 profit locks, dynamic q100 mean-reversion trim, and 40% synthetic-3x trade-peak stop.
+
+**Rule added.** For each open synthetic-TQQQ trade, wait until unrealized synthetic-3x gain first reaches +100%. Using only bars from trade entry through that first +100% bar, learn `q100 = max(QQQ close / QQQ hourly 200-day MA - 1)`. After +100%, if QQQ revisits/exceeds that learned distance, cap exposure at 50%. Restore full exposure when QQQ pulls back to/touches its hourly 20-day MA. Raw trim/re-entry signals are still shifted through the no-lookahead executable-position convention.
+
+**Updated preferred result.** `dynamic_pre100_q100_to50_rema20`: final return +55,241%, annualized return 27.11%, Sharpe 0.805, max drawdown -56.36%, 150 trades, exposure 63.95%, DD episode counts 25/10/6/4. It triggered in 6 of 55 baseline trades with 21 total trim events.
+
+**Worst max drawdown.** The worst drawdown remains unchanged: peak `2007-10-31 15:00`, trough `2009-07-08 12:00`, recovery `2009-12-24 11:00`, max drawdown -56.36%, over 615 calendar days peak-to-trough. The dynamic q100 overlay did not trigger inside this peak-to-trough window because the trades during this drawdown did not reach +100% before losses/whipsaws occurred. This identifies the next problem as a bear-market whipsaw / re-entry-risk problem, not a late-stage winner-overextension problem.
+
+**Files updated.** `reports/preferred_strategy_rules.md`, `docs/qqq_tqqq_case_study.md`, `README.md`, `scripts/update_preferred_strategy_signal.py`, and `scripts/run_preferred_dynamic_trim_experiments.py`.
+
+### 2026-06-04 — Bear-market whipsaw reduction experiment suite
+
+**Question.** Starting from the updated preferred q100 strategy, test whether targeted bear-market whipsaw overlays can reduce the unchanged worst drawdown, especially the 2007-2009 peak-to-trough episode, without cutting annualized return below about 24% or raising trading frequency above about 8 trades/year.
+
+**Implementation.** Added `src/trend_following/bear_whipsaw.py` and `scripts/run_preferred_bear_whipsaw_reduction_experiments.py`. The experiment keeps the current preferred baseline: QQQ hourly MACD/200MA entry-exit, synthetic `QQQ_3X_CALC`, +300/+400 profit locks, dynamic q100 trim after +100%, 40% synthetic trade-peak stop, max-one-trade-per-day execution, costs/slippage/tax approximation, and 3% cash. Tested bear re-entry filters, failed-breakout cooldowns, crisis-volatility caps, portfolio drawdown circuit breakers, and two-stage bear re-entry. Added unit tests in `tests/test_bear_whipsaw.py`.
+
+**Outputs.**
+- `reports/tables/preferred_bear_whipsaw_experiments_compact.csv`
+- `reports/tables/preferred_bear_whipsaw_experiments_metrics.csv`
+- `reports/tables/preferred_bear_whipsaw_experiments_returns.csv`
+- `reports/tables/preferred_bear_whipsaw_experiments_weights.parquet`
+- `reports/tables/preferred_bear_whipsaw_experiments_diagnostics.parquet`
+- `reports/tables/preferred_bear_whipsaw_worst_drawdown_summary.csv`
+- `reports/tables/preferred_bear_whipsaw_2007_2009_trigger_summary.csv`
+- `reports/tables/preferred_bear_whipsaw_hiking_cycle_performance.csv`
+- `reports/figures/preferred_bear_whipsaw_return_vs_2007_2009_dd.png`
+- `reports/figures/preferred_bear_whipsaw_top_equity_drawdown.png`
+- `reports/site/bear_whipsaw.html`
+
+**Result.** The best objective candidate was `bear_reentry_buf1_slope20_20gt50`: when QQQ's 200-day MA slope is negative, new entries require QQQ to be at least 1% above its hourly 200-day MA, QQQ 50MA slope over 20 trading days to be positive, and QQQ 20MA > 50MA. Result: final return +77,466%, annualized return 28.75%, Sharpe 0.844, max drawdown -52.15%, 2007-2009 max drawdown -51.01%, 134 trades, 5.09 trades/year, exposure 62.87%, and DD counts 24/8/5/3. Baseline q100 was +55,241%, annualized 27.11%, Sharpe 0.805, max drawdown -56.36%, 2007-2009 max drawdown -56.36%, 150 trades, 5.70 trades/year, and DD counts 25/10/6/4.
+
+**Interpretation.** The bear re-entry filter is the first overlay in this sequence that materially improves the 2007-2009 whipsaw drawdown while also improving return and reducing trade count. Portfolio drawdown circuit breakers reduced the 2007-2009 drawdown more aggressively in some cases, but generally paid for it with lower full-sample return. The next serious candidate for promotion is therefore the `1% buffer + 20-day 50MA slope positive + 20MA>50MA` bear re-entry filter on top of the current q100 preferred strategy.
+
+### 2026-06-04 — Trade-level inspection of best bear re-entry filter
+
+**Question.** Inspect the trade-level behavior of the best bear-whipsaw candidate, `bear_reentry_buf1_slope20_20gt50`, around 2004-2005, 2007-2009, and 2010 versus the q100 preferred baseline.
+
+**Implementation.** Added `scripts/inspect_bear_whipsaw_trade_behavior.py`. The script reads the saved bear-whipsaw experiment returns/weights/diagnostics, extracts executable trade intervals, contiguous blocked-entry intervals, period-local returns/drawdowns, and period plots with QQQ, 20/50/200MA lines, blocked raw entries, executable weights, and period-local drawdowns.
+
+**Outputs.**
+- `reports/tables/preferred_bear_whipsaw_trade_behavior_period_summary.csv`
+- `reports/tables/preferred_bear_whipsaw_trade_behavior_trades.csv`
+- `reports/tables/preferred_bear_whipsaw_trade_behavior_blocked_entries.csv`
+- `reports/tables/preferred_bear_whipsaw_trade_behavior_blocked_entry_intervals.csv`
+- `reports/figures/preferred_bear_whipsaw_trade_behavior_2004_2005.png`
+- `reports/figures/preferred_bear_whipsaw_trade_behavior_2007_2009.png`
+- `reports/figures/preferred_bear_whipsaw_trade_behavior_2010.png`
+
+**Findings.** In 2007-2009 the filter blocked three raw-entry spans: 2008-05-01 12:00 to 14:00, 2008-08-08 15:00 to 2008-08-21 11:00, and 2008-08-22 11:00 to 2008-08-25 11:00. This avoided the baseline's two August 2008 failed re-entry trades and reduced position changes from 13 to 9, improving period-local return from +66.7% to +87.2% and max drawdown from -56.36% to -51.01%. In 2004-2005 the filter delayed the 2005-10-26 entry until 2005-11-08, slightly improving local max drawdown but hurting period-local return. In 2010 it made no entry-blocking changes; behavior was effectively identical except for inherited q100/profit-lock sizing effects.
+
+### 2026-06-04 — Bear re-entry filter marked as serious candidate
+
+**Decision.** Marked `bear_reentry_buf1_slope20_20gt50` as a serious candidate, not yet preferred. Added `reports/serious_candidates.md`.
+
+**Trigger years.** The filter blocked raw entries in 2002, 2003, 2005, 2008, 2011, 2012, 2016, 2023, and 2025. The largest blocked-entry periods were 2003-03-17 to 2003-04-04, 2005-10-26 to 2005-11-08, 2008-08-08 to 2008-08-21, 2016-05-24 to 2016-06-10, and 2025-05-12 to 2025-05-16.
+
+**Worst five drawdowns under the candidate.** 2010-04-23 to 2010-08-11 (-52.15%), 2004-01-20 to 2006-10-03 (-51.34%), 2007-10-31 to 2009-07-08 (-51.01%), 2018-10-01 to 2019-08-05 (-45.53%), and 2011-05-02 to 2011-12-30 (-44.91%). These motivate the next variants: combine the bear re-entry filter with post-big-winner protection for 2010, a lighter recovery filter for 2004-2006, additional crisis-vol/circuit-breaker logic for 2007-2009 and 2011, and hiking-cycle-aware/volatility-aware sizing for 2018-2019.
+
+### 2026-06-04 — Bear filter variant suite and dynamic q100 activation sweep
+
+**Question.** Extend the serious bear-filter candidate tests by trying q100 activation at +90%, +80%, +70%, +60%, and +50% instead of only +100%, and by testing variants motivated by the candidate's worst five drawdowns.
+
+**Implementation.** Added `scripts/run_bear_filter_variant_experiments.py`. It evaluates dynamic q100 activation variants, robust bear-filter parameter variants, partial bear-entry variants, post-big-winner protection overlays, bear-regime volatility caps, and bear-regime circuit breakers. Added a local website page `reports/site/bear_filter_variants.html` and aggregate dashboard `reports/site/all_backtests.html`.
+
+**Outputs.**
+- `reports/tables/bear_filter_variant_experiments_compact.csv`
+- `reports/tables/bear_filter_variant_experiments_metrics.csv`
+- `reports/tables/bear_filter_variant_experiments_returns.csv`
+- `reports/tables/bear_filter_variant_experiments_weights.parquet`
+- `reports/tables/bear_filter_variant_diagnostics_summary.csv`
+- `reports/tables/bear_filter_variant_worst5_drawdowns.csv`
+- `reports/tables/bear_filter_variant_period_summary.csv`
+- `reports/figures/bear_filter_variant_return_vs_dd.png`
+- `reports/figures/bear_filter_variant_top_equity_drawdown.png`
+- `reports/site/bear_filter_variants.html`
+- `reports/site/all_backtests.html`
+
+**Result.** The best objective row was `robust_buf010bp_slope30_20gt50`, a robustness variant requiring QQQ to be at least 1% above the 200MA, 50MA slope positive over 30 trading days, and 20MA > 50MA when the 200MA slope is negative. It improved annualized return to 29.18% and Sharpe to 0.853, with max drawdown unchanged versus the serious candidate at -52.15%. Dynamic q100 activations below +100% did not improve the drawdown problem: +90% was similar to +100%, while +80% to +50% generally added trades and reduced return without improving the 2010 drawdown. Post-big-winner protection improved the 2010 drawdown and full max drawdown in some cases, but usually with too many trades and/or lower annualized return. No variant passed the strict filter of annualized return >= 26%, max DD better than -50%, and trades/year <= 8.
+
+### 2026-06-04 — Promoted q110 + best robustness bear filter to preferred
+
+**Question.** Use q100 activation at `+110%` and the best robustness bear filter as the preferred strategy.
+
+**Decision.** Promoted the best current robustness compromise into the confirmed preferred rule:
+
+- QQQ hourly MACD histogram > 0 entry.
+- QQQ hourly close > QQQ hourly 200-day MA entry gate.
+- QQQ hourly close < QQQ hourly 200-day MA exit.
+- Synthetic `QQQ_3X_CALC` exposure.
+- `+300% -> 75%`, `+400% -> 50%` profit lock.
+- Dynamic q100 trim activates after `+110%` synthetic-3x trade gain instead of `+100%`.
+- Best robustness bear filter: if QQQ hourly 200MA slope is negative, allow a new entry only when QQQ is at least 1% above the hourly 200MA, QQQ 50MA slope over 30 trading days is positive, and QQQ 20MA > QQQ 50MA.
+- 40% synthetic trade-peak stop, max one trade/day, 3% cash assumption.
+
+**Main long-history result.** The promoted `robust_slope30_q110` variant returned 88,809.7% cumulative / 29.41% annualized, Sharpe 0.857, max drawdown -52.15%, 128 trades, 4.86 trades/year, exposure 63.09%, and DD episode counts 23/8/5/3 for >20/>30/>40/>50%.
+
+**2010+ q100 activation sweep.** From 2010-01-01 onward, q110 was also best by annualized return for both q100-only and q100 + best robustness bear-filter versions. Saved tables:
+
+- `reports/tables/preferred_q100_activation_sweep_2010plus.csv`
+- `reports/tables/preferred_q100_activation_sweep_full_history_100_150.csv`
+
+**Implementation updates.** Updated the preferred rules document, QQQ/TQQQ case study, hourly update workflow, serious-candidates provenance file, local qqq-tqqq updater skill, and `scripts/update_preferred_strategy_signal.py` so current monitoring applies the q110 dynamic trim and best robustness bear filter before no-lookahead executable-position shifting.
+
+### 2026-06-04 — Default requested backtest start changed to 1990-01-01
+
+**Question.** Extend the default backtest starting day to `1990-01-01`.
+
+**Implementation.** Updated the main default date settings:
+
+- `configs/default.yaml`: `data.start_date = "1990-01-01"`
+- `configs/regime_hourly_qqq.yaml`: `data.start_date = "1990-01-01"`
+- `configs/alpha_vantage_max_history.yaml`: `data.start_date = "1990-01-01"`
+- `src/trend_following/config.py`: fallback `DataConfig.start_date = "1990-01-01"`
+
+**Important caveat.** This changes the requested start date, not the guaranteed effective data start. ETF inception dates and vendor history still control the actual first available bar. The current local Alpha Vantage 60-minute QQQ cache starts at `2000-01-03 10:00`, and the latest preferred-strategy table's first executable long entry is `2002-01-10 15:00`. A true 1990 QQQ-like backtest would require adding a documented pre-QQQ proxy such as Nasdaq-100 index data.
+
+### 2026-06-04 — Accepted Nasdaq-100 as documented pre-QQQ proxy
+
+**Decision.** For `1990-01-01` through the start of actual QQQ data, Nasdaq-100 index data may be used as a **pre-QQQ proxy** for QQQ-like research, but it must be labeled as a proxy and not as actual QQQ ETF data.
+
+**Documentation.** Added `docs/pre_qqq_proxy.md` and linked it from the README and QQQ/synthetic-TQQQ case study. The policy requires keeping actual QQQ raw data unchanged, using a separate proxy series such as `QQQ_NDX_PROXY`, and reporting requested start date separately from effective/proxy data start.
+
+**Caveat.** A daily Nasdaq-100 proxy is acceptable for signal warmup and daily sensitivity tests. For the current hourly preferred strategy, pre-QQQ hourly Nasdaq-100 data may not be freely available; do not fabricate hourly bars from daily data for primary performance claims.
+
+### 2026-06-04 — Alpha Vantage Nasdaq-100 hourly proxy probe failed
+
+**Question.** Download the pre-QQQ Nasdaq-100 hourly proxy data from Alpha Vantage.
+
+**Attempt.** Used the local Alpha Vantage API key and probed common Nasdaq-100 index symbols with `TIME_SERIES_INTRADAY` and daily-adjusted endpoints: `NDX`, `^NDX`, `NASDAQ:NDX`, `INDEXNASDAQ:NDX`, and `NDX.X`. Also queried Alpha Vantage symbol search for `NASDAQ 100`, `Nasdaq-100`, `NDX`, and `NASDAQ100`.
+
+**Result.** Alpha Vantage did not return usable Nasdaq-100 index hourly bars for those symbols. Symbol search found QQQ and some Nasdaq-100 mutual funds/ETFs, but not a direct historical intraday Nasdaq-100 index symbol suitable for a 1990-1999 pre-QQQ hourly proxy.
+
+**Outputs.** Saved probe tables:
+
+- `reports/tables/alpha_vantage_ndx_symbol_probe.csv`
+- `reports/tables/alpha_vantage_ndx_symbol_search.csv`
+
+**Decision.** Do not claim a 1990-1999 hourly QQQ proxy from Alpha Vantage. Keep the 1990 start as requested, but the current Alpha Vantage hourly QQQ/synthetic-TQQQ preferred-strategy backtest still effectively starts with actual QQQ hourly data in 2000. If extending to 1990 remains important, search for a reliable Nasdaq-100 index source outside Alpha Vantage, likely daily first.
+
+### 2026-06-04 — Start-date and walk-forward parameter CV implemented
+
+**Question.** Vary key parameters and cross-validate the preferred QQQ/synthetic-TQQQ strategy across different starting times.
+
+**Implementation.** Added reusable CV utilities and two experiment drivers:
+
+- `scripts/preferred_cv_utils.py`
+- `scripts/run_preferred_start_date_cv.py`
+- `scripts/run_preferred_walk_forward_cv.py`
+
+The start-date CV evaluates controlled one-factor variants around the current preferred rule across 13 evaluation starts from `2002-01-10 15:00` through `2022-01-01`, with QQQ buy-and-hold aligned to the same start date. Parameter families include long MA days, entry/exit confirmation bars, MACD fast/slow/signal windows, q100 activation/trim/re-entry settings, bear-filter buffer/slope/20MA>50MA settings, peak-stop thresholds, and profit-lock schemes.
+
+**Outputs.**
+
+- `reports/tables/preferred_start_date_cv_metrics.csv`
+- `reports/tables/preferred_start_date_cv_summary.csv`
+- `reports/tables/preferred_parameter_robustness_rank.csv`
+- `reports/tables/preferred_start_date_cv_diagnostics.csv`
+- `reports/tables/preferred_start_date_cv_weights.parquet`
+- `reports/figures/preferred_start_date_cv_heatmap.png`
+- `reports/figures/preferred_parameter_rank_stability.png`
+- `reports/site/start_date_cv.html`
+- `reports/tables/preferred_walk_forward_cv.csv`
+- `reports/tables/preferred_walk_forward_cv_all_candidates.csv`
+- `reports/tables/preferred_walk_forward_cv_returns.csv`
+- `reports/figures/preferred_walk_forward_cv_equity_drawdown.png`
+- `reports/site/walk_forward_cv.html`
+
+**Start-date CV result.** The current preferred rule ranked 15 of 62 by the robustness score, with median annualized return 42.72%, 10th-percentile annualized return 32.04%, worst max drawdown -52.15%, and median trades/year 5.38 across start dates. The highest-scoring variant was `macd_signal_8d`, with median annualized return 43.81%, 10th-percentile annualized return 32.68%, the same worst max drawdown -52.15%, and median trades/year 5.43.
+
+**Walk-forward result.** Walk-forward parameter selection did not consistently beat the frozen preferred rule. Selected variants underperformed the current preferred in 2007-2010, 2011-2014, and 2019-2022, outperformed in 2015-2018, and was essentially tied in 2023-2026. This argues against promoting a new parameter set based only on start-date CV. `macd_signal_8d` is a candidate for further testing, not a confirmed preferred-rule change.
+
+**Method caveat.** The CV uses the already constructed no-lookahead executable weights and slices the simulated return/turnover paths for speed. It is intended as a robustness screen. Any final candidate promotion should be rerun with exact fold-local tax/state resets if the differences are small.
+
+### 2026-06-04 — Promoted 12/24/9 MACD option, retained MACD robustness set
+
+**Question.** Use `macd_slow_24d` as the preferred MACD option, while keeping the standard 12/26/9 and faster-signal 12/26/8 options visible because all three are very similar and may be overfit.
+
+**Implementation.** Updated the preferred-rule documentation and Yahoo updater defaults so the active preferred MACD option is now SMA-MACD **12/24/9** trading-day windows. Added explicit updater arguments `--macd-fast-days`, `--macd-slow-days`, and `--macd-signal-days` so the retained MACD options can be run without code changes. Updated the shared CV utilities so future robustness runs treat 12/24/9 as the current preferred default and keep 12/26/9, 12/26/8, and 12/24/9 as named MACD options.
+
+**Output.** Added `reports/tables/preferred_macd_options_comparison.csv` summarizing the three MACD choices under the same official-start convention.
+
+**Decision.** `macd_slow_24d` / 12-24-9 is now the active preferred default, but this is treated as a small robustness preference rather than a precise optimized edge. Future reports should continue to show all three MACD options when comparing parameter robustness.

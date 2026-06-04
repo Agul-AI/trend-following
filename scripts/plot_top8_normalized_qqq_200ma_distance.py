@@ -9,9 +9,10 @@ For the current/latest trade, the normalization endpoint is "today" by
 default, rather than the last saved trade-table timestamp. The line itself only
 uses locally available price bars.
 
-Markers are placed at the synthetic-Q_3X trade-price peak for the 7 completed
-Top-8 trades. The current/latest trade is intentionally not peak-marked because
-its final peak is not known yet.
+Star markers are placed at the synthetic-Q_3X trade-price peak for the 7
+completed Top-8 trades. Diamond markers label the first bar where a trade's
+synthetic-Q_3X unrealized gain reaches +100%. The current/latest trade is
+intentionally not peak-marked because its final peak is not known yet.
 """
 
 from __future__ import annotations
@@ -142,10 +143,11 @@ def build_series_and_markers(
     trades: pd.DataFrame,
     qqq_distance: pd.Series,
     target_price: pd.Series,
-) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Build normalized distance rows and completed-trade peak markers."""
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Build normalized distance rows, peak markers, and first +100% markers."""
     series_rows: list[pd.DataFrame] = []
     marker_rows: list[dict[str, Any]] = []
+    first_100_rows: list[dict[str, Any]] = []
 
     for trade in trades.itertuples(index=False):
         trade_end_for_data = min(trade.normalization_exit_ts, qqq_distance.index.max())
@@ -168,6 +170,38 @@ def build_series_and_markers(
                 }
             )
         )
+
+        target_window_for_gain = target_price.loc[
+            (target_price.index >= trade.entry_ts)
+            & (target_price.index <= trade_end_for_data)
+        ].dropna()
+        if not target_window_for_gain.empty:
+            entry_price_for_gain = float(target_window_for_gain.iloc[0])
+            gain = target_window_for_gain / entry_price_for_gain - 1.0
+            first_100 = gain.loc[gain >= 1.0]
+            if not first_100.empty:
+                first_100_ts = first_100.index[0]
+                first_100_distance = qqq_distance.reindex([first_100_ts]).iloc[0]
+                if pd.notna(first_100_distance):
+                    first_100_rows.append(
+                        {
+                            "Top8": trade.Top8,
+                            "trade_id": int(trade.trade_id),
+                            "first_100_gain_timestamp": first_100_ts,
+                            "normalized_time": float(
+                                normalized_x(
+                                    pd.DatetimeIndex([first_100_ts]),
+                                    trade.entry_ts,
+                                    trade.normalization_exit_ts,
+                                )[0]
+                            ),
+                            "qqq_distance_to_200ma_at_first_100_gain": float(first_100_distance),
+                            "synthetic_3x_gain_pct": float(gain.loc[first_100_ts]) * 100.0,
+                            "entry_timestamp": trade.entry_ts,
+                            "normalization_exit_timestamp": trade.normalization_exit_ts,
+                            "is_current": bool(trade.is_current),
+                        }
+                    )
 
         if not bool(trade.is_current):
             target_window = target_price.loc[
@@ -199,10 +233,19 @@ def build_series_and_markers(
 
     if not series_rows:
         raise ValueError("No normalized series observations were generated")
-    return pd.concat(series_rows, ignore_index=True), pd.DataFrame(marker_rows)
+    return (
+        pd.concat(series_rows, ignore_index=True),
+        pd.DataFrame(marker_rows),
+        pd.DataFrame(first_100_rows),
+    )
 
 
-def make_plot(series: pd.DataFrame, markers: pd.DataFrame, output_path: Path) -> None:
+def make_plot(
+    series: pd.DataFrame,
+    markers: pd.DataFrame,
+    first_100_markers: pd.DataFrame,
+    output_path: Path,
+) -> None:
     """Create the combined normalized timeline plot."""
     fig, ax = plt.subplots(figsize=(15.5, 8.2))
     completed = series.loc[~series["is_current"]]
@@ -261,6 +304,28 @@ def make_plot(series: pd.DataFrame, markers: pd.DataFrame, output_path: Path) ->
             color="black",
         )
 
+    for row in first_100_markers.itertuples(index=False):
+        marker_color = color_by_trade.get(int(row.trade_id), "black")
+        y_value = float(row.qqq_distance_to_200ma_at_first_100_gain) * 100.0
+        ax.scatter(
+            row.normalized_time,
+            y_value,
+            marker="D",
+            s=70,
+            color="white",
+            edgecolor=marker_color,
+            linewidth=2.0,
+            zorder=6,
+        )
+        ax.annotate(
+            f"T{int(row.trade_id)} +100%",
+            xy=(row.normalized_time, y_value),
+            xytext=(5, -14),
+            textcoords="offset points",
+            fontsize=8,
+            color="black",
+        )
+
     ax.axhline(0.0, color="#333333", linestyle="--", linewidth=1.0, label="QQQ 200MA")
     ax.axhline(10.0, color="#999999", linestyle=":", linewidth=0.8)
     ax.axhline(20.0, color="#999999", linestyle=":", linewidth=0.8)
@@ -269,7 +334,7 @@ def make_plot(series: pd.DataFrame, markers: pd.DataFrame, output_path: Path) ->
     ax.set_ylabel("QQQ distance from hourly 200-day MA (%)")
     ax.set_title(
         "Top-8 winning trades: QQQ distance from hourly 200-day MA over normalized time\n"
-        "Stars mark synthetic-Q_3X price peak for the 7 completed trades"
+        "Stars mark completed-trade peaks; diamonds mark first +100% synthetic-Q_3X gain"
     )
     ax.grid(True, alpha=0.25)
     ax.legend(ncol=2, fontsize=8, loc="best")
@@ -304,20 +369,23 @@ def main() -> None:
         current_trade_id=args.current_trade_id,
         current_end=current_end,
     )
-    series, markers = build_series_and_markers(top_trades, qqq_distance, target)
+    series, markers, first_100_markers = build_series_and_markers(top_trades, qqq_distance, target)
 
     series_path = tables_dir / f"{args.output_prefix}_series.csv"
     markers_path = tables_dir / f"{args.output_prefix}_peak_markers.csv"
+    first_100_markers_path = tables_dir / f"{args.output_prefix}_first_100_gain_markers.csv"
     plot_path = figures_dir / f"{args.output_prefix}.png"
     series.to_csv(series_path, index=False)
     markers.to_csv(markers_path, index=False)
-    make_plot(series, markers, plot_path)
+    first_100_markers.to_csv(first_100_markers_path, index=False)
+    make_plot(series, markers, first_100_markers, plot_path)
 
     latest_current_bar = series.loc[series["is_current"], "timestamp"].max()
     print("Saved normalized Top-8 QQQ/200MA distance plot")
     print(f"Figure: {plot_path}")
     print(f"Series table: {series_path}")
     print(f"Peak-marker table: {markers_path}")
+    print(f"First +100% gain-marker table: {first_100_markers_path}")
     print(f"Current-trade normalization end: {current_end}")
     print(f"Latest locally available current-trade bar used: {latest_current_bar}")
     print("Completed-trade peak markers:")
@@ -336,6 +404,22 @@ def main() -> None:
         ].copy()
         preview["qqq_distance_to_200ma_at_peak"] *= 100.0
         print(preview.to_string(index=False, float_format=lambda x: f"{x:.2f}"))
+    print("First +100% synthetic-3x gain markers:")
+    if first_100_markers.empty:
+        print("  none")
+    else:
+        preview_100 = first_100_markers[
+            [
+                "Top8",
+                "trade_id",
+                "first_100_gain_timestamp",
+                "normalized_time",
+                "qqq_distance_to_200ma_at_first_100_gain",
+                "synthetic_3x_gain_pct",
+            ]
+        ].copy()
+        preview_100["qqq_distance_to_200ma_at_first_100_gain"] *= 100.0
+        print(preview_100.to_string(index=False, float_format=lambda x: f"{x:.2f}"))
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ from trend_following.utils import as_list, ensure_directory, resolve_path
 class DataConfig:
     source: str = "yfinance"
     tickers: list[str] = field(default_factory=list)
-    start_date: str = "2005-01-01"
+    start_date: str = "1990-01-01"
     end_date: str | None = None
     interval: str = "1d"
     raw_dir: Path = Path("data/raw")
@@ -176,8 +176,8 @@ def load_config(config_path: str | Path) -> ProjectConfig:
     data = DataConfig(
         source=str(data_raw.get("source", "yfinance")).lower(),
         tickers=tickers,
-        start_date=_parse_date_string(data_raw.get("start_date", "2005-01-01"), "start_date")
-        or "2005-01-01",
+        start_date=_parse_date_string(data_raw.get("start_date", "1990-01-01"), "start_date")
+        or "1990-01-01",
         end_date=_parse_date_string(data_raw.get("end_date"), "end_date"),
         interval=str(data_raw.get("interval", "1d")).lower(),
         raw_dir=resolve_path(root, data_raw.get("raw_dir", "data/raw")),

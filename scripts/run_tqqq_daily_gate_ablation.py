@@ -80,21 +80,26 @@ def no_daily_gate_hourly_ma_gate_signal(
     entry_confirm_bars: int = 2,
     exit_confirm_bars: int = 3,
     exit_ma_days: float = 200.0,
+    macd_fast_days: float = 12.0,
+    macd_slow_days: float = 26.0,
+    macd_signal_days: float = 9.0,
 ) -> tuple[pd.Series, pd.DataFrame]:
     """MACD entry gated only by the same hourly 200-day MA used for exit."""
     entry_clean = entry_price.reindex(output_index).astype(float).sort_index()
     exit_clean = exit_price.reindex(output_index).astype(float).sort_index()
 
     if macd_unit == "days":
-        fast_window = _days_to_bars(12, bars_per_day)
-        slow_window = _days_to_bars(26, bars_per_day)
-        signal_window = _days_to_bars(9, bars_per_day)
+        fast_window = _days_to_bars(macd_fast_days, bars_per_day)
+        slow_window = _days_to_bars(macd_slow_days, bars_per_day)
+        signal_window = _days_to_bars(macd_signal_days, bars_per_day)
     elif macd_unit == "bars":
-        fast_window = 12
-        slow_window = 26
-        signal_window = 9
+        fast_window = int(macd_fast_days)
+        slow_window = int(macd_slow_days)
+        signal_window = int(macd_signal_days)
     else:
         raise ValueError("macd_unit must be days or bars")
+    if fast_window >= slow_window:
+        raise ValueError(f"MACD fast window must be < slow window, got {fast_window} >= {slow_window}")
 
     macd = macd_components(
         entry_clean,

@@ -19,14 +19,17 @@ The main research application is a long-only strategy that uses **QQQ as the sig
 
 - Signal source: QQQ.
 - Exposure: synthetic TQQQ, calculated as `QQQ_3X_CALC`.
-- Entry: QQQ hourly MACD histogram > 0.
+- Entry: QQQ hourly SMA-MACD histogram > 0, using 12/24/9 trading-day MACD windows as the current preferred option.
 - Entry gate: QQQ hourly close > QQQ hourly 200-day moving average.
 - Exit: QQQ hourly close < QQQ hourly 200-day moving average.
 - Profit lock: +300% unrealized synthetic-TQQQ trade gain -> 75%; +400% -> 50%.
+- Dynamic q100 trim: after +110% trade gain, learn the max QQQ distance above its hourly 200MA up to that point; later trim to 50% if QQQ revisits/exceeds it, and re-add on a QQQ 20MA pullback.
+- Best robustness bear filter: when QQQ's hourly 200MA slope is negative, new entries require QQQ to be at least 1% above the hourly 200MA, QQQ 50MA slope over 30 trading days to be positive, and QQQ 20MA > QQQ 50MA.
 - Trade-peak stop: exit if synthetic TQQQ falls 40% from the current trade peak.
 - No daily regime gate.
 - Max one trade per day.
 - Out-of-market cash earns 3% annualized in evaluation.
+- Retained MACD robustness options: 12/24/9 preferred, plus 12/26/9 and 12/26/8 for comparison because their results are very similar and may be overfit.
 
 Detailed case-study documentation and retained-candidate performance tables: [`docs/qqq_tqqq_case_study.md`](docs/qqq_tqqq_case_study.md).
 
@@ -62,6 +65,8 @@ The default config uses liquid ETFs:
 - VNQ
 - DRN
 
+The default requested start date is now **1990-01-01**. The effective backtest start is still limited by each ETF's actual inception date and by vendor data availability. For example, QQQ did not exist in 1990 and the current local Alpha Vantage 60-minute QQQ cache starts on 2000-01-03. For 1990-1999 QQQ-like research, Nasdaq-100 index data may be used as a documented pre-QQQ proxy, but it must not be presented as actual QQQ ETF data. See [`docs/pre_qqq_proxy.md`](docs/pre_qqq_proxy.md).
+
 The default config downloads **daily** data using `yfinance`. Long-history intraday data is configured separately in `configs/alpha_vantage_max_history.yaml` and requires an Alpha Vantage API key with historical intraday entitlement.
 
 ## Leveraged ETF note
@@ -86,6 +91,7 @@ Important limitations:
 - Yahoo Finance data can contain revisions, missing values, ticker changes, and corporate-action issues.
 - Yahoo Finance intraday/hourly history is limited to roughly 730 days; use `configs/stooq_hourly.yaml` or `configs/alpha_vantage_hourly.yaml` for longer hourly history when the required vendor apikey/entitlement is available.
 - ETF inception dates differ, so some assets may not have history from the requested start date.
+- A 1990 requested start date only becomes an actual 1990 backtest if the selected asset/proxy has data that far back; otherwise the pipeline starts at the first available valid bar after alignment and indicator warmup.
 - The default universe is composed of current ETFs, so a broader stock universe would require explicit survivorship-bias controls.
 - Adjusted close is used for return calculations when available; adjusted opens are approximated using the close adjustment factor when needed later.
 - No borrow costs, short constraints, margin model, tax model, or intraday execution model are implemented in v1.
@@ -93,7 +99,7 @@ Important limitations:
 ## Installation
 
 ```bash
-cd /Users/cosdis/Desktop/job/quant_projects/trend_following
+cd trend-following
 source ~/.venvs/myenv/bin/activate
 pip install -e '.[dev]'
 ```

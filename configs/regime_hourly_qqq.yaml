@@ -7,7 +7,9 @@ project:
 data:
   source: alpha_vantage
   tickers: [QQQ]
-  start_date: "2000-01-01"
+  # Requested start; effective start depends on data availability.
+  # For QQQ-like history before actual QQQ, use documented Nasdaq-100 proxy data, not overwritten QQQ.
+  start_date: "1990-01-01"
   end_date: null
   interval: 60min
   raw_dir: data/raw/alpha_vantage_60min

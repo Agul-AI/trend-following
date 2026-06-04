@@ -1,12 +1,19 @@
 #!/usr/bin/env python
 """Update Yahoo Finance data and report the current preferred QQQ/TQQQ signal.
 
-Preferred strategy as of 2026-06-03:
+Preferred strategy as of 2026-06-04:
 - Signal source: QQQ 60-minute bars.
 - Exposure: synthetic +3x QQQ (QQQ_3X_CALC) for research evaluation.
-- Entry: QQQ hourly MACD histogram > 0 and QQQ hourly close > QQQ hourly 200-day MA.
+- Entry: QQQ hourly SMA-MACD histogram > 0 and QQQ hourly close > QQQ hourly 200-day MA.
+  Preferred MACD option: 12/24/9 trading-day windows.
 - Exit: QQQ hourly close < QQQ hourly 200-day MA.
 - Profit lock: +300% synthetic-3x trade gain -> 75%; +400% -> 50%.
+- Dynamic mean-reversion trim: after a trade first reaches +110%, learn the
+  maximum QQQ/200MA distance seen up to that point; later trim to 50% if QQQ
+  revisits/exceeds that learned distance, and re-add when QQQ touches its 20-day MA.
+- Best robustness bear filter: if the QQQ hourly 200-day MA slope is negative,
+  delay a new entry unless QQQ is at least 1% above its hourly 200-day MA, the
+  QQQ 50MA slope over 30 trading days is positive, and QQQ 20MA > QQQ 50MA.
 - Stop: exit if synthetic QQQ_3X_CALC falls 40% from the current trade peak.
 - No daily regime gate, max one trade per day.
 
@@ -32,8 +39,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 from run_tqqq_daily_gate_ablation import no_daily_gate_hourly_ma_gate_signal  # noqa: E402
 from run_tqqq_entry_signal_comparison import executable_weights  # noqa: E402
+from trend_following.bear_whipsaw import (  # noqa: E402
+    bear_market_features,
+    bear_reentry_filter_raw,
+)
 from trend_following.config import load_config  # noqa: E402
 from trend_following.data_validation import read_price_file  # noqa: E402
+from trend_following.risk_overlays import (  # noqa: E402
+    apply_cap,
+    dynamic_pre100_distance_trim_rebuy_cap,
+    qqq_mean_reversion_features,
+)
 from trend_following.synthetic_leverage import (  # noqa: E402
     synthetic_daily_leveraged_ohlcv,
     synthetic_intraday_leveraged_ohlcv,
@@ -42,6 +58,16 @@ from trend_following.utils import ensure_directory, resolve_path  # noqa: E402
 
 PROFIT_LOCK_SCHEME: list[tuple[float, float]] = [(3.0, 0.75), (4.0, 0.50)]
 PEAK_STOP_DRAWDOWN = 0.40
+DYNAMIC_TRIM_ACTIVATION_GAIN = 1.10
+DYNAMIC_TRIM_DISTANCE_QUANTILE = 1.0
+DYNAMIC_TRIM_TARGET_WEIGHT = 0.50
+BEAR_FILTER_DISTANCE_BUFFER = 0.01
+BEAR_FILTER_SLOPE_DAYS = 30
+BEAR_FILTER_REQUIRE_SHORT_GT_MEDIUM = True
+PREFERRED_MACD_FAST_DAYS = 12.0
+PREFERRED_MACD_SLOW_DAYS = 24.0
+PREFERRED_MACD_SIGNAL_DAYS = 9.0
+RETAINED_MACD_OPTIONS = "12/24/9 preferred; retained near-equivalent options: 12/26/9 and 12/26/8"
 
 
 def parse_args() -> argparse.Namespace:
@@ -75,6 +101,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--bars-per-day", type=int, default=7)
     parser.add_argument("--average-type", choices=["sma", "ema"], default="sma")
     parser.add_argument("--macd-unit", choices=["days", "bars"], default="days")
+    parser.add_argument("--macd-fast-days", type=float, default=PREFERRED_MACD_FAST_DAYS)
+    parser.add_argument("--macd-slow-days", type=float, default=PREFERRED_MACD_SLOW_DAYS)
+    parser.add_argument("--macd-signal-days", type=float, default=PREFERRED_MACD_SIGNAL_DAYS)
     parser.add_argument("--entry-confirm-bars", type=int, default=2)
     parser.add_argument("--exit-confirm-bars", type=int, default=3)
     parser.add_argument("--exit-ma-days", type=float, default=200.0)
@@ -513,6 +542,9 @@ def main() -> None:
         entry_confirm_bars=args.entry_confirm_bars,
         exit_confirm_bars=args.exit_confirm_bars,
         exit_ma_days=args.exit_ma_days,
+        macd_fast_days=args.macd_fast_days,
+        macd_slow_days=args.macd_slow_days,
+        macd_signal_days=args.macd_signal_days,
     )
     synthetic_close = intraday_synth["adj_close"].astype(float)
     stopped_raw, stop_diag = _raw_with_peak_drawdown_stop(
@@ -525,7 +557,35 @@ def main() -> None:
         synthetic_close,
         thresholds_to_weights=PROFIT_LOCK_SCHEME,
     ).rename(args.target_ticker)
-    raw_weights = raw_profit_locked_weight.to_frame(args.target_ticker)
+    qqq_features = qqq_mean_reversion_features(qqq_close, bars_per_day=args.bars_per_day)
+    dynamic_trim = dynamic_pre100_distance_trim_rebuy_cap(
+        raw_profit_locked_weight.gt(0.0).astype(float),
+        synthetic_close,
+        qqq_features,
+        activation_gain=DYNAMIC_TRIM_ACTIVATION_GAIN,
+        threshold_quantile=DYNAMIC_TRIM_DISTANCE_QUANTILE,
+        trim_weight=DYNAMIC_TRIM_TARGET_WEIGHT,
+        reentry_rule="ma20",
+    )
+    raw_dynamic_trimmed_weight = apply_cap(raw_profit_locked_weight, dynamic_trim.weights).rename(
+        args.target_ticker
+    )
+    bear_features = bear_market_features(
+        qqq_close,
+        bars_per_day=args.bars_per_day,
+        slope_days=(BEAR_FILTER_SLOPE_DAYS,),
+    )
+    bear_filter = bear_reentry_filter_raw(
+        raw_dynamic_trimmed_weight.gt(0.0).astype(float),
+        bear_features,
+        distance_buffer=BEAR_FILTER_DISTANCE_BUFFER,
+        slope_days=BEAR_FILTER_SLOPE_DAYS,
+        require_short_gt_medium=BEAR_FILTER_REQUIRE_SHORT_GT_MEDIUM,
+    )
+    raw_bear_filtered_weight = apply_cap(
+        raw_dynamic_trimmed_weight, bear_filter.weights
+    ).rename(args.target_ticker)
+    raw_weights = raw_bear_filtered_weight.to_frame(args.target_ticker)
     weights = executable_weights(raw_weights, config=config)[args.target_ticker]
 
     latest = pd.Timestamp(qqq_close.index[-1])
@@ -537,10 +597,21 @@ def main() -> None:
     previous_base_raw = _float_or_nan(raw.loc[prev]) if pd.notna(prev) else float("nan")
     latest_stopped_raw = _float_or_nan(stopped_raw.loc[latest])
     previous_stopped_raw = _float_or_nan(stopped_raw.loc[prev]) if pd.notna(prev) else float("nan")
-    latest_raw_weight = _float_or_nan(raw_profit_locked_weight.loc[latest])
-    previous_raw_weight = (
+    latest_profit_locked_weight = _float_or_nan(raw_profit_locked_weight.loc[latest])
+    previous_profit_locked_weight = (
         _float_or_nan(raw_profit_locked_weight.loc[prev]) if pd.notna(prev) else float("nan")
     )
+    latest_raw_weight = _float_or_nan(raw_dynamic_trimmed_weight.loc[latest])
+    previous_raw_weight = (
+        _float_or_nan(raw_dynamic_trimmed_weight.loc[prev]) if pd.notna(prev) else float("nan")
+    )
+    latest_bear_filtered_weight = _float_or_nan(raw_bear_filtered_weight.loc[latest])
+    previous_bear_filtered_weight = (
+        _float_or_nan(raw_bear_filtered_weight.loc[prev]) if pd.notna(prev) else float("nan")
+    )
+    latest_dynamic_trim = dynamic_trim.diagnostics.loc[latest]
+    latest_bear_filter = bear_filter.diagnostics.loc[latest]
+    latest_bear_features = bear_features.loc[latest]
     qqq_latest = _float_or_nan(qqq_close.loc[latest])
     qqq_ma = _float_or_nan(latest_diag.get("exit_ma"))
     distance_to_exit = qqq_latest / qqq_ma - 1.0 if qqq_ma and np.isfinite(qqq_ma) else float("nan")
@@ -621,20 +692,26 @@ def main() -> None:
         "data_source": "yfinance",
         "asof_intraday_bar": latest,
         "previous_intraday_bar": prev,
-        "strategy_label": "preferred_qqq_hourly_200ma_macd_profit_lock_300_400_stop40",
+        "strategy_label": "preferred_qqq_hourly_200ma_macd_slow24_profit_lock_300_400_stop40_q110_best_bear_filter",
+        "preferred_macd_option": f"{args.macd_fast_days:g}/{args.macd_slow_days:g}/{args.macd_signal_days:g}",
+        "retained_macd_options": RETAINED_MACD_OPTIONS,
         "signal_source": args.ticker,
         "target_exposure": args.target_ticker,
         "base_raw_position_latest_bar": latest_base_raw,
         "base_raw_position_previous_bar": previous_base_raw,
         "stopped_raw_position_latest_bar": latest_stopped_raw,
         "stopped_raw_position_previous_bar": previous_stopped_raw,
-        "raw_desired_position_latest_bar": latest_raw_weight,
-        "raw_desired_position_previous_bar": previous_raw_weight,
+        "profit_locked_position_latest_bar": latest_profit_locked_weight,
+        "profit_locked_position_previous_bar": previous_profit_locked_weight,
+        "dynamic_trimmed_position_latest_bar": latest_raw_weight,
+        "dynamic_trimmed_position_previous_bar": previous_raw_weight,
+        "raw_desired_position_latest_bar": latest_bear_filtered_weight,
+        "raw_desired_position_previous_bar": previous_bear_filtered_weight,
         "executable_position_latest_bar": latest_weight,
         "executable_position_previous_bar": prev_weight,
         "position_interpretation": _format_position(latest_weight),
         "action_if_following_strategy": action,
-        "pending_raw_vs_executable_difference": bool(latest_raw_weight != latest_weight),
+        "pending_raw_vs_executable_difference": bool(latest_bear_filtered_weight != latest_weight),
         "qqq_latest_close": qqq_latest,
         "qqq_200d_hourly_ma": qqq_ma,
         "distance_to_exit_trigger_pct": distance_to_exit,
@@ -648,10 +725,51 @@ def main() -> None:
         "profit_lock_first_target_weight": PROFIT_LOCK_SCHEME[0][1],
         "profit_lock_second_threshold": PROFIT_LOCK_SCHEME[1][0],
         "profit_lock_second_target_weight": PROFIT_LOCK_SCHEME[1][1],
+        "dynamic_trim_rule": (
+            "after +110% synthetic-3x trade gain, learn q100=max QQQ distance above hourly "
+            "200-day MA through the first +110% bar; later cap to 50% if QQQ revisits/exceeds "
+            "that learned distance; re-add when QQQ touches its 20-day MA"
+        ),
+        "dynamic_trim_activation_gain": DYNAMIC_TRIM_ACTIVATION_GAIN,
+        "dynamic_trim_distance_quantile": DYNAMIC_TRIM_DISTANCE_QUANTILE,
+        "dynamic_trim_target_weight": DYNAMIC_TRIM_TARGET_WEIGHT,
+        "dynamic_trim_cap_raw_latest": _float_or_nan(latest_dynamic_trim.get("overlay_cap")),
+        "dynamic_trim_trigger_raw_latest": bool(latest_dynamic_trim.get("overlay_trigger")),
+        "dynamic_trim_reentry_raw_latest": bool(latest_dynamic_trim.get("overlay_reentry")),
+        "dynamic_trim_trade_gain_raw_latest": _float_or_nan(latest_dynamic_trim.get("trade_gain")),
+        "dynamic_trim_learned_threshold_latest": _float_or_nan(
+            latest_dynamic_trim.get("dynamic_distance_threshold")
+        ),
+        "dynamic_trim_threshold_learned_latest": bool(latest_dynamic_trim.get("threshold_learned")),
+        "bear_filter_rule": (
+            "if QQQ hourly 200-day MA slope is negative, delay new entries until QQQ is at least "
+            "1% above its hourly 200-day MA, QQQ 50MA slope over 30 trading days is positive, "
+            "and QQQ 20MA > QQQ 50MA"
+        ),
+        "bear_filter_distance_buffer": BEAR_FILTER_DISTANCE_BUFFER,
+        "bear_filter_slope_days": BEAR_FILTER_SLOPE_DAYS,
+        "bear_filter_require_20ma_gt_50ma": BEAR_FILTER_REQUIRE_SHORT_GT_MEDIUM,
+        "bear_filter_blocked_entry_raw_latest": bool(latest_bear_filter.get("blocked_entry")),
+        "bear_filter_release_confirmation_raw_latest": bool(
+            latest_bear_filter.get("release_confirmation")
+        ),
+        "bear_filter_distance_to_200ma_latest": _float_or_nan(
+            latest_bear_features.get("distance_to_long_ma")
+        ),
+        "bear_filter_200ma_slope_30d_latest": _float_or_nan(
+            latest_bear_features.get(f"long_ma_slope_{BEAR_FILTER_SLOPE_DAYS}d")
+        ),
+        "bear_filter_50ma_slope_30d_latest": _float_or_nan(
+            latest_bear_features.get(f"medium_ma_slope_{BEAR_FILTER_SLOPE_DAYS}d")
+        ),
+        "bear_filter_20ma_gt_50ma_latest": bool(latest_bear_features.get("short_gt_medium")),
         "peak_stop_drawdown_threshold": -PEAK_STOP_DRAWDOWN,
         "trade_peak_price_raw_latest": _float_or_nan(stop_diag.loc[latest].get("trade_peak_price")),
         "trade_peak_drawdown_raw_latest": _float_or_nan(stop_diag.loc[latest].get("trade_peak_drawdown")),
         "peak_stop_trigger_raw_latest": bool(stop_diag.loc[latest].get("stop_trigger")),
+        "macd_fast_days": args.macd_fast_days,
+        "macd_slow_days": args.macd_slow_days,
+        "macd_signal_days": args.macd_signal_days,
         "macd_hist_latest": _float_or_nan(latest_diag.get("macd_hist")),
         "entry_flag_latest": bool(_float_or_nan(latest_diag.get("entry_flag")) >= 0.5),
         "above_200ma_latest": bool(_float_or_nan(latest_diag.get("above_exit_ma")) >= 0.5),
