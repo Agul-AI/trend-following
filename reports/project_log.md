@@ -1974,3 +1974,31 @@ The start-date CV evaluates controlled one-factor variants around the current pr
 **Output.** Added `reports/tables/preferred_macd_options_comparison.csv` summarizing the three MACD choices under the same official-start convention.
 
 **Decision.** `macd_slow_24d` / 12-24-9 is now the active preferred default, but this is treated as a small robustness preference rather than a precise optimized edge. Future reports should continue to show all three MACD options when comparing parameter robustness.
+
+### 2026-06-04 — Annual net-tax accounting audit for preferred-variant CV
+
+**Question.** If realized gains are not taxed immediately but are netted and taxed at year-end, do parameter variants make a difference?
+
+**Implementation.** Confirmed the preferred-strategy simulator uses annual net-tax accounting: realized gains/losses accumulate during each calendar year, net taxable gains are taxed at year-end, losses carry forward, and cash interest is also taxed at year-end. Added explicit `tax_timing = annual_net_eoy` labels to preferred CV outputs, annual tax-payment diagnostics, and unit tests for year-end tax timing, same-year loss offsets, loss carryforward, and cash-interest tax timing.
+
+**Outputs.** Refreshed the existing preferred start-date CV variant set using the current 12/24/9 preferred MACD default and retained 12/26/9 and 12/26/8 MACD options. Saved:
+
+- `reports/tables/preferred_start_date_cv_metrics.csv`
+- `reports/tables/preferred_start_date_cv_summary.csv`
+- `reports/tables/preferred_parameter_robustness_rank.csv`
+- `reports/tables/preferred_start_date_cv_tax_audit.csv`
+- `reports/tables/preferred_start_date_cv_annual_tax_payments.csv`
+- `reports/tables/preferred_macd_options_comparison.csv`
+- Updated `reports/site/start_date_cv.html` with an Annual Net Tax Check section.
+
+**Result.** The tax audit passed for all 64 official-start simulations: positive tax payments occurred only on year-end/final-liquidation bars, with zero non-year-end tax-payment dates. The three retained MACD options remain close under annual net-tax accounting. Official-start results: 12/24/9 returned 95,949% cumulative / 32.62% annualized with -52.79% max DD; 12/26/8 returned 95,351% cumulative / 32.58% annualized with -52.15% max DD; 12/26/9 returned 84,863% cumulative / 31.95% annualized with -52.15% max DD. Across the broader refreshed CV ranking, `macd_fast_14d` ranked highest by robustness score, but this remains a variant-screen result rather than a promoted preferred-rule change.
+
+**Caveat.** The refreshed start-date CV uses the existing fast-slice CV methodology for tractability, while the tax audit and unit tests verify the annual net-tax simulator itself. Exact per-start tax-state-reset simulation was attempted but was too slow for this run.
+
+### 2026-06-04 — Next planned direction: Monte Carlo simulation for preferred strategy
+
+**Question.** After refreshing the annual net-tax CV results, evaluate whether the preferred strategy is robust under resampled market paths rather than only the realized historical path.
+
+**Planned scope.** Add a Monte Carlo / block-bootstrap research module for the preferred QQQ/synthetic-TQQQ strategy. Initial tests should resample return blocks with volatility clustering preserved where possible, rerun the strategy path with the same no-lookahead timing and annual net-tax convention, and summarize distributions for CAGR, final wealth, max drawdown, drawdown episodes above 20/30/40/50%, trades/year, exposure, and time underwater.
+
+**Decision.** Do not change the preferred rule yet. Treat Monte Carlo as the next robustness analysis layer on top of the current preferred rule and retained MACD variants.

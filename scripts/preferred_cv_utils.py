@@ -42,6 +42,7 @@ TARGET_TICKER = "QQQ_3X_CALC"
 BENCHMARK_TICKER = "QQQ"
 CURRENT_PREFERRED_NAME = "preferred_q110_best_robustness_bear_filter_macd_slow24"
 OFFICIAL_EVALUATION_START = pd.Timestamp("2002-01-10 15:00:00")
+TAX_TIMING = "annual_net_eoy"
 
 DEFAULT_PARAMS: dict[str, Any] = {
     "long_ma_days": 200.0,
@@ -422,6 +423,7 @@ def evaluate_weight_window(
             "end_date": sample_returns.index.max() if not sample_returns.empty else pd.NaT,
             "bars": int(len(after_tax)),
             "parameters": json.dumps(parameters, sort_keys=True, default=str),
+            "tax_timing": TAX_TIMING,
             "final_return": metrics["cumulative_return"],
             "average_cash_weight": float(cash_weight.mean()) if not cash_weight.empty else np.nan,
             "tax_paid_pct_initial_capital": float(taxes.sum()) if not taxes.empty else 0.0,
@@ -514,6 +516,7 @@ def metrics_from_simulated_slice(
             "end_date": sliced.index.max() if not sliced.empty else pd.NaT,
             "bars": int(len(sliced)),
             "parameters": json.dumps(parameters, sort_keys=True, default=str),
+            "tax_timing": TAX_TIMING,
             "final_return": metrics["cumulative_return"],
             "average_cash_weight": float(cash_weight.mean()) if not cash_weight.empty else np.nan,
             "tax_paid_pct_initial_capital": float(taxes.sum()) if not taxes.empty else 0.0,
@@ -529,6 +532,85 @@ def metrics_from_simulated_slice(
 def benchmark_weights(index: pd.DatetimeIndex, ticker: str) -> pd.DataFrame:
     """Return buy-and-hold benchmark weights."""
     return pd.DataFrame({ticker: pd.Series(1.0, index=index, dtype=float)})
+
+
+def annual_tax_payment_summary(
+    *,
+    name: str,
+    family: str,
+    simulation: dict[str, pd.Series],
+    source_segment: str,
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Summarize annual tax-payment dates and audit year-end-only tax timing."""
+    taxes = simulation["taxes"].fillna(0.0).sort_index()
+    cash_interest = simulation["cash_interest"].reindex(taxes.index).fillna(0.0).sort_index()
+    if taxes.empty:
+        empty = pd.DataFrame(
+            columns=[
+                "name",
+                "family",
+                "source_segment",
+                "tax_timing",
+                "year",
+                "tax_payment_timestamp",
+                "tax_paid_pct_initial_capital",
+                "cash_interest_earned_pct_initial_capital",
+                "positive_tax_payment",
+            ]
+        )
+        return empty, {
+            "name": name,
+            "family": family,
+            "source_segment": source_segment,
+            "tax_timing": TAX_TIMING,
+            "audit_pass": True,
+            "tax_payment_year_count": 0,
+            "positive_tax_payment_count": 0,
+            "non_year_end_tax_payment_count": 0,
+            "total_tax_paid_pct_initial_capital": 0.0,
+            "total_cash_interest_earned_pct_initial_capital": 0.0,
+        }
+
+    years = pd.Series(taxes.index.year, index=taxes.index, name="year")
+    year_end_timestamps = taxes.groupby(years).apply(lambda series: series.index.max())
+    tax_by_year = taxes.groupby(years).sum()
+    cash_interest_by_year = cash_interest.groupby(years).sum()
+    rows: list[dict[str, Any]] = []
+    for year, timestamp in year_end_timestamps.items():
+        tax_paid = float(tax_by_year.loc[year])
+        rows.append(
+            {
+                "name": name,
+                "family": family,
+                "source_segment": source_segment,
+                "tax_timing": TAX_TIMING,
+                "year": int(year),
+                "tax_payment_timestamp": pd.Timestamp(timestamp),
+                "tax_paid_pct_initial_capital": tax_paid,
+                "cash_interest_earned_pct_initial_capital": float(cash_interest_by_year.get(year, 0.0)),
+                "positive_tax_payment": bool(abs(tax_paid) > 1e-12),
+            }
+        )
+    annual = pd.DataFrame(rows)
+
+    allowed_tax_dates = set(pd.Timestamp(timestamp) for timestamp in year_end_timestamps.to_list())
+    positive_tax_dates = taxes.loc[taxes.abs().gt(1e-12)].index
+    non_year_end_dates = [timestamp for timestamp in positive_tax_dates if pd.Timestamp(timestamp) not in allowed_tax_dates]
+    audit = {
+        "name": name,
+        "family": family,
+        "source_segment": source_segment,
+        "tax_timing": TAX_TIMING,
+        "audit_pass": len(non_year_end_dates) == 0,
+        "tax_payment_year_count": int(annual["positive_tax_payment"].sum()) if not annual.empty else 0,
+        "positive_tax_payment_count": int(len(positive_tax_dates)),
+        "non_year_end_tax_payment_count": int(len(non_year_end_dates)),
+        "first_tax_payment_date": positive_tax_dates.min() if len(positive_tax_dates) else pd.NaT,
+        "last_tax_payment_date": positive_tax_dates.max() if len(positive_tax_dates) else pd.NaT,
+        "total_tax_paid_pct_initial_capital": float(taxes.sum()),
+        "total_cash_interest_earned_pct_initial_capital": float(cash_interest.sum()),
+    }
+    return annual, audit
 
 
 def robustness_summary(metrics: pd.DataFrame) -> pd.DataFrame:
@@ -548,6 +630,7 @@ def robustness_summary(metrics: pd.DataFrame) -> pd.DataFrame:
         max_dd50_episodes=("drawdown_episodes_gt_50pct", "max"),
         starts_tested=("start_date", "nunique"),
     ).reset_index()
+    summary["tax_timing"] = TAX_TIMING
     summary["robustness_score"] = (
         summary["p10_annualized_return"]
         + 0.35 * summary["median_annualized_return"]

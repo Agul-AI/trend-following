@@ -30,10 +30,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from preferred_cv_utils import (  # noqa: E402
     BENCHMARK_TICKER,
     CURRENT_PREFERRED_NAME,
+    OFFICIAL_EVALUATION_START,
     START_DATES,
     TARGET_TICKER,
+    TAX_TIMING,
+    annual_tax_payment_summary,
     benchmark_weights,
     build_candidate_raw_weight,
+    evaluate_weight_window,
     executable_candidate_weights,
     load_cv_data,
     make_eval_args,
@@ -62,6 +66,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-prefix", default="preferred_start_date_cv")
     parser.add_argument("--site-dir", default="reports/site")
     parser.add_argument("--top-heatmap-n", type=int, default=30)
+    parser.add_argument(
+        "--fast-slice-tax",
+        action="store_true",
+        default=True,
+        help=(
+            "Use one full-path simulation per candidate and slice it for start-date metrics. "
+            "This is the default existing CV methodology."
+        ),
+    )
+    parser.add_argument(
+        "--exact-window-tax",
+        action="store_false",
+        dest="fast_slice_tax",
+        help=(
+            "Re-simulate each candidate/start window so annual tax state resets at each start. "
+            "This is slower but available for focused checks."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -131,25 +153,136 @@ def _plot_rank_stability(metrics: pd.DataFrame, output_path: Path, *, top_names:
     plt.close(fig)
 
 
-def _make_site(site_dir: Path, summary: pd.DataFrame, metrics: pd.DataFrame, figures: list[Path]) -> None:
-    ensure_directory(site_dir)
-    html_path = site_dir / "start_date_cv.html"
-    show = summary.head(40).copy()
-    for column in [
-        "median_annualized_return",
-        "p10_annualized_return",
-        "min_annualized_return",
-        "median_sharpe",
-        "worst_max_drawdown",
-        "median_trades_per_year",
-        "robustness_score",
-    ]:
+def _make_macd_options_comparison(metrics: pd.DataFrame, summary: pd.DataFrame) -> pd.DataFrame:
+    """Compact table for retained MACD options under the current tax convention."""
+    options = [
+        (
+            CURRENT_PREFERRED_NAME,
+            "macd_slow_24d_preferred",
+            "12/24/9",
+            "preferred",
+            "Active default; treated as a small robustness preference, not a precise optimum.",
+        ),
+        (
+            "macd_standard_12_26_9",
+            "macd_standard_12_26_9",
+            "12/26/9",
+            "retained_near_equivalent",
+            "Original baseline; kept because MACD choices are close.",
+        ),
+        (
+            "macd_signal_8d",
+            "macd_signal_8d",
+            "12/26/8",
+            "retained_near_equivalent",
+            "Faster signal-line option; kept because MACD choices are close.",
+        ),
+    ]
+    rows: list[dict] = []
+    official_start = str(OFFICIAL_EVALUATION_START)
+    for source_name, option_name, windows, status, interpretation in options:
+        candidate_rows = metrics.loc[metrics["name"].eq(source_name)]
+        official = candidate_rows.loc[candidate_rows["start_date"].astype(str).eq(official_start)]
+        if official.empty and not candidate_rows.empty:
+            official = candidate_rows.head(1)
+        summary_row = summary.loc[summary["name"].eq(source_name)]
+        if candidate_rows.empty or summary_row.empty:
+            continue
+        off = official.iloc[0]
+        summ = summary_row.iloc[0]
+        rows.append(
+            {
+                "option": option_name,
+                "macd_windows": windows,
+                "status": status,
+                "tax_timing": TAX_TIMING,
+                "official_start": off["start_date"],
+                "official_final_return": off["final_return"],
+                "official_annualized_return": off["annualized_return"],
+                "official_sharpe": off["sharpe_ratio"],
+                "official_max_drawdown": off["max_drawdown"],
+                "official_dd_20_30_40_50": off["dd_episodes_gt_20_30_40_50pct"],
+                "official_trades": int(off["number_of_trades"]),
+                "official_trades_per_year": off["trades_per_year"],
+                "official_exposure": off["exposure_percentage"],
+                "official_tax_paid_pct_initial_capital": off["tax_paid_pct_initial_capital"],
+                "start_cv_median_annualized_return": summ["median_annualized_return"],
+                "start_cv_p10_annualized_return": summ["p10_annualized_return"],
+                "start_cv_worst_max_drawdown": summ["worst_max_drawdown"],
+                "start_cv_robustness_score": summ["robustness_score"],
+                "interpretation": interpretation,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def _format_site_numbers(frame: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
+    show = frame.copy()
+    for column in columns:
         if column in show.columns:
             show[column] = show[column].map(lambda value: f"{value:.3f}")
+    return show
+
+
+def _make_site(
+    site_dir: Path,
+    summary: pd.DataFrame,
+    metrics: pd.DataFrame,
+    figures: list[Path],
+    *,
+    tax_audit: pd.DataFrame,
+    annual_tax: pd.DataFrame,
+    macd_options: pd.DataFrame,
+) -> None:
+    ensure_directory(site_dir)
+    html_path = site_dir / "start_date_cv.html"
+    show = _format_site_numbers(
+        summary.head(40),
+        [
+            "median_annualized_return",
+            "p10_annualized_return",
+            "min_annualized_return",
+            "median_sharpe",
+            "worst_max_drawdown",
+            "median_trades_per_year",
+            "robustness_score",
+        ],
+    )
     benchmark = metrics.loc[metrics["family"].eq("benchmark")].copy()
     for column in ["annualized_return", "max_drawdown", "sharpe_ratio", "final_return"]:
         if column in benchmark.columns:
             benchmark[column] = benchmark[column].map(lambda value: f"{value:.3f}")
+    audit_show = _format_site_numbers(
+        tax_audit.head(30),
+        [
+            "total_tax_paid_pct_initial_capital",
+            "total_cash_interest_earned_pct_initial_capital",
+        ],
+    )
+    tax_show = annual_tax.loc[
+        annual_tax["name"].isin([CURRENT_PREFERRED_NAME, "macd_standard_12_26_9", "macd_signal_8d"])
+        & annual_tax["positive_tax_payment"]
+    ].tail(30)
+    tax_show = _format_site_numbers(
+        tax_show,
+        ["tax_paid_pct_initial_capital", "cash_interest_earned_pct_initial_capital"],
+    )
+    macd_show = _format_site_numbers(
+        macd_options,
+        [
+            "official_final_return",
+            "official_annualized_return",
+            "official_sharpe",
+            "official_max_drawdown",
+            "official_trades_per_year",
+            "official_exposure",
+            "official_tax_paid_pct_initial_capital",
+            "start_cv_median_annualized_return",
+            "start_cv_p10_annualized_return",
+            "start_cv_worst_max_drawdown",
+            "start_cv_robustness_score",
+        ],
+    )
     figures_html = "\n".join(
         f'<h2>{path.name}</h2><img src="../figures/{path.name}" alt="{path.name}">'
         for path in figures
@@ -163,6 +296,18 @@ def _make_site(site_dir: Path, summary: pd.DataFrame, metrics: pd.DataFrame, fig
                 "</head><body>",
                 "<h1>Preferred Strategy Start-Date Cross-Validation</h1>",
                 "<p>Controlled parameter variants evaluated from multiple official start dates. QQQ buy-and-hold is aligned to each same start date.</p>",
+                "<h2>Annual Net Tax Check</h2>",
+                (
+                    "<p><b>Tax timing:</b> annual_net_eoy. Realized gains and losses are "
+                    "netted by calendar year, losses carry forward, and tax is paid at "
+                    "year-end or final liquidation in this research approximation.</p>"
+                ),
+                "<h3>Tax audit summary</h3>",
+                audit_show.to_html(index=False),
+                "<h3>Recent positive annual tax payments for retained MACD options</h3>",
+                tax_show.to_html(index=False),
+                "<h3>Retained MACD options</h3>",
+                macd_show.to_html(index=False),
                 "<h2>Robustness summary</h2>",
                 show.to_html(index=False),
                 "<h2>QQQ benchmark rows by start date</h2>",
@@ -198,6 +343,8 @@ def main() -> None:
     metrics_rows: list[dict] = []
     full_weights: dict[str, pd.DataFrame] = {}
     diagnostics_rows: list[dict] = []
+    annual_tax_rows: list[pd.DataFrame] = []
+    tax_audit_rows: list[dict] = []
 
     for i, spec in enumerate(specs, start=1):
         print(f"[{i}/{len(specs)}] building {spec.name}")
@@ -219,10 +366,25 @@ def main() -> None:
             config=config,
             args=eval_args,
         )
+        official_simulation = simulate_weight_path(
+            weights=weights.loc[weights.index >= OFFICIAL_EVALUATION_START],
+            returns=returns.loc[returns.index >= OFFICIAL_EVALUATION_START],
+            config=config,
+            args=eval_args,
+        )
+        annual_tax, tax_audit = annual_tax_payment_summary(
+            name=spec.name,
+            family=spec.family,
+            simulation=official_simulation,
+            source_segment="official_start",
+        )
+        annual_tax_rows.append(annual_tax)
+        tax_audit_rows.append(tax_audit)
         diagnostics_rows.append(
             {
                 "name": spec.name,
                 "family": spec.family,
+                "tax_timing": TAX_TIMING,
                 "parameters": spec.params,
                 "q100_trigger_count": int(diag["q100_trigger"].sum()),
                 "bear_blocked_entry_count": int(diag["bear_blocked_entry"].sum()),
@@ -230,15 +392,28 @@ def main() -> None:
             }
         )
         for start in starts:
-            row, _ = metrics_from_simulated_slice(
-                name=spec.name,
-                family=spec.family,
-                simulation=simulation,
-                config=config,
-                parameters=spec.params,
-                start=start,
-                segment="start_date_cv",
-            )
+            if args.fast_slice_tax:
+                row, _ = metrics_from_simulated_slice(
+                    name=spec.name,
+                    family=spec.family,
+                    simulation=simulation,
+                    config=config,
+                    parameters=spec.params,
+                    start=start,
+                    segment="start_date_cv_fast_slice",
+                )
+            else:
+                row, _ = evaluate_weight_window(
+                    name=spec.name,
+                    family=spec.family,
+                    weights=weights,
+                    returns=returns,
+                    config=config,
+                    args=eval_args,
+                    parameters=spec.params,
+                    start=start,
+                    segment="start_date_cv",
+                )
             metrics_rows.append(row)
 
     qqq_bh = benchmark_weights(returns.index, args.benchmark_ticker)
@@ -248,31 +423,71 @@ def main() -> None:
         config=config,
         args=eval_args,
     )
+    qqq_official_simulation = simulate_weight_path(
+        weights=qqq_bh.loc[qqq_bh.index >= OFFICIAL_EVALUATION_START],
+        returns=returns.loc[returns.index >= OFFICIAL_EVALUATION_START],
+        config=config,
+        args=eval_args,
+    )
+    annual_tax, tax_audit = annual_tax_payment_summary(
+        name="QQQ_BH",
+        family="benchmark",
+        simulation=qqq_official_simulation,
+        source_segment="official_start",
+    )
+    annual_tax_rows.append(annual_tax)
+    tax_audit_rows.append(tax_audit)
     for start in starts:
-        row, _ = metrics_from_simulated_slice(
-            name="QQQ_BH",
-            family="benchmark",
-            simulation=qqq_simulation,
-            config=config,
-            parameters={},
-            start=start,
-            segment="start_date_cv",
-        )
+        if args.fast_slice_tax:
+            row, _ = metrics_from_simulated_slice(
+                name="QQQ_BH",
+                family="benchmark",
+                simulation=qqq_simulation,
+                config=config,
+                parameters={},
+                start=start,
+                segment="start_date_cv_fast_slice",
+            )
+        else:
+            row, _ = evaluate_weight_window(
+                name="QQQ_BH",
+                family="benchmark",
+                weights=qqq_bh,
+                returns=returns,
+                config=config,
+                args=eval_args,
+                parameters={},
+                start=start,
+                segment="start_date_cv",
+            )
         metrics_rows.append(row)
 
     metrics = pd.DataFrame(metrics_rows)
     summary = robustness_summary(metrics)
     diagnostics = pd.DataFrame(diagnostics_rows)
+    annual_tax_payments = (
+        pd.concat(annual_tax_rows, ignore_index=True)
+        if annual_tax_rows
+        else pd.DataFrame()
+    )
+    tax_audit = pd.DataFrame(tax_audit_rows)
+    macd_options = _make_macd_options_comparison(metrics, summary)
 
     metrics_path = tables_dir / f"{args.output_prefix}_metrics.csv"
     summary_path = tables_dir / f"{args.output_prefix}_summary.csv"
     rank_path = tables_dir / "preferred_parameter_robustness_rank.csv"
     diagnostics_path = tables_dir / f"{args.output_prefix}_diagnostics.csv"
     weights_path = tables_dir / f"{args.output_prefix}_weights.parquet"
+    annual_tax_path = tables_dir / f"{args.output_prefix}_annual_tax_payments.csv"
+    tax_audit_path = tables_dir / f"{args.output_prefix}_tax_audit.csv"
+    macd_options_path = tables_dir / "preferred_macd_options_comparison.csv"
     metrics.to_csv(metrics_path, index=False)
     summary.to_csv(summary_path, index=False)
     summary.to_csv(rank_path, index=False)
     diagnostics.to_csv(diagnostics_path, index=False)
+    annual_tax_payments.to_csv(annual_tax_path, index=False)
+    tax_audit.to_csv(tax_audit_path, index=False)
+    macd_options.to_csv(macd_options_path, index=False)
     pd.concat(full_weights, axis=1).to_parquet(weights_path)
 
     heatmap_path = figures_dir / f"{args.output_prefix}_heatmap.png"
@@ -280,10 +495,21 @@ def main() -> None:
     _plot_heatmap(metrics, summary, heatmap_path, top_n=args.top_heatmap_n)
     top_rank_names = list(dict.fromkeys([CURRENT_PREFERRED_NAME] + summary.head(8)["name"].tolist()))
     _plot_rank_stability(metrics, rank_path_fig, top_names=top_rank_names)
-    _make_site(site_dir, summary, metrics, [heatmap_path, rank_path_fig])
+    _make_site(
+        site_dir,
+        summary,
+        metrics,
+        [heatmap_path, rank_path_fig],
+        tax_audit=tax_audit,
+        annual_tax=annual_tax_payments,
+        macd_options=macd_options,
+    )
 
     print(f"Saved metrics: {metrics_path}")
     print(f"Saved summary: {summary_path}")
+    print(f"Saved annual tax payments: {annual_tax_path}")
+    print(f"Saved tax audit: {tax_audit_path}")
+    print(f"Saved MACD options: {macd_options_path}")
     print(f"Saved site: {site_dir / 'start_date_cv.html'}")
     print("Top robustness rows:")
     print(summary.head(15).to_string(index=False))
