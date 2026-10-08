@@ -1,4 +1,4 @@
-# Current QQQ research contract
+# Trend Following Study — Research Contract
 
 The current repository tree contains only the 56,644-configuration QQQ/cash
 study. See [the operating contract](gap_hold_flags_v5.md) and the

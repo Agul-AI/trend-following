@@ -14,6 +14,7 @@ def test_unversioned_public_help_delegates_without_running_market_stages():
         text=True,
         check=True,
     )
+    assert result.stdout.startswith("Trend Following Study\n")
     assert "usage: run_qqq_research.py" in result.stdout
     assert "user-authorized observed-only gap study" in result.stdout
     assert "No automatic market evaluation" in result.stdout

@@ -1,5 +1,7 @@
-# Current repository and publishing instructions
+# Trend Following Study — Repository Instructions
 
+- The public project name is **Trend Following Study**. Use this name in
+  project titles, documentation and future descriptions, not a version label.
 - This repository contains only the current 56,644-configuration QQQ/cash study,
   its transitive code dependencies, current tests and current documentation.
   Do not reintroduce archived code, strategies, returns, figures or study reports

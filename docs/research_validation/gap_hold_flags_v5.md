@@ -1,9 +1,10 @@
-# QQQ daily indicators, gap-held positions and post-gap flags
+# Trend Following Study — Daily Indicators, Gap-Held Positions and Flags
 
 This is the current 56,644-configuration QQQ/cash operating contract. Prices are
 Alpha Vantage only; the fixed historical endpoint is May 28, 2026. The
-2001–2011 development sweep has completed; independent QA of the current
-results and cost-matched QQQ buy-and-hold comparison is underway. Validation and historical OOS have not been run.
+2001–2011 development sweep and independent QA of the current results and
+cost-matched QQQ buy-and-hold comparison have completed. Validation and historical
+OOS have not been run.
 
 ## Daily rules and half-hour confirmations
 

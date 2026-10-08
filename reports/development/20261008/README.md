@@ -1,4 +1,4 @@
-# Current development sweep: many configurations beat buy-and-hold in-sample
+# Trend Following Study — Development Results
 
 **Development only: January 2, 2001–December 30, 2011; 2,767 daily valuation sessions.**
 All 56,644 frozen configurations were evaluated once using Alpha-only QQQ prices,

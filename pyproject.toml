@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "trend-following-real-data"
 version = "0.1.0"
-description = "Transparent trend-following research pipeline using real market data."
+description = "Trend Following Study: transparent daily-indicator research using real market data."
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Agul-AI" }]

@@ -1,8 +1,9 @@
-# QQQ daily-indicator trend-following research
+# Trend Following Study
 
 **Repository:** [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
-This tree contains only the current **56,644-configuration**, unlevered QQQ/cash
-study, its dependencies, and its software tests. Git history is preserved.
+The **Trend Following Study** tests **56,644 configurations** of daily indicators
+and half-hour confirmation on unlevered QQQ/cash. This tree contains only the
+current study, its dependencies and software tests. Git history is preserved.
 
 ## Current development results (2001–2011)
 
