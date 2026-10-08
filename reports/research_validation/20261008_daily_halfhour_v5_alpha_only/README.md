@@ -25,7 +25,7 @@ liquidation of existing holdings remains a separately disclosed convention.
 
 ## Verification and data status
 
-**510 tests pass**, including **131 v5 tests**. The core/data/independent
+**510 tests pass**, including **131 tests**. The core/data/independent
 acceptance subset passed 83 tests, and staged-protocol tests passed 48. Ruff,
 new-file formatting and whitespace checks pass. All 425 preserved v4/legacy
 files and both 13-file earlier-source archives match their original hashes.
@@ -51,6 +51,6 @@ See the [runbook](../../../docs/research_validation/daily_hourly_v5.md),
 
 This is a dated pre-publication audit milestone. Any `committed: false`,
 `pushed: false` or local/unpushed wording describes the state when this receipt
-was recorded, not the current repository status. V5 is published to
+was recorded, not the current repository status. This project is published to
 [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
 Original numerical evidence and JSON receipt status fields are unchanged.

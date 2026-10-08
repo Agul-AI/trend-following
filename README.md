@@ -1,9 +1,9 @@
-# QQQ v5 daily-indicator research
+# QQQ daily-indicator research
 
 **Repository:** [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
-This is the publishing destination for v5 and subsequent updates. Earlier code
+This is the publishing destination for this project and subsequent updates. Earlier code
 and v4 reference evidence are retained for compatibility and audit, not presented
-as results of the current v5 study.
+as results of the current study.
 
 ## Public setup
 
@@ -12,17 +12,17 @@ Install the project in a Python environment with the `dev` and `research` extras
 ```bash
 python -m pip install -e '.[dev,research]'
 python -m pytest
-python scripts/run_qqq_gap_flags_v5.py --help
+python scripts/run_qqq_research.py --help
 ```
 
 Market-price caches, credentials, private authorizations and prepared freezes
 are **not included**. The fabricated tests do not need these inputs. Historical
 preparation requires verified local Alpha data and a local authorization receipt;
 it intentionally stops when those are missing. Use `--source-root` explicitly
-when auditing price caches outside this checkout. Dated v5 receipts retain their
+when auditing price caches outside this checkout. Dated implementation receipts retain their
 pre-publication status fields as historical milestones.
 
-## New v5 implementation
+## Current implementation
 
 The latest [gap-held development variant](docs/research_validation/gap_hold_flags_v5.md)
 uses the user-authorized no-trading rule for missing intervals: keep the last
@@ -30,8 +30,8 @@ filled QQQ/cash holding, cancel pending orders, and restart confirmations.
 Preparation is **data-ready under that disclosed policy**, not repaired complete
 intraday history. Every development configuration receives descriptive flags for
 confirmed signals after a source gap through the next trading session's close;
-flags never change ranking or selection. Use `scripts/run_qqq_gap_flags_v5.py`.
-**No v5 market-performance run has been started.**
+flags never change ranking or selection. Use `scripts/run_qqq_research.py`.
+**No market-performance run has been started for the current study.**
 
 The separate [daily-indicator/half-hour-confirmation study](docs/research_validation/daily_hourly_v5.md)
 implements **56,644** unlevered QQQ/cash configurations using **Alpha Vantage
@@ -42,7 +42,7 @@ are checked at every completed half-hour close. Zero means the first qualifying
 completed bar; 0.5 hours requires one additional qualifying close. Fills use the next bar's open. The study charges 1 bp
 commission plus 1/3/10/25 bps slippage, with **no modeled taxes**.
 
-**No v5 market-performance results are available.** The new
+**No market-performance results are available for the current study.** The new
 [Alpha quote-reconciliation profile](docs/research_validation/alpha_quality_reconciliation_v5.md)
 verifies reconstructed as-traded units, separates provider daily closes from
 intraday trading quotes, and excludes documented halt intervals from signals
@@ -55,7 +55,7 @@ requires a June 1 tail.
 The completed v4 evidence below, its frozen artifacts, existing monitors and
 personal resumes remain unchanged.
 
-## Archived v4 study (not v5 results)
+## Archived v4 study (not current-study results)
 
 That archived study was a **fresh data-only restart**. Data were split before
 research, and a new development agent received only raw observations through

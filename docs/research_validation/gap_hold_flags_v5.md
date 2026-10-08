@@ -64,9 +64,9 @@ validation, and historical OOS still requires a sealed validation winner.
 ```bash
 cd /path/to/trend-following
 # Activate your environment with the dev and research dependencies installed.
-python scripts/run_qqq_gap_flags_v5.py prepare
+python scripts/run_qqq_research.py prepare
 # Explicitly request/start this market run after preparation is verified:
-python scripts/run_qqq_gap_flags_v5.py development
+python scripts/run_qqq_research.py development
 ```
 
 The current config is `configs/qqq_daily_halfhour_v5_gap_flags_v2.yaml`; its private
@@ -85,3 +85,7 @@ Alpha price caches, private authorization receipts or prepared packets. A fresh
 clone can run the fabricated software tests; historical preparation requires
 verified local inputs and a locally recorded authorization. The preparation
 CLI must fail closed when those private inputs are absent.
+
+The public project and command are unversioned. Existing internal filenames,
+schema IDs and frozen records retain their technical version identifiers so
+this presentation change does not invalidate the prepared study.

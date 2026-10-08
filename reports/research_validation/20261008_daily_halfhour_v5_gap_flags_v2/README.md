@@ -42,6 +42,6 @@ checkout and `~/.venvs/myenv/bin/python scripts/run_qqq_gap_flags_v5.py developm
 
 This is a dated pre-publication audit milestone. Any `committed: false`,
 `pushed: false` or local/unpushed wording describes the state when this receipt
-was recorded, not the current repository status. V5 is published to
+was recorded, not the current repository status. This project is published to
 [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
 Original numerical evidence and JSON receipt status fields are unchanged.

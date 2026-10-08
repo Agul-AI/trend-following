@@ -1,11 +1,11 @@
-# QQQ v5 Alpha-only data-quality correction — October 8, 2026
+# QQQ Alpha-only data-quality correction — October 8, 2026
 
 ## Result
 
 **False price-role gates corrected; genuine missing data still blocks strict backtesting.**
 Actual default preparation verifies the source-unit proof and stops before any
 portfolio calculation. It reports 14 unknown missing half-hours, not an
-unverified raw-price/closing-equality failure. No v5 market scores were generated.
+unverified raw-price/closing-equality failure. No market scores were generated.
 
 ## Corrections
 
@@ -43,7 +43,7 @@ No such approval has been received or inferred.
 See [the implementation and operating policy](../../../docs/research_validation/alpha_quality_reconciliation_v5.md)
 and `completion_receipt.json`. The 56,644-candidate grid, chronological periods,
 May 28, 2026 endpoint and 2/4/11/26-bp one-way execution scenarios remain unchanged.
-All 425 checked v4/legacy artifacts and three prior 13-file v5 source snapshots
+All 425 checked v4/legacy artifacts and three prior 13-file source snapshots
 remain unchanged. Resume files and existing monitors were not edited. Changes are
 local, uncommitted and unpushed; the public repository does not yet contain this fix.
 
@@ -58,6 +58,6 @@ performance evidence.
 
 This is a dated pre-publication audit milestone. Any `committed: false`,
 `pushed: false` or local/unpushed wording describes the state when this receipt
-was recorded, not the current repository status. V5 is published to
+was recorded, not the current repository status. This project is published to
 [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
 Original numerical evidence and JSON receipt status fields are unchanged.

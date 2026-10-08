@@ -19,9 +19,9 @@ Daily SMA/EMA/MACD periods, independent 2–6-hour streaks, next-bar-open fills,
 
 ## Verification and preservation
 
-**479 tests pass**, including **100 v5 tests**. Repository Ruff, new Python-file
+**479 tests pass**, including **100 tests**. Repository Ruff, new Python-file
 formatting and whitespace checks pass. All **425 preserved v4/legacy files**
-match their original hashes, and all **13 archived prior-v5 source files** match
+match their original hashes, and all **13 archived prior-study source files** match
 their archive hashes. The earlier registration/implementation receipt is not
 overwritten; this revision uses a new study identity and private cache.
 
@@ -54,6 +54,6 @@ See the [runbook](../../../docs/research_validation/daily_hourly_v5.md),
 
 This is a dated pre-publication audit milestone. Any `committed: false`,
 `pushed: false` or local/unpushed wording describes the state when this receipt
-was recorded, not the current repository status. V5 is published to
+was recorded, not the current repository status. This project is published to
 [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
 Original numerical evidence and JSON receipt status fields are unchanged.

@@ -1,6 +1,6 @@
 # QQQ daily indicators with hourly confirmation implementation
 
-The v5 software is implemented locally, with daily SMA/EMA/MACD periods and
+The software is implemented locally, with daily SMA/EMA/MACD periods and
 independent 2–6 completed-trading-hour entry/exit confirmations. Its full grid
 contains **7,225 configurations**. Confirmations carry across trading sessions;
 fills use the next bar open, including a partial closing bar. Commission is
@@ -8,7 +8,7 @@ fills use the next bar open, including a partial closing bar. Commission is
 
 ## Verification
 
-- **465 tests passed**, including **86 new v5 tests**.
+- **465 tests passed**, including **86 new tests**.
 - Repository-wide Ruff checks, new-file formatting and whitespace checks passed.
 - **425 preserved v4/frozen/legacy files** matched their pre-implementation hashes.
 - A fabricated-data full-grid evaluation and single-versus-batch ledger checks
@@ -30,7 +30,7 @@ bar-timing proof and required gap repair must precede market scoring.
 
 Historical dates remain retrospective, previously examined history. No v4
 reports, frozen source packets, existing monitors, prospective studies or resumes
-were updated with hypothetical v5 results. These changes have not been pushed.
+were updated with hypothetical results. These changes have not been pushed.
 
 See the [runbook](../../../docs/research_validation/daily_hourly_v5.md),
 [configuration](../../../configs/qqq_daily_hourly_v5.yaml), and
@@ -41,6 +41,6 @@ source snapshots, provider diagnostics and attempt logs stay in ignored caches.
 
 This is a dated pre-publication audit milestone. Any `committed: false`,
 `pushed: false` or local/unpushed wording describes the state when this receipt
-was recorded, not the current repository status. V5 is published to
+was recorded, not the current repository status. This project is published to
 [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
 Original numerical evidence and JSON receipt status fields are unchanged.
