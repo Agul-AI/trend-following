@@ -1,91 +1,120 @@
-# QQQ gap-held positions and post-gap development flags
+# QQQ daily indicators, gap-held positions and post-gap flags
 
-The user authorized this operating policy on October 8, 2026. It is a new,
-separately frozen study, not a repair of the Alpha source history or a change to
-previously registered results. The earlier strict study and its source snapshot
-remain preserved. Prices remain Alpha-only and historical evaluation ends May
-28, 2026. There are still 56,644 daily-indicator/half-hour-confirmation candidates.
+This is the current 56,644-configuration QQQ/cash operating contract. Prices are
+Alpha Vantage only; the fixed historical endpoint is May 28, 2026. The
+2001–2011 development sweep has completed; independent QA of the current
+results and cost-matched QQQ buy-and-hold comparison is underway. Validation and historical OOS have not been run.
 
-## Positions during missing intervals
+## Daily rules and half-hour confirmations
 
-Keep the **simulator's last filled QQQ/cash position**, not a pending target or an
-indicator's latest suggestion. Do not trade, impute prices or count confirmations
-inside an unknown source gap. Cancel any unfilled order at gap start and reset
-both confirmation streaks; fresh completed observations are required afterward.
+SMA/EMA periods are 10, 20, 50, 100, 200 and 250 **daily trading sessions**.
+Standalone EMA-MACD tuples are `(6,13,5)`, `(12,26,9)`, `(24,52,18)`, `(48,104,36)`
+and `(96,208,72)`. Each side independently chooses one of 17 rules and one of 14
+waits: 0, 0.5, …, 6.5 trading hours after the first qualifying completed close.
+Required checks are `1 + 2 * hours`; 238 choices per side give **56,644 pairs**.
 
-“Same position” does not mean artificially constant portfolio value. Real
-provider daily quotes still value QQQ at the frozen 17:00 NY clock, cash accrues
-causally, and split/dividend entitlements remain in effect. If an opening quote
-is missing, dividend reinvestment waits for a safe observed opening quote.
+At a first hit at 10:00 NY, zero confirms at 10:00, 0.5 hours at 10:30 and one
+hour at 11:00. A 6.5-hour wait requires 14 qualifying checks, crossing into the
+next session. Nights, weekends and holidays are not confirmation samples.
+Daily state updates once at the provider daily quote's assumed 17:00 availability;
+every intraday preview is recomputed from the prior finalized daily state.
 
-## Which signals are flagged
+While in cash, both entry-rule and exit-rule support must qualify for the entry
+streak. While long, loss of exit-rule support drives the exit streak. Conditions
+are strict positive support; equality is unsupported. Streaks carry across
+sessions except on condition failure, fills, segment resets, or blackouts.
+Pending orders fill only at a safe observed next bar Open. All completed
+half-hours, including 15:30–16:00, may confirm when their eligibility metadata
+allows. No zero-wait decision uses an unfinished bar or its earlier Open.
 
-Flag **confirmed buy/sell decisions** from every configuration, including those
-not selected as finalists. Mere indicator support, initial streak observations,
-executed fills, forced terminal liquidation and cancelled pre-gap orders are not
-new confirmed signals. A flagged decision is not evidence that a missing-bar
-signal would have occurred; it is a diagnostic of proximity to incomplete data.
-Conversely, the absence of a flag does not establish that missing data had no
-effect on a configuration.
+## Pricing, valuation and accounting
 
-The user explicitly selected **through the next trading session's close**, not
-24 elapsed hours. For an unknown gap ending at `g`, flag a confirmed decision at
-`t` when `g < t <= the next NY trading-session date's actual market close`. This
-includes valid decisions later on the gap's ending day. Early closes use the
-frozen exchange calendar; nights, weekends and holidays do not create samples.
+Intraday OHLC is reconstructed into as-traded units from Alpha adjustment
+factors, validated independently against native daily JSON fields, nonclosing
+monthly anchors and same-provider 15/30-minute windows. It is **derived, not a
+native adjusted=false capture**. Source snapshots are latest-vintage, not
+certified point-in-time. Vendor-reported volume is not certified physical-share
+volume and is unused by the fixed indicator/cost model.
 
-| Unknown source gap | Post-gap flagged decision window (New York time) |
+Provider daily raw closes are assumed available at 17:00 New York. They value
+holdings and finalize features for the next session; they are not guaranteed
+Nasdaq Official Closing Prices. A provider daily close need not equal the last
+16:00 intraday trade. Neither price is overwritten to force equality.
+Executable prices remain safe observed intraday quotes. Terminal liquidation
+uses the last verified tradable RTH close and then cash accrual to the same
+17:00 endpoint as the benchmarks; it never invents a fill at the daily mark.
+
+Baseline per-order costs are 1 bp commission plus 3 bps adverse slippage;
+slippage stress is 1/3/10/25 bps. Taxes, financing and extra expenses are zero.
+QQQ buy-and-hold and causal FRED-derived DTB3 cash share the same start,
+accounting, valuation and terminal conventions. Splits/dividend entitlements
+remain effective; a missing opening quote defers dividend reinvestment until a
+safe observed opening quote. Cash observations are timestamped, not undated
+future yields.
+
+## Missing observations and tradability
+
+Keep the simulator's **last filled QQQ/cash position**, not a pending target or
+an indicator suggestion. Do not trade, impute quotes, or count confirmations
+inside an unknown source gap. Cancel unfilled orders at gap start and reset both
+streaks; fresh completed observations are required afterward. Holdings still
+receive legitimate corporate actions and daily valuations; cash still accrues.
+
+Fourteen source intervals remain absent: March 29, 2001, 09:30–10:00 (one
+half-hour) and November 30, 2004, 09:30–16:00 (13 half-hours). Their disclosed
+no-trade treatment is a user-authorized assumption, **not a data repair**.
+
+The documented August 22, 2013 regulatory halt spans 12:23–15:25 NY. The 12:00
+Open precedes the halt and may fill an already confirmed order, but that
+half-hour cannot confirm at its Close. A 15:00 label cannot backdate a quote
+whose post-halt trading begins at 15:25; the first fully safe post-halt interval
+is 15:30–16:00. Halt handling does not fabricate absent prices. Known halts are
+separate from unknown source gaps and do not produce the unknown-gap flags.
+
+## Descriptive post-gap flags
+
+Flag confirmed **buy/sell decisions** from every development configuration,
+including configurations not selected as finalists. Mere support, early streak
+observations, fills, forced liquidation and cancelled pre-gap orders are not
+new confirmed signals. No flag establishes that missing data had no effect.
+
+For a source gap ending at `g`, flag a decision at `t` when:
+`g < t <= the strictly next NY trading-session date's actual market close`.
+This is not a 24-hour window. It also includes valid decisions later on the gap's
+ending day; early closes use the frozen exchange calendar.
+
+| Source gap | Flagged decision window, New York time |
 |---|---|
 | March 29, 2001, 09:30–10:00 | After March 29 at 10:00 through March 30 at 16:00 |
 | November 30, 2004, 09:30–16:00 | After November 30 at 16:00 through December 1 at 16:00 |
 
-The documented 2013 regulatory halt is handled as before, but is not an unknown
-source gap and does not create these development flags.
+Persist each candidate's flag/buy/sell/counts, confirmed-signal event table, and
+window metadata. Counts represent distinct decisions; association rows can map
+one decision to multiple overlapping gap windows. The frozen event limit is
+2,500,000, exceeding the two actual windows' 2,152,472 maximum associations.
+Truncated event records prevent sealing; incomplete attempts are retained.
+**Flags cannot filter, rank, alter Sharpe, or replace any selection.**
 
-## Reporting and selection
+## Staged research and software
 
-Each development candidate receives a `has_post_gap_confirmed_signal` flag and
-exact buy/sell/total post-gap confirmed-signal counts. A separate event table
-records candidate ID, side, decision timestamp, source-gap bounds and window end;
-it does not export raw prices. Event retention is frozen before performance.
-The two actual windows contain 38 possible completed half-hour decision closes,
-so 56,644 candidates can generate at most 2,152,472 signal-window associations.
-The configured limit is 2,500,000. Incomplete/truncated event records cannot be
-silently sealed as a complete diagnostic study.
+Daily initialization is 1999–2000; development 2001–2011; validation 2012–2015;
+historical OOS 2016–May 28, 2026. Historical OOS is retrospective, not untouched
+or live evidence. Each scored segment starts with cash and reset orders/streaks.
+Full preparation is source custody/QA, not a claim of avoiding future source
+parsing. A market stage itself receives only its physically bounded numerical
+prefix. Source, proof, config, grid, accounting, consent and selection hashes
+must verify before performance.
 
-**Flags are descriptive only.** They do not alter trades, return accounting,
-Sharpe scores, ranking, family-finalist eligibility or validation selection. No
-candidate may be excluded or replaced because a flag appears. Development still
-searches the full grid; only its sealed finite family finalists may enter
-validation, and historical OOS still requires a sealed validation winner.
+Development scores every configuration by finite daily cash-excess Sharpe
+(252 annualization, sample standard deviation). Keep up to one finite finalist
+per entry/exit family cell, maximum nine; undefined cells are excluded, and an
+all-undefined grid stops. Differences within 1e-10 tie on stable candidate ID.
+Only sealed finalists may enter validation; only its sealed winner may enter
+historical OOS. No validation/OOS market evaluation has occurred.
 
-## Separate entry point
-
-```bash
-cd /path/to/trend-following
-# Activate your environment with the dev and research dependencies installed.
-python scripts/run_qqq_research.py prepare
-# Explicitly request/start this market run after preparation is verified:
-python scripts/run_qqq_research.py development
-```
-
-The current config is `configs/qqq_daily_halfhour_v5_gap_flags_v2.yaml`; its private
-study is `.cache/qqq_daily_halfhour_v5_alpha_gap_flags_v2`. Human consent is retained
-as a hash-bound receipt. The original strict configuration is not overwritten
-or reinterpreted. Preparation and software tests are not market performance.
-
-The first gap-flags preparation attempt was interrupted after a pandas metadata
-copying bottleneck was confirmed. Its registration, failure receipt, partial
-prefixes and a 16-file source snapshot remain preserved. V2 changes only
-proof serialization and artifact location; numeric hashes, source prices and
-all research/position/flag/selection rules are unchanged.
-
-The public repository contains code and curated audit metadata, not licensed
-Alpha price caches, private authorization receipts or prepared packets. A fresh
-clone can run the fabricated software tests; historical preparation requires
-verified local inputs and a locally recorded authorization. The preparation
-CLI must fail closed when those private inputs are absent.
-
-The public project and command are unversioned. Existing internal filenames,
-schema IDs and frozen records retain their technical version identifiers so
-this presentation change does not invalidate the prepared study.
+Install `.[dev,research]`, then use `python scripts/run_qqq_research.py --help`.
+The active configuration is `configs/qqq_daily_halfhour_v5_gap_flags_v2.yaml` and
+private study `.cache/qqq_daily_halfhour_v5_alpha_gap_flags_v2`. Licensed inputs,
+private human consent and prepared freezes are not committed. Missing inputs or
+changed hashes fail closed. Internal versioned identifiers remain unchanged;
+the public study and command use no version-number branding.

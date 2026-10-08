@@ -1,27 +1,26 @@
-# Repository and publishing instructions
+# Current repository and publishing instructions
 
-- The user-designated repository for this project and all subsequent updates is
-  `https://github.com/Agul-quant/trend-following`.
-- Before committing or pushing, verify the current branch, staged files and
-  `git remote get-url --push origin`. The destination must be
-  `Agul-quant/trend-following`, including when a local SSH host alias is used.
-- Do not push to `Agul-AI/trend-following`; any legacy remote is for read-only
-  historical reference. Use non-force pushes. Do not replace existing remote
-  history or merge unrelated local legacy work into this study without an explicit request.
-- Preserve frozen v4 evidence, prior registrations, private source snapshots,
-  existing monitors and resumes. Never retune or overwrite a sealed study.
-- Never commit credentials, downloaded/raw market prices, processed price packets,
-  `.cache`, human authorization receipts, private freezes or runtime logs.
-  Curated metadata reports must not expose secrets or private machine paths.
-- Use `~/.venvs/myenv/bin/python` and `~/.venvs/myenv/bin/pip` for this user's local
-  Python work when that environment exists. Otherwise use an isolated environment
-  with the project dependencies.
-- Before publishing changes, run the software tests, Ruff and
-  `git diff --check`. Keep software-test evidence separate from market performance.
-- Do not use version-number branding for the current project. Internal versioned
-  filenames, schema identifiers and dated frozen records remain for compatibility;
-  do not rename them or alter their hashes just to change presentation.
-- The current public entry point is `scripts/run_qqq_research.py`, with the
-  separately frozen gap-held policy and descriptive post-gap signal flags.
-  Flags never filter, rank or replace configurations. Previously inspected
-  historical OOS is retrospective, not untouched or live evidence.
+- This repository contains only the current 56,644-configuration QQQ/cash study,
+  its transitive code dependencies, current tests and current documentation.
+  Do not reintroduce archived code, strategies, returns, figures or study reports
+  into the current tree or use them to choose current parameters/results.
+- The default publishing target is `https://github.com/Agul-quant/trend-following`.
+  Before committing/pushing, verify branch, staged files and the origin push URL.
+  Never push to `Agul-AI/trend-following`; use non-force pushes and preserve Git
+  history unless the user explicitly requests a separate history operation.
+- The public entry point is `scripts/run_qqq_research.py`. Keep its current
+  immutable config and eight frozen implementation dependencies byte-identical
+  during a running or sealed study; internal versioned filenames/schema IDs are
+  technical identifiers, not public version-number branding.
+- Current development is 2001–2011 against cost-matched QQQ buy-and-hold. Do not
+  run validation or historical OOS until the required frozen selections and user
+  authorization permit it. Previously inspected historical OOS is retrospective.
+- Hold the last filled position during missing source intervals. Gap flags are
+  descriptive only and never filter, rank, or replace configurations.
+- Never commit credentials, downloaded/raw prices, processed market packets,
+  `.cache`, private authorization receipts, freezes, source backups or runtime
+  logs. Publish only current source/tests/docs and reviewed current results.
+- Use `~/.venvs/myenv/bin/python` and `~/.venvs/myenv/bin/pip` for this user's
+  Python work when available; otherwise use an isolated project environment.
+- Before publishing, run current synthetic software tests, Ruff and
+  `git diff --check`. Software tests/preparation are not market performance.

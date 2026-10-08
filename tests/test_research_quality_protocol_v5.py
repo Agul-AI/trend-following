@@ -14,11 +14,18 @@ from trend_following import research_daily_hourly_v5 as core
 from trend_following import research_quality_engine_v5 as quality
 from trend_following import research_quality_protocol_v5 as protocol
 
+ACTIVE_CONFIG = protocol.WORKSPACE / "configs/qqq_daily_halfhour_v5_gap_flags_v2.yaml"
+
 
 @pytest.fixture
 def config_file(tmp_path, monkeypatch):
     path = tmp_path / "quality.yaml"
-    path.write_text(protocol.DEFAULT_CONFIG.read_text())
+    # Exercise strict safety gates as a synthetic variation of the current study,
+    # without retaining or reading a superseded study configuration.
+    config = yaml.safe_load(ACTIVE_CONFIG.read_text())
+    config["quality_policy"].update(profile="strict_tradable_v1", gap_authorization_receipt=None)
+    config.pop("diagnostics", None)
+    path.write_text(yaml.safe_dump(config))
     monkeypatch.setattr(protocol, "_source_hashes", lambda: {"SYNTHETIC_CODE": "a" * 64})
     monkeypatch.setattr(protocol, "_runtime", lambda: {"python": "TEST", "packages": {}})
     return path
@@ -45,7 +52,7 @@ def set_profile(config_file, tmp_path):
     return path
 
 
-def test_default_profile_roles_and_grid(config_file):
+def test_strict_synthetic_profile_roles_and_grid(config_file):
     config = protocol.load_config(config_file)
     assert config["quality_policy"]["profile"] == "strict_tradable_v1"
     assert protocol._authorization(config) is None
@@ -589,9 +596,7 @@ def test_all_undefined_families_stop_without_invented_finalist(packet_fixture):
 
 
 def diagnostic_fixture(tmp_path):
-    config = yaml.safe_load(
-        (protocol.WORKSPACE / "configs/qqq_daily_halfhour_v5_gap_flags.yaml").read_text()
-    )
+    config = yaml.safe_load(ACTIVE_CONFIG.read_text())
     candidates = [
         core.Candidate(
             core.IndicatorRule("SMA", period=10), core.IndicatorRule("EMA", period=20), 0.0, 0.0
@@ -677,35 +682,32 @@ def test_missing_all_candidate_flags_or_false_selection_usage_rejected(tmp_path)
         protocol._diagnostics_settings(config)
 
 
-def test_gap_config_routes_new_private_dir_without_changing_strict_default(config_file):
-    gap = protocol.WORKSPACE / "configs/qqq_daily_halfhour_v5_gap_flags.yaml"
-    _, output = protocol._context(gap, None)
-    assert output.name == "qqq_daily_halfhour_v5_alpha_gap_flags"
-    assert (
-        protocol.load_config(protocol.DEFAULT_CONFIG)["quality_policy"]["profile"]
-        == "strict_tradable_v1"
-    )
+def test_current_gap_config_routes_private_dir_without_changing_strict_test_fixture(config_file):
+    _, output = protocol._context(ACTIVE_CONFIG, None)
+    assert output.name == "qqq_daily_halfhour_v5_alpha_gap_flags_v2"
+    assert protocol.load_config(config_file)["quality_policy"]["profile"] == "strict_tradable_v1"
     assert protocol._diagnostics_settings(protocol.load_config(config_file))["enabled"] is False
 
 
-def test_gap_flags_v2_only_changes_paths_not_research_semantics():
-    directory = protocol.WORKSPACE / "configs"
-    original = yaml.safe_load((directory / "qqq_daily_halfhour_v5_gap_flags.yaml").read_text())
-    updated = yaml.safe_load((directory / "qqq_daily_halfhour_v5_gap_flags_v2.yaml").read_text())
-    assert updated["paths"]["private_output"] == ".cache/qqq_daily_halfhour_v5_alpha_gap_flags_v2"
+def test_current_gap_config_paths_and_frozen_research_contract():
+    config = protocol.load_config(ACTIVE_CONFIG)
+    assert config["paths"]["private_output"] == ".cache/qqq_daily_halfhour_v5_alpha_gap_flags_v2"
     assert (
-        updated["paths"]["input_packet"]
+        config["paths"]["input_packet"]
         == "data/processed/research_daily_halfhour_v5_alpha_gap_flags_v2/classified_alpha_input"
     )
     assert (
-        updated["quality_policy"]["gap_authorization_receipt"]
+        config["quality_policy"]["gap_authorization_receipt"]
         == ".cache/qqq_daily_halfhour_v5_alpha_gap_flags_v2/gap_policy_authorization.json"
     )
-    updated["paths"] = original["paths"]
-    updated["quality_policy"]["gap_authorization_receipt"] = original["quality_policy"][
-        "gap_authorization_receipt"
-    ]
-    assert updated == original
+    assert config["quality_policy"]["profile"] == "observed_only_blackout_v1"
+    assert config["grid"]["candidate_count"] == 56644
+    assert config["grid"]["entry_confirmation_hours"] == protocol.CONFIRMATION_HOURS
+    assert config["grid"]["exit_confirmation_hours"] == protocol.CONFIRMATION_HOURS
+    diagnostics = protocol._diagnostics_settings(config)
+    assert diagnostics["enabled"] is True
+    assert diagnostics["descriptive_only"] is True
+    assert diagnostics["affects_selection"] is False
 
 
 def test_gap_flags_cli_uses_v2_config_and_private_dir_by_default(monkeypatch):

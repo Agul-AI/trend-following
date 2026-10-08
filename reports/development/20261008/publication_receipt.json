@@ -1,0 +1,32 @@
+{
+  "all_input_source_files_preserved": true,
+  "candidate_count": 56644,
+  "created_at": "2026-10-08T20:56:05.264445+00:00",
+  "current_development_completed": true,
+  "development_stage_sha256": "8c6c0d55ba9b313034add6281e94c650db0d1866ad1a5135cb023e66242585e3",
+  "frozen_source_sha256": {
+    "scripts/run_qqq_gap_flags_v5.py": "72a4effb5564391610917853793e4f57a34bb8e320d575e3544cefe5e1d2a826",
+    "scripts/run_qqq_reconciled_v5.py": "87d076d21f51ddf8d46b712c2be0655bfd1d2c4b7c0c1b4eda04b93f8927fd54",
+    "src/trend_following/research_alpha_reconciliation_v5.py": "11c5d5b83b43b71ff22efd590eb863d660a006caec02824fd1a4b89d90ceed63",
+    "src/trend_following/research_daily_hourly_v5.py": "de718c8d9f16870e2907327f6e1aa8fc386993fcaaa1a5486e5029845bc7cd0d",
+    "src/trend_following/research_hourly_data_v5.py": "4dfdf6591456b037b6aca3617b77154fd3d94b868da873da54c9179080e23a80",
+    "src/trend_following/research_quality_engine_v5.py": "39cc48e4cd616ec0b5ed1ef6381821f85a2a70fab3572ba40bfab1784dee81ca",
+    "src/trend_following/research_quality_protocol_v5.py": "771fc81ca01a2d482789a2890939c2d63f16a6285cf7c3ea791f96fe4aa63005",
+    "src/trend_following/research_rates.py": "c93ff7712b9df421abd72b1f8ff3482c2c05e396d7d61359de59512cb8300520"
+  },
+  "gap_flags_affect_selection": false,
+  "git_history_rewrite_requested": false,
+  "historical_oos_evaluated": false,
+  "numerical_selection_uses_other_study_results": false,
+  "prepared_sha256": "df455209e7d71f81d4db0df00b0c467623d05475875924e99166cf42a689fc38",
+  "private_raw_quotes_exported": false,
+  "registration_sha256": "9c3d2dc292e020054521894c268e9b473eb177ae98201e69312cc3b08694b7ce",
+  "removed_public_archived_file_count": 318,
+  "root_ruff_passed": true,
+  "schema": "current_development_publication_v1",
+  "sealed_family_finalists": 9,
+  "test_elapsed_seconds": 73.13,
+  "test_log_sha256": "3710776851cf1db952e3666a891a2f5be7ea8ee7a2db6dc79b2f6da45bb111cf",
+  "tests_passed": 203,
+  "validation_evaluated": false
+}

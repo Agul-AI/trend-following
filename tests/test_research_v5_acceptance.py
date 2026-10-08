@@ -8,7 +8,7 @@ import pytest
 
 from trend_following import research_daily_hourly_v5 as engine
 from trend_following import research_hourly_data_v5 as data
-from trend_following import research_hourly_protocol_v5 as protocol
+from trend_following import research_quality_protocol_v5 as protocol
 
 
 def fabricated_panel():
@@ -56,7 +56,9 @@ def fabricated_panel():
 
 
 def test_all_family_cells_and_units_match_frozen_configuration():
-    config = protocol.load_config()
+    config = protocol.load_config(
+        protocol.WORKSPACE / "configs/qqq_daily_halfhour_v5_gap_flags_v2.yaml"
+    )
     candidates = engine.generate_candidates()
     cells = Counter(candidate.family_cell for candidate in candidates)
     assert cells == {

@@ -1,7 +1,0 @@
-fold,train_end,allocation_multiplier,sizing
-2009_2011,2008-12-31 15:00:00-05:00,0.7521264407141712,train_only_QQQ_vol_div_B5_vol_capped_at_1
-2012_2014,2011-12-30 15:00:00-05:00,0.7041525763829931,train_only_QQQ_vol_div_B5_vol_capped_at_1
-2015_2017,2014-12-31 15:00:00-05:00,0.6393899591365927,train_only_QQQ_vol_div_B5_vol_capped_at_1
-2018_2020,2017-12-29 15:00:00-05:00,0.6345643725152494,train_only_QQQ_vol_div_B5_vol_capped_at_1
-2021_2023,2020-12-31 15:00:00-05:00,0.6250914538198005,train_only_QQQ_vol_div_B5_vol_capped_at_1
-2024_2026,2023-12-29 15:00:00-05:00,0.6269411817436215,train_only_QQQ_vol_div_B5_vol_capped_at_1

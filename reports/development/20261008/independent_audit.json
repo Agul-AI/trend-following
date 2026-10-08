@@ -1,0 +1,58 @@
+{
+  "all_current_source_and_stage_seals_verified": true,
+  "candidate_count": 56644,
+  "diagnostics": {
+    "distinct_confirmed_decisions": 3012,
+    "event_associations": 3012,
+    "flagged_candidates": 2691,
+    "truncated": false,
+    "unknown_windows": 2
+  },
+  "family_finalist_count": 9,
+  "family_finalists": [
+    "v5_30m__entry_sma_100__exit_sma_50__entry_hours_6p5__exit_hours_0",
+    "v5_30m__entry_sma_20__exit_ema_100__entry_hours_0__exit_hours_3",
+    "v5_30m__entry_sma_250__exit_macd_96_208_72__entry_hours_1__exit_hours_0p5",
+    "v5_30m__entry_ema_100__exit_sma_50__entry_hours_3__exit_hours_0",
+    "v5_30m__entry_ema_200__exit_ema_100__entry_hours_5p5__exit_hours_2p5",
+    "v5_30m__entry_ema_200__exit_macd_96_208_72__entry_hours_1__exit_hours_0p5",
+    "v5_30m__entry_macd_96_208_72__exit_sma_50__entry_hours_6p5__exit_hours_0",
+    "v5_30m__entry_macd_96_208_72__exit_ema_100__entry_hours_2__exit_hours_1p5",
+    "v5_30m__entry_macd_96_208_72__exit_macd_48_104_36__entry_hours_0p5__exit_hours_6p5"
+  ],
+  "leader_replay_matches_original_grid": true,
+  "limitation": "Grid does not persist all candidate daily curves; exact daily Sharpe/vol/DD recomputation is limited to supplied already-generated curves. No market strategy reruns performed.",
+  "no_gap_flag_filtering": true,
+  "persisted_curve_checks": {
+    "buy_and_hold": {
+      "annualization": 252,
+      "cash_excess_sharpe": 0.07785530790766033,
+      "curve_rows": 2767,
+      "ddof": 1
+    },
+    "cash": {
+      "annualization": 252,
+      "cash_excess_sharpe": null,
+      "curve_rows": 2767,
+      "ddof": 1
+    },
+    "development_primary_leader": {
+      "annualization": 252,
+      "cash_excess_sharpe": 0.582507837434033,
+      "curve_rows": 2767,
+      "ddof": 1
+    }
+  },
+  "population": {
+    "elapsed_years": 10.998116438356165,
+    "end_session": "2011-12-30",
+    "finite_primary_scores": 56644,
+    "scored_sessions": 2767,
+    "start_session": "2001-01-02",
+    "undefined_primary_scores": 0
+  },
+  "selection": "finite_cash_excess_sharpe_only_then_ID_within_1e-10",
+  "stage": "development",
+  "status": "pass",
+  "undefined_family_cells": []
+}

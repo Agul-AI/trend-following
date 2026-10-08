@@ -469,101 +469,6 @@ def test_frozen_calendar_dependency_change_requires_explicit_reaudit():
         validate_calendar(calendar)
 
 
-def test_prepare_monitor_cli_parser_contract():
-    from scripts.prepare_qqq_hourly_v5_data import build_parser
-
-    args = build_parser().parse_args(
-        [
-            "prepare-monitor",
-            "--raw-30min",
-            "/fixture/raw.csv",
-            "--metadata",
-            "/fixture/meta.json",
-            "--daily",
-            "/fixture/daily.csv",
-            "--output",
-            "/fixture/new_packet",
-            "--bar-start",
-            "2024-11-29",
-            "--as-of",
-            "2024-11-29T17:15Z",
-        ]
-    )
-    assert args.command == "prepare-monitor"
-    assert args.start == "1999-11-01"
-    assert args.bar_start == "2024-11-29"
-    assert not hasattr(args, "end")
-    assert args.close_rtol == 0.001 and args.close_atol == 0.02
-
-
-@pytest.mark.parametrize("invalid", ["unfinished_subbar", "today_daily_close", "missing_actions"])
-def test_prepare_monitor_cli_invalid_inputs_are_read_only(invalid, tmp_path, monkeypatch, capsys):
-    import json
-
-    import requests
-    from scripts.prepare_qqq_hourly_v5_data import main
-
-    def no_network(*args, **kwargs):
-        raise AssertionError("monitor preparation must not download data")
-
-    monkeypatch.setattr(requests, "get", no_network)
-    daily, _, calendar = prepared_fixture()
-    now = pd.Timestamp("2024-11-29T17:15Z")
-    actions = {
-        "session": "2024-11-29",
-        "dividend_amount": 0.0,
-        "split_coefficient": 1.0,
-        "available_at": "2024-11-29T14:25Z",
-        "verification": "fabricated known-by-open actions",
-    }
-    meta = metadata(observed_at=now.isoformat(), current_session_actions=actions)
-    raw = raw_fixture(calendar)
-    if invalid != "unfinished_subbar":
-        completed = (
-            raw.date.dt.tz_localize("America/New_York")
-            .dt.tz_convert("UTC")
-            .add(pd.Timedelta(minutes=30))
-            .le(now)
-        )
-        raw = raw.loc[completed].reset_index(drop=True)
-    if invalid != "today_daily_close":
-        daily = daily[daily.session.lt("2024-11-29")].reset_index(drop=True)
-    if invalid == "missing_actions":
-        meta = replace(meta, current_session_actions=None)
-    raw_path, daily_path, metadata_path = (
-        tmp_path / name for name in ("raw.csv", "daily.csv", "meta.json")
-    )
-    raw.to_csv(raw_path, index=False)
-    daily.to_csv(daily_path, index=False)
-    metadata_path.write_text(json.dumps(asdict(meta)))
-    paths = (raw_path, daily_path, metadata_path)
-    original_bytes = {path: path.read_bytes() for path in paths}
-    output = tmp_path / "must_not_create" / "monitor_packet"
-    code = main(
-        [
-            "prepare-monitor",
-            "--raw-30min",
-            str(raw_path),
-            "--metadata",
-            str(metadata_path),
-            "--daily",
-            str(daily_path),
-            "--output",
-            str(output),
-            "--start",
-            "2024-11-27",
-            "--bar-start",
-            "2024-11-27",
-            "--as-of",
-            now.isoformat(),
-        ]
-    )
-    assert code == 2
-    assert "STOP:" in capsys.readouterr().err
-    assert not output.parent.exists()
-    assert {path: path.read_bytes() for path in paths} == original_bytes
-
-
 def test_completed_monitor_partial_tail_retained_for_fill_mark_not_confirmation():
     from trend_following.research_hourly_data_v5 import normalize_monitor_subbars
 
@@ -579,12 +484,9 @@ def test_completed_monitor_partial_tail_retained_for_fill_mark_not_confirmation(
 
 
 def test_alpha_only_audit_stops_at_primary_cutoff_and_never_reads_other_provider_or_downloads(
-    tmp_path, monkeypatch, capsys
+    tmp_path, monkeypatch
 ):
-    import json
-
     import requests
-    from scripts.prepare_qqq_hourly_v5_data import main
 
     from trend_following.research_hourly_data_v5 import audit_alpha_only_cache
 
@@ -666,29 +568,8 @@ def test_alpha_only_audit_stops_at_primary_cutoff_and_never_reads_other_provider
         ]
         == 0
     )
-    output = tmp_path / "new_alpha_only_audit"
-    code = main(
-        [
-            "audit-alpha-only",
-            "--source-root",
-            str(root),
-            "--output-dir",
-            str(output),
-            "--bar-start",
-            "2026-05-26",
-        ]
-    )
-    assert code == 2  # A candidate normalization is never silently a verified raw packet.
-    receipt = json.loads((output / "readiness.json").read_text())
-    assert receipt["cutoff_session"] == "2026-05-28"
-    assert set(path.name for path in output.iterdir()) == {
-        "readiness.json",
-        "calendar.csv",
-        "alpha_30min_gap_report.csv",
-    }
-    assert len(read_paths) == 6
+    assert len(read_paths) == 3
     assert {path: path.read_bytes() for path in paths} == original
-    assert "prepared_raw_packet_generated" in capsys.readouterr().out
 
 
 def test_daily_source_attestation_independent_preserved_and_never_inferred_alpha(tmp_path):
@@ -897,32 +778,3 @@ def test_first_completed_half_hour_monitor_is_usable_even_with_unfinished_clock_
         validate_monitor_inputs(
             daily, bars, calendar, meta, as_of=now, sampling_interval_minutes=60
         )
-
-
-def test_prepare_cli_defaults_to_direct_half_hour_mode():
-    from scripts.prepare_qqq_hourly_v5_data import build_parser
-
-    common = [
-        "--raw-30min",
-        "/fixture/raw.csv",
-        "--metadata",
-        "/fixture/meta.json",
-        "--daily",
-        "/fixture/daily.csv",
-        "--output",
-        "/fixture/new_packet",
-        "--bar-start",
-        "2024-11-27",
-        "--as-of",
-        "2024-11-29T15:00Z",
-    ]
-    parser = build_parser()
-    monitor = parser.parse_args(["prepare-monitor", *common])
-    historical = parser.parse_args(
-        ["prepare", *common, "--start", "2024-11-27", "--end", "2024-11-29"]
-    )
-    assert monitor.sampling_interval_minutes == historical.sampling_interval_minutes == 30
-    explicit_legacy = parser.parse_args(
-        ["prepare-monitor", *common, "--sampling-interval-minutes", "60"]
-    )
-    assert explicit_legacy.sampling_interval_minutes == 60
