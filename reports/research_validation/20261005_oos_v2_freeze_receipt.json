@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "public_projection_not_the_private_freeze",
+  "study_id": "qqq_oos_v2",
+  "classification": "prospective_frozen_policy_simulation_not_real_or_live_execution",
+  "status": "frozen_awaiting_future_data_no_OOS_performance_result",
+  "manifest_sha256": "6bb2f262ce180f3f77237bd4b39ff9bcba237c84532ea853a48ef178cb33bb31",
+  "frozen_code_git_revision": "6641c8c6b4703ca5cd3c7f7ddceeeccb9bc70986",
+  "frozen_at_utc": "2026-10-06T02:35:46.742680+00:00",
+  "frozen_at_New_York": "2026-10-05T22:35:46.742680-04:00",
+  "holdout_start_utc": "2026-10-06T13:30:00+00:00",
+  "holdout_start_New_York": "2026-10-06T09:30:00-04:00",
+  "checkpoints": {
+    "12": {
+      "close_utc": "2027-10-05T20:00:00+00:00",
+      "close_New_York": "2027-10-05T16:00:00-04:00",
+      "role": "preliminary"
+    },
+    "24": {
+      "close_utc": "2028-10-05T20:00:00+00:00",
+      "close_New_York": "2028-10-05T16:00:00-04:00",
+      "role": "principal_same_unchanged_experiment"
+    }
+  },
+  "primary_endpoint": "net_total_return_delta_percentage_points_scaled_B5_minus_QQQ",
+  "calibration": {
+    "multiplier": 0.5949310662041871,
+    "training_sessions": 252,
+    "training_start": "2025-10-03T13:30:00+00:00",
+    "training_end": "2026-10-05T20:00:00+00:00",
+    "requested_training_cutoff": "2026-10-05T20:00:00+00:00",
+    "b5_daily_net_volatility": 0.021049779324837224,
+    "qqq_daily_net_volatility": 0.012523167657088264,
+    "volatility_ddof": 1,
+    "volatility_ratio": 0.5949310662041871,
+    "required_observations_at_first_decision": 1610,
+    "preceding_warmup_observations": 1727,
+    "bars_per_day_convention": 7,
+    "initial_cash": 1000.0,
+    "fee_bps": 1.0,
+    "slippage_bps": 5.0,
+    "cash_yield": 0.0,
+    "calibration_label": "retrospective_training_only_not_oos",
+    "terminal_liquidation_in_calibration": false
+  },
+  "initial_hypothetical_cash": 1000.0,
+  "initial_holdings": {
+    "QQQ": 0.0,
+    "TQQQ": 0.0
+  },
+  "OOS_observations_at_freeze": 0,
+  "OOS_returns": "unavailable_not_zero_percent",
+  "warmup": {
+    "start": "2024-10-07",
+    "end": "2026-10-05",
+    "scheduled_bars": 3485,
+    "missing_bars": 0,
+    "corporate_actions": 17,
+    "inputs": "private_licensed_sources_no_prices_distributed",
+    "source_audit": "20261005_oos_v2_source_audit.md"
+  },
+  "software_validation": {
+    "tests_passed": 284,
+    "new_OOS_tests": 91,
+    "lint": "passed",
+    "inputs": "artificial_fixtures_no_private_data_or_network_required"
+  },
+  "frozen_file_records": [
+    {
+      "path": "configs/qqq_oos_v2.yaml",
+      "sha256": "afbe94dfdb19513863f863bec22919db0b5714ea6f3151ace2b1e76cffdce4ee",
+      "bytes": 5190
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "69a75028094f7dc4808e2b8509f0cd3bc23c5d7bd4c3d13e87d90b0aaee04e49",
+      "bytes": 1035
+    },
+    {
+      "path": "src/trend_following/__init__.py",
+      "sha256": "576bbb671998607083a675d8c4e406088bf6854aa0d507a7064b704b3f7b8262",
+      "bytes": 90
+    },
+    {
+      "path": "src/trend_following/metrics.py",
+      "sha256": "c31bf7355594679811b1f69ffa307d1cac7c00a0741764936955326e67b8b345",
+      "bytes": 5369
+    },
+    {
+      "path": "src/trend_following/research_ledger.py",
+      "sha256": "739933356404423df2ba9e72b875cfe2bba0d31fa7e602c731df6954f6063338",
+      "bytes": 39709
+    },
+    {
+      "path": "src/trend_following/research_execution.py",
+      "sha256": "5eb594ad3d3be61bcc905c5918bbbe7a7f9c080f1833d2be1cbc5840fb24a3e0",
+      "bytes": 26349
+    },
+    {
+      "path": "src/trend_following/research_rates.py",
+      "sha256": "c93ff7712b9df421abd72b1f8ff3482c2c05e396d7d61359de59512cb8300520",
+      "bytes": 8430
+    },
+    {
+      "path": "src/trend_following/research_oos_accounting.py",
+      "sha256": "30807fa2cc04a28e4a75c578bc08709d9c3a50589ec88db03d79f873f788f279",
+      "bytes": 19971
+    },
+    {
+      "path": "src/trend_following/research_oos_data.py",
+      "sha256": "603382bcae3d362a84db17a48e588a37812226215e67cc5c4001ffe2a259a9bd",
+      "bytes": 33278
+    },
+    {
+      "path": "src/trend_following/research_oos_evaluation.py",
+      "sha256": "e76893e75da1b25bb16876518339c7fae41136fc8e80031cc3712614d8260f7d",
+      "bytes": 40348
+    },
+    {
+      "path": "src/trend_following/research_oos_protocol.py",
+      "sha256": "d2152eb948b7b0a6da6dc968f74f97ce7f958943c2f5a9b32eb4849f455a595c",
+      "bytes": 22298
+    },
+    {
+      "path": "scripts/run_qqq_oos_study.py",
+      "sha256": "082531f2b6b18f9c58f64194b27682ee41b7b40fe2f14435d9f27bb4543b3541",
+      "bytes": 9462
+    },
+    {
+      "path": "tests/test_research_oos_accounting.py",
+      "sha256": "d9d3988267200779d926808f5851b7053997b561091c71f04d423d9f0097b54a",
+      "bytes": 13323
+    },
+    {
+      "path": "tests/test_research_oos_data.py",
+      "sha256": "3b27469dfdd092bc3b72b03c16520fad64a1ae2f6f57b6eebb5e6d26fa086579",
+      "bytes": 12123
+    },
+    {
+      "path": "tests/test_research_oos_evaluation.py",
+      "sha256": "e495765ead4470fbf653ca4821e0956e66b4a44e1d2115b89bf7c8fffc561035",
+      "bytes": 21167
+    },
+    {
+      "path": "tests/test_research_oos_protocol.py",
+      "sha256": "fcac171ae647cb18763b2e00cc33719d340e8595060ca6886cb2c325f1ae9bc3",
+      "bytes": 9331
+    },
+    {
+      "path": "docs/research_validation/calendar/xnys_scheduled_sessions_20241001_20281010.metadata.json",
+      "sha256": "e89c3da9a78580687227b81724ea9193633f0bb6dc75e5c708c2813cedb67ddc",
+      "bytes": 8494
+    },
+    {
+      "path": "configs/qqq_oos_distribution_calendar_v2.metadata.json",
+      "sha256": "a5d017e9e5c60bfaab22f6ffbd883701a1706a9ced9ae5d7a5707cdc90ee4903",
+      "bytes": 4744
+    },
+    {
+      "path": "configs/qqq_oos_fallback_semantics_v2.json",
+      "sha256": "828a04bba982535d1240f14481e8596168a40b9b94f4eda56dac82f248a779de",
+      "bytes": 2536
+    },
+    {
+      "path": "docs/research_validation/out_of_sample_study_design.md",
+      "sha256": "66f7b3dba475f03ed3df84781ce1ff26ba4b5c62c53180d88b48d45b5cf2d07c",
+      "bytes": 14784
+    },
+    {
+      "path": "docs/research_validation/calendar/xnys_scheduled_sessions_20241001_20281010.csv",
+      "sha256": "484a84a67c0bda0303d887010b1883778e4e9658aaebbd4a69b594b6e9d2015f",
+      "bytes": 97104
+    },
+    {
+      "path": "configs/qqq_oos_distribution_calendar_v2.csv",
+      "sha256": "bede96006d8720aef0855f1cf15ae7d808e5307a9b9afd773f010ea4e667f962",
+      "bytes": 4131
+    }
+  ],
+  "dependencies": {
+    "python": "3.12.11",
+    "numpy": "2.4.6",
+    "pandas": "2.2.3",
+    "PyYAML": "6.0.2",
+    "pyarrow": "20.0.0",
+    "yfinance": "1.0",
+    "requests": "2.32.3",
+    "tzdata": "2025.2",
+    "pytz": "2025.2",
+    "python-dateutil": "2.9.0.post0"
+  },
+  "interpretation": "calibration_and_code_verification_are_not_forward_returns_or_proof_of_a_trading_edge",
+  "operational_status": "manual_collection_only_no_recurring_automation_created",
+  "excluded": "raw_price_files_private_freeze_source_archives_full_account_paths_personal_documents",
+  "integrity": "private_manifest_digest_for_external_timestamped_reference_not_independent_market_data_notarization"
+}

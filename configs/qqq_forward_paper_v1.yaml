@@ -1,0 +1,214 @@
+# Separate prospective paper contract; does not amend the live retrospective research protocol.
+schema_version: 1
+protocol_id: qqq_forward_paper_v1
+contract_id: qqq_forward_paper_v1
+classification: prospective_manual_paper_protocol_requires_final_freeze_and_future_observations
+hypothesis: A fixed B5 policy can be executed and audited causally on future actual QQQ/TQQQ hourly observations;
+  future net performance and operational failures will be recorded without retuning. No positive performance
+  is assumed.
+execution_version: fill_referenced_v1
+forward_policy: fixed_b5
+policy_spec:
+  allocation_multiplier: 1.0
+  name: b5
+  kind: b5
+  product_leverage: 3.0
+  long_ma_days: 200
+  short_ma_days: 20
+  medium_ma_days: 50
+  macd_fast_days: 12
+  macd_slow_days: 24
+  macd_signal_days: 9
+  entry_confirm_bars: 2
+  exit_confirm_bars: 3
+  exit_buffer: 0.01
+  bear_filter_slope_days: 30
+  bear_filter_buffer: 0.01
+  profit_lock_scheme: &id001
+  - - 3.0
+    - 0.75
+  - - 4.0
+    - 0.5
+  q100_activation_gain: 1.1
+  q100_trim_weight: 0.5
+  peak_stop_drawdown: 0.4
+  vol_window_days: 84
+  vol_lookback_days: 126
+  vol_trigger: 0.95
+  vol_recover: 0.2
+  vol_cap_effective: 1.0
+  cooldown_trading_days: 5
+  max_changes_per_session: 1
+  delay_bars: 1
+  use_bear_filter: true
+  use_profit_lock: true
+  use_qtrim: true
+  use_peak_stop: true
+refit_schedule: never
+adaptive_candidate_selection: false
+bars_per_day: 7
+signal_symbol: QQQ
+trade_symbol: TQQQ
+provider: Yahoo Finance via yfinance
+price_basis: unadjusted_auto_adjust_false_back_adjust_false_actions_true_prepost_false
+initial_cash: 1000.0
+initial_units: 0.0
+fee_bps: 1.0
+slippage_bps: 5.0
+cash_mode: zero_cash_interest
+qqq_warmup:
+  path: data/raw/research_forward/20261002_v2/QQQ.parquet
+  sha256: 87b377f3d7d9068f90f246ec7be978dd98c75768e35dbadaa2121824ad1856db
+tqqq_warmup:
+  path: data/raw/research_forward/20261002_v2/TQQQ.parquet
+  sha256: 786bdb48473eba6684b4942ad2732e383c0bfd277a5b17035fa0127a2faa13c1
+warmup_metadata:
+  path: data/raw/research_forward/20261002_v2/metadata.json
+  sha256: a42ec3188be3542e58adc3df0aa5b1f6a60c567f0f90a2b2f8013aa43a2f10f1
+exchange_calendar:
+  path: docs/research_validation/calendar/xnys_scheduled_sessions_20261002_20271008.csv
+  sha256: 5330e8979b44619a8d50b78f98b04e6ed27ebb838955a6cc1200fdc86abc972d
+bar_semantics:
+  timestamp: start
+  timezone: America/New_York
+  interval_minutes: 60
+  last_bar_minutes: 30
+  normal_session_bar_starts:
+  - 09:30
+  - '10:30'
+  - '11:30'
+  - '12:30'
+  - '13:30'
+  - '14:30'
+  - '15:30'
+  bar_end: min(bar_start_plus_60_minutes,verified_exchange_session_close)
+  availability_lag_seconds: 0
+  availability_rule: source_observed_at_at_or_after_bar_end_and_not_in_the_future
+  require_observed_at_not_before_bar_end: true
+  maximum_recording_age_seconds: 900
+  include_extended_hours: false
+  incomplete_bars: reject
+  missing_duplicate_out_of_session_bars: reject_or_append_explicit_missed_observation_no_silent_fill
+  early_close_sessions: only_the_scheduled_bars_including_final_30_minutes_no_padding
+  window_interpretation: parameter_days_times_7_actual_observations_not_exact_trading_day_windows
+  cadence_change: new_seven_observation_cadence_not_the_legacy_six_observation_backtest
+initialization:
+  financial_state: flat_cash_1000_no_pre_holdout_positions_orders_cost_basis_or_returns
+  policy_state: new_ExecutionPolicyEngine_at_actual_holdout_trade_and_regime_state_reset
+  features: causal_features_on_frozen_warmup_plus_completed_forward_bars_only
+  warmup_pnl: prohibited_warmup_is_features_only
+  first_decision: after_first_accepted_completed_holdout_bar
+  first_fill: not_earlier_than_next_accepted_tradable_bar_close_after_order
+  checkpoint: canonical_model_state_hash_and_contract_hash_bound_to_manifest_and_ledger_head
+  manifest_binding: external_final_code_manifest_hash_in_initialization_and_event_headers_not_embedded_circularly_in_this_contract
+execution:
+  mode: manual_paper_only_no_broker_or_network_or_scheduler
+  timing: completed_bar_signal_then_one_bar_delayed_paper_fill_then_subsequent_returns
+  max_position_changes_per_session: 1
+  allocation: target_weight_on_rule_state_change_then_drift_not_a_continuous_effective_leverage_cap
+  units: fractional_paper_TQQQ_units_no_margin_or_shorting
+  paper_fill: actual_future_observed_close_with_predeclared_5bps_adverse_slippage_and_1bp_fee_not_a_real_trade
+  sizing_convention: mark_notional_then_cash_budget
+  sizing_detail: pre_cost_marked_equity_sets_target_notional_buy_is_capped_by_cash_including_additive_fee_and_slippage_not_exact_post_cost_target_weight
+  missing_fill: explicit_missed_fill_event_never_backfill_an_unobserved_fill_or_import_hypothetical_trade_state
+  order_validation: bridge_recomputes_frozen_policy_and_generates_events_not_free_form_policy_state_attestations
+  corporate_actions: fail_closed_on_forward_nonzero_dividend_or_split_until_explicit_accounting_supported_in_a_new_reviewed_version
+  exceptional_market_closure: stop_and_review_do_not_fabricate_scheduled_observations
+costs:
+  transaction_cost_bps: 1.0
+  slippage_bps: 5.0
+  tax_scenario: pretax_no_investor_tax
+  fund_financing_expense_tracking: already_in_actual_TQQQ_price_no_extra_synthetic_financing_expense_or_tracking_charge
+  cash_interest: zero_explicit_choice_no_live_causal_rate_collector_in_v1
+  cash_day_count: 365
+  cash_rate_upgrade: new_contract_and_freeze_required_before_DTB3_causal_cash_accrual
+  reporting_risk_free: separate_timestamp_available_DTB3_ACT365_proxy_for_excess_return_reports_only_not_cash_credit
+  missing_reporting_risk_free: report_excess_return_metric_unavailable_do_not_substitute_zero
+candidates:
+  cash:
+    name: cash
+    kind: cash
+    role: freeze_schema_compatibility_and_zero_cash_benchmark_only_not_selectable
+  b5:
+    allocation_multiplier: 1.0
+    name: b5
+    kind: b5
+    product_leverage: 3.0
+    long_ma_days: 200
+    short_ma_days: 20
+    medium_ma_days: 50
+    macd_fast_days: 12
+    macd_slow_days: 24
+    macd_signal_days: 9
+    entry_confirm_bars: 2
+    exit_confirm_bars: 3
+    exit_buffer: 0.01
+    bear_filter_slope_days: 30
+    bear_filter_buffer: 0.01
+    profit_lock_scheme: *id001
+    q100_activation_gain: 1.1
+    q100_trim_weight: 0.5
+    peak_stop_drawdown: 0.4
+    vol_window_days: 84
+    vol_lookback_days: 126
+    vol_trigger: 0.95
+    vol_recover: 0.2
+    vol_cap_effective: 1.0
+    cooldown_trading_days: 5
+    max_changes_per_session: 1
+    delay_bars: 1
+    use_bear_filter: true
+    use_profit_lock: true
+    use_qtrim: true
+    use_peak_stop: true
+selection:
+  mode: disabled_fixed_B5
+  minimum_training_years: 3
+  minimum_training_years_meaning: freeze_schema_compatibility_only_no_training_or_selection_in_this_forward_contract
+  fallback: halt_on_failed_validation_not_discretionary_cash_policy_switch
+evaluation:
+  outer_folds: []
+  historical_holdout_claim: prohibited_warmup_and_all_known_history_are_not_forward_performance
+  genuine_holdout: first_complete_XNYS_session_after_final_code_and_protocol_copy_completion
+  final_code_freeze_required: true
+  final_code_freeze_timestamp: null
+  genuine_holdout_start: null
+  data_boundary: only_genuinely_new_available_observations_after_actual_manifest_holdout
+  no_backdating: true
+  review_checkpoints_months:
+  - 6
+  - 12
+  checkpoint_rule: at_or_after_calendar_anniversary_using_verified_session_close_no_performance_peeking_to_change_policy
+  statistical_claim: six_and_twelve_month_checkpoints_are_descriptive_not_strong_independent_statistical_proof
+  success_requires_positive_performance: false
+strategy:
+  calendar: XNYS
+  timezone: America/New_York
+  bars_per_day: 7
+  signal_frequency: 60m_with_last_30m_bar
+  execution_version: fill_referenced_v1
+provenance:
+  code_roots:
+  - src
+  - scripts
+  - tests
+  - configs
+  - docs
+  data_globs:
+  - data/raw/research_forward/20261002_v2/QQQ.parquet
+  - data/raw/research_forward/20261002_v2/TQQQ.parquet
+  - data/raw/research_forward/20261002_v2/metadata.json
+  - docs/research_validation/calendar/xnys_scheduled_sessions_20261002_20271008.csv
+  - docs/research_validation/calendar/metadata.json
+  research_inventory_roots:
+  - scripts
+  - reports/research_validation
+  - reports/strategy_improvement
+  - reports/tables
+  - reports/review_packets
+  source_snapshot_policy: each_future_observation_saved_immutably_with_hash_provider_timestamps_and_retrieval_time_no_mutation_of_frozen_warmup
+  integrity_limit: local_hash_chain_is_tamper_evident_not_external_notarization_or_independent_market_data_truth
+change_control:
+  policy_parameters_refits_vendor_cadence_cash_mode_or_accounting_changes: new_contract_version_new_tests_new_final_code_freeze_new_forward_experiment
+  prior_records: retain_and_report_do_not_rewrite_or_restart_to_hide_losses_or_missed_events
+  calendar_updates: review_exceptional_closures_or_calendar_coverage_expiry_before_operation_fail_closed_if_unknown

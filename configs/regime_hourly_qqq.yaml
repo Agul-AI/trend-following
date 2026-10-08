@@ -1,0 +1,81 @@
+project:
+  name: trend-following-real-data
+
+# Mixed-frequency config:
+# - data.* is the intraday trading panel.
+# - strategies.regime_switch.daily_regime_raw_dir is the daily regime panel.
+data:
+  source: alpha_vantage
+  tickers: [QQQ]
+  # Requested start; effective start depends on data availability.
+  # For QQQ-like history before actual QQQ, use documented Nasdaq-100 proxy data, not overwritten QQQ.
+  start_date: "1990-01-01"
+  end_date: null
+  interval: 60min
+  raw_dir: data/raw/alpha_vantage_60min
+  processed_dir: data/processed/regime_hourly_60min
+  alignment: inner
+  suspicious_gap_days: 7
+
+backtest:
+  initial_capital: 1.0
+  transaction_cost_bps: 1.0
+  slippage_bps: 1.0
+  # Alpha Vantage 60min US equity bars usually have six regular-session bars
+  # per full day in this cache: 10:00, 11:00, ..., 15:00.
+  annualization: 1512
+  return_convention: close_to_close
+  execution_delay_days: 1
+  max_trades_per_day: 1
+  portfolio_mode: equal_sleeves
+  train_end_date: "2018-12-31"
+
+strategies:
+  regime_switch:
+    target_ticker: QQQ
+    regime_ticker: QQQ
+    daily_regime_raw_dir: data/raw/alpha_vantage_daily_adjusted
+    daily_regime_lag_days: 1
+    daily_regime_fill_method: ffill
+    sma_window: 200
+    sma_slope_window: 20
+    variance_window: 63
+    variance_horizon: 5
+    use_variance_ratio_for_trend: false
+    trend_variance_ratio_threshold: 1.05
+    mean_reversion_variance_ratio_threshold: 0.98
+    volatility_window: 20
+    volatility_percentile_window: 252
+    volatility_percentile_threshold: 0.80
+    zscore_window: 20
+    entry_zscore: -1.5
+    exit_zscore: 0.0
+    # Hourly trend leg, gated by yesterday's daily regime.
+    # Keep the classic 50/200 trading-day reference while using hourly bars:
+    # 50 days * 6 hourly bars/day = 300 bars; 200 days * 6 = 1200 bars.
+    intraday_bars_per_day: 6
+    intraday_trend_short_days: 50
+    intraday_trend_long_days: 200
+    trend_short_window: 50
+    trend_long_window: 200
+  volatility_targeting:
+    enabled: false
+    target_vol: 0.10
+    lookback: 63
+    max_leverage: 1.0
+
+experiments:
+  sma_windows: [50, 100, 150, 200, 250]
+  tsmom_lookbacks: [63, 126, 189, 252]
+  crossover_short_windows: [20, 50, 100]
+  crossover_long_windows: [100, 150, 200, 250]
+  breakout_entry_lookbacks: [63, 126, 252]
+  breakout_exit_lookbacks: [21, 63, 126]
+  regression_windows: [63, 126, 189, 252]
+  cross_sectional_lookbacks: [63, 126, 252]
+  cross_sectional_top_ns: [2, 3, 5]
+
+reports:
+  figures_dir: reports/figures
+  tables_dir: reports/tables
+  summary_path: reports/summary.md

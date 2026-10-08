@@ -1,0 +1,128 @@
+{
+  "schema": "qqq_gap_hold_flags_completion_v1",
+  "created_at": "2026-10-08T19:05:51.081055+00:00",
+  "actual_preparation": {
+    "confirmation_counter_unit": "half_hour_checks",
+    "confirmation_hours_semantics": "wait_after_first_hit",
+    "cutoff_policy": "common_available_daily_and_30min_alpha_coverage",
+    "daily_valuation_hour_ny": 17,
+    "historical_cutoff": "2026-05-28",
+    "historical_label": "retrospective_previously_examined_history_not_untouched_oos",
+    "known_halt_overlap_count": 7,
+    "native_raw_capture": false,
+    "observed_count": 85948,
+    "performance_run": false,
+    "prepared_sha256": "df455209e7d71f81d4db0df00b0c467623d05475875924e99166cf42a689fc38",
+    "price_origin": "derived_as_traded_from_Alpha_adjustment_factors_NOT_native_raw_capture",
+    "price_provider": "Alpha Vantage",
+    "quality_profile": "observed_only_blackout_v1",
+    "registered_candidates": 56644,
+    "required_checks_formula": "1 + 2 * confirmation_hours",
+    "sampling_interval_minutes": 30,
+    "status": "data_ready",
+    "study_id": "qqq_daily_halfhour_v5_alpha_quality",
+    "unknown_missing_count": 14,
+    "unrepaired_source_gaps_not_price_repairs": true
+  },
+  "actual_packet": {
+    "historical_ready": true,
+    "quality_profile": "observed_only_blackout_v1",
+    "unit_proof_sha256": "34a3dcfce56843facfb0d2322266c681a826ab786090711c9d0f399ea75c25dc",
+    "quality_model_sha256": "f501c37eacdc8f6806dccae01878c97e12265cf586beb52524170b1537cfe611",
+    "audit": {
+      "fill_eligible_count": 82685,
+      "known_halt_overlap_count": 7,
+      "prefix_end_session": "2026-05-28",
+      "required_window_unknown_missing_count": 14,
+      "rows_observed": 85953,
+      "rows_scheduled": 85969,
+      "sampling_interval_minutes": 30,
+      "signal_eligible_count": 82684,
+      "unknown_missing_count": 14,
+      "unknown_missing_gate_scope": "all_supplied_scheduled_coverage"
+    },
+    "performance_generated": false,
+    "elapsed_seconds": 41.996
+  },
+  "development_prefix_audit": {
+    "stage": "development",
+    "data_loader_verified": true,
+    "numerical_prefix_end": "2011-12-30",
+    "daily_rows": 3062,
+    "observed_bars": 39074,
+    "unknown_slots": 14,
+    "unknown_slots_signal_or_fill_eligible": false,
+    "market_performance_run": false,
+    "registration_and_prepared_freeze_verified": true,
+    "prepared_sha256": "df455209e7d71f81d4db0df00b0c467623d05475875924e99166cf42a689fc38"
+  },
+  "post_gap_windows_ny": [
+    {
+      "gap": "2001-03-29 09:30\u201310:00",
+      "decision_after_exclusive": "2001-03-29 10:00",
+      "decision_through_inclusive": "2001-03-30 16:00"
+    },
+    {
+      "gap": "2004-11-30 09:30\u201316:00",
+      "decision_after_exclusive": "2004-11-30 16:00",
+      "decision_through_inclusive": "2004-12-01 16:00"
+    }
+  ],
+  "diagnostic_policy": {
+    "all_candidate_flags": true,
+    "confirmed_buy_sell_decisions_only": true,
+    "descriptive_only": true,
+    "affects_ranking_or_selection": false,
+    "event_retention_limit": 2500000,
+    "truncation_blocks_sealing": true
+  },
+  "authorization_sha256": "3115c074133f82fcac617c64acc5408953492d84324396ad35210be586fb3f54",
+  "software_verification": {
+    "full_regression_tests_passed": 614,
+    "elapsed_seconds": 234.81,
+    "full_grid_fabricated_acceptance_candidates": 56644,
+    "all_repo_ruff_passed": true,
+    "format_checks_passed": 8,
+    "diff_check_passed": true,
+    "test_log_sha256": "22150e5602a50789f798e71bf291d902324029b0dd7b9d610a23f7c4d7daf087"
+  },
+  "preservation": {
+    "v4_and_legacy_files_checked": 425,
+    "changed_files": 0,
+    "source_archives": [
+      {
+        "snapshot": "source_snapshot_before_alpha_only_20261008",
+        "files_checked": 13,
+        "changed_files": 0
+      },
+      {
+        "snapshot": "source_snapshot_before_half_hour_20261008",
+        "files_checked": 13,
+        "changed_files": 0
+      },
+      {
+        "snapshot": "source_snapshot_before_quality_fix_20261008",
+        "files_checked": 13,
+        "changed_files": 0
+      },
+      {
+        "snapshot": "source_snapshot_before_gap_flags_20261008",
+        "files_checked": 14,
+        "changed_files": 0
+      },
+      {
+        "snapshot": "source_snapshot_before_serialization_fix_20261008",
+        "files_checked": 16,
+        "changed_files": 0
+      }
+    ],
+    "interrupted_source_preparation_preserved": true
+  },
+  "market_performance_run": false,
+  "validation_performance_run": false,
+  "historical_oos_performance_run": false,
+  "gap_prices_repaired": false,
+  "raw_prices_exported": false,
+  "committed": false,
+  "pushed": false
+}

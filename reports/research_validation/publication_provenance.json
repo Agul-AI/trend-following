@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "metadata_type": "publication_receipt_not_original_protocol_freeze",
+  "source_historical_manifest_sha256": "3c779b2ac2cd3c118876de4a0165754ffadbc72a88a281021a747b043484cbbf",
+  "original_historical_period": "2002-01-10 through 2026-06-01 for full-history; 2009-01-02 through 2026-06-01 for chronological evaluation",
+  "original_bootstrap_simulations": 3000,
+  "original_local_full_suite_tests": 313,
+  "published_cache_free_suite_tests": 193,
+  "numerical_code_matches_original": [
+    {
+      "path": "src/trend_following/research_ledger.py",
+      "sha256": "739933356404423df2ba9e72b875cfe2bba0d31fa7e602c731df6954f6063338",
+      "matches_original_historical_snapshot": true
+    },
+    {
+      "path": "src/trend_following/research_execution.py",
+      "sha256": "5eb594ad3d3be61bcc905c5918bbbe7a7f9c080f1833d2be1cbc5840fb24a3e0",
+      "matches_original_historical_snapshot": true
+    },
+    {
+      "path": "src/trend_following/research_evaluation.py",
+      "sha256": "48db3c9f38d07795a454cdcaf1a2e7c4a966198ef83e36f0700f1876ef02f6b4",
+      "matches_original_historical_snapshot": true
+    },
+    {
+      "path": "src/trend_following/research_data.py",
+      "sha256": "54276445c238d5396bc2f02b31fed9ff9374f2b562877e4be328c1d87b052a3a",
+      "matches_original_historical_snapshot": true
+    },
+    {
+      "path": "src/trend_following/research_rates.py",
+      "sha256": "c93ff7712b9df421abd72b1f8ff3482c2c05e396d7d61359de59512cb8300520",
+      "matches_original_historical_snapshot": true
+    },
+    {
+      "path": "src/trend_following/metrics.py",
+      "sha256": "c31bf7355594679811b1f69ffa307d1cac7c00a0741764936955326e67b8b345",
+      "matches_original_historical_snapshot": true
+    },
+    {
+      "path": "scripts/run_qqq_research_validation.py",
+      "sha256": "a1d952905ee7705306caf35145d010b20d17f02ce69d511fffd96fb3502323be",
+      "matches_original_historical_snapshot": true
+    },
+    {
+      "path": "scripts/run_qqq_research_bootstrap.py",
+      "sha256": "bcdc668292d7f12e2b6c3c6eee05a46fe5f978f1c7aa9cba3842bb93a72ee8f1",
+      "matches_original_historical_snapshot": true
+    },
+    {
+      "path": "configs/qqq_research_v1.yaml",
+      "sha256": "5fcbb60363972b163f6840adba2d85ba64a9ec378e3b679708b8276b4938fd80",
+      "matches_original_historical_snapshot": true
+    }
+  ],
+  "aggregate_table_files": [
+    {
+      "path": "reports/research_validation/20261002_v1_bootstrap/summary.csv",
+      "sha256": "9546ad8adbbe060b23432cdb17ed83a697fca55151ca251c55c3bd61f58cf364",
+      "bytes": 1062
+    },
+    {
+      "path": "reports/research_validation/20261002_v1_full_history/cost_waterfall.csv",
+      "sha256": "aae86b5b478ef4c7df8856a453c0ebf44af3f3ea1a9a091e3622435a7eee730a",
+      "bytes": 10147
+    },
+    {
+      "path": "reports/research_validation/20261002_v1_historical/alignment_exceptions.csv",
+      "sha256": "b42e23d4853c1ef6b9134537678eec521008d1425f8982277a337efbefa04af6",
+      "bytes": 713
+    },
+    {
+      "path": "reports/research_validation/20261002_v1_historical/cost_sensitivity.csv",
+      "sha256": "ded601acff41f535b0b9ce7d7895445efa503b5beef2590194c1ffecdfc1570c",
+      "bytes": 8817
+    },
+    {
+      "path": "reports/research_validation/20261002_v1_historical/fold_selections.csv",
+      "sha256": "40b87189661d8a9dad546c78650603b1a4a9ec371d5d45767091afede11d4937",
+      "bytes": 1020
+    },
+    {
+      "path": "reports/research_validation/20261002_v1_historical/inner_validation.csv",
+      "sha256": "b76365eead91334cc7cc23758ad1a1e5a7d46606016b8e3263ecb1520c8e6aa4",
+      "bytes": 126547
+    },
+    {
+      "path": "reports/research_validation/20261002_v1_historical/outer_fold_performance.csv",
+      "sha256": "71bb961729abc10a9dbee8423c11740c347225d1dc302e3e3027c99d0a749c26",
+      "bytes": 71527
+    },
+    {
+      "path": "reports/research_validation/20261002_v1_historical/performance.csv",
+      "sha256": "6c2ba8ea3d142a7d6becc7c4f9ab4ca5018105c93a53b4d1e5056175bfed8364",
+      "bytes": 16897
+    },
+    {
+      "path": "reports/research_validation/20261002_v1_historical/risk_matching.csv",
+      "sha256": "d775f66cea7af793d8c688eeccb61cc02ebc8ada79149648a49d3233b91af299",
+      "bytes": 626
+    },
+    {
+      "path": "reports/research_validation/20261002_v1_qa/bootstrap_full_percentiles.csv",
+      "sha256": "9769acadf0406e01632f6bc911932347ddeb6c9594dbd8dafa3e38a9d4ecebce",
+      "bytes": 1767
+    }
+  ],
+  "excluded": "licensed raw market bars, full account paths, private exact snapshots/manifests/warmup, personal resume/review files, live paper ledger, broker/notification/account helpers",
+  "reproduction_limit": "This scoped publication is a new Git snapshot. Tests are independently runnable; exact empirical reruns require original input vintages and private archive. Original private freeze has not been replaced or recreated.",
+  "forward_status": "Manual prototype code only. No actual forward observations, broker orders or automated collector execution were created by publication."
+}

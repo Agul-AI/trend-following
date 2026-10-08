@@ -1,0 +1,81 @@
+# Fed hiking-cycle windows used by drawdown-reduction experiments.
+#
+# Tradability notes:
+# - effective: starts at the first actual rate hike; tradable but reactive.
+# - announced: starts at a documented Fed communication before the first hike;
+#   closer to the user's "Fed announced hiking is coming" idea.
+# - oracle_pre_announcement: starts one month before the announcement; diagnostic
+#   only, not a valid trading rule unless an observable real-time proxy is used.
+fed_hiking_cycles:
+  effective:
+    - name: 1999-2000 hike cycle partial
+      start: "1999-06-30"
+      end: "2000-05-16"
+      source: "FOMC target-rate increases; sample starts in 2000 so this is partial."
+      tradability: "reactive_actual_hike"
+    - name: 2004-2006 hike cycle
+      start: "2004-06-30"
+      end: "2006-06-29"
+      source: "FOMC target-rate increases."
+      tradability: "reactive_actual_hike"
+    - name: 2015-2018 normalization/hike cycle
+      start: "2015-12-17"
+      end: "2018-12-20"
+      source: "FOMC normalization/hike cycle."
+      tradability: "reactive_actual_hike"
+    - name: 2022-2023 hike cycle
+      start: "2022-03-17"
+      end: "2023-07-27"
+      source: "FOMC target-rate increases."
+      tradability: "reactive_actual_hike"
+
+  announced:
+    - name: 2004-2006 hike cycle announced
+      start: "2004-05-04"
+      end: "2006-06-29"
+      source: "FOMC measured-pace guidance before first 2004 hike."
+      tradability: "known_after_announcement"
+    - name: 2015-2018 normalization/hike cycle announced
+      start: "2015-10-28"
+      end: "2018-12-20"
+      source: "FOMC next-meeting language before first 2015 hike."
+      tradability: "known_after_announcement"
+    - name: 2022-2023 hike cycle announced
+      start: "2022-01-26"
+      end: "2023-07-27"
+      source: "FOMC statement: soon appropriate to raise target range."
+      tradability: "known_after_announcement"
+
+  oracle_pre_announcement:
+    - name: 2004-2006 hike cycle one-month oracle lead
+      start: "2004-04-04"
+      end: "2006-06-29"
+      source: "One calendar month before known announcement; diagnostic only."
+      tradability: "oracle_not_tradable"
+    - name: 2015-2018 normalization/hike cycle one-month oracle lead
+      start: "2015-09-28"
+      end: "2018-12-20"
+      source: "One calendar month before known announcement; diagnostic only."
+      tradability: "oracle_not_tradable"
+    - name: 2022-2023 hike cycle one-month oracle lead
+      start: "2021-12-26"
+      end: "2023-07-27"
+      source: "One calendar month before known announcement; diagnostic only."
+      tradability: "oracle_not_tradable"
+
+  pre_announcement_to_pre_cut:
+    - name: 2004 hike-announcement lead to pre-cut lead
+      start: "2004-04-04"
+      end: "2007-08-18"
+      source: "Diagnostic window: one month before 2004-05-04 hike guidance to one month before first 2007-09-18 cut."
+      tradability: "diagnostic_oracle_window"
+    - name: 2015 hike-announcement lead to pre-cut lead
+      start: "2015-09-28"
+      end: "2019-06-30"
+      source: "Diagnostic window: one month before 2015-10-28 hike guidance to one month before first 2019-07-31 cut."
+      tradability: "diagnostic_oracle_window"
+    - name: 2022 hike-announcement lead to pre-cut lead
+      start: "2021-12-26"
+      end: "2024-08-18"
+      source: "Diagnostic window: one month before 2022-01-26 hike guidance to one month before first 2024-09-18 cut."
+      tradability: "diagnostic_oracle_window"

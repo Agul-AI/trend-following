@@ -1,0 +1,86 @@
+{
+  "base_commit": "005c44f4b685def9ac1d678f500522764e1e671f",
+  "changes_pushed": false,
+  "client_date": "2026-10-08",
+  "commission_bps": 1,
+  "confirmation_unit": "completed_trading_hours",
+  "data_readiness": {
+    "calendar_package_version": "4.13.2",
+    "calendar_scheduled_open_overrides": [
+      {
+        "basis": "official_announced_scheduled_open_assumption_not_actual_first_trade_measurement",
+        "calendar_library_issue": "XNYS_4.13.2_generates_09:30_for_delayed_open",
+        "scheduled_open_local": "11:00 America/New_York",
+        "session": "2002-09-11",
+        "source_url": "https://www.nasdaqtrader.com/Content/NewsAlerts/ISEMics/MIC-2002-03%24Market_Opening_Time_-_September_11_2002%2420020909.pdf"
+      }
+    ],
+    "daily_complete": true,
+    "daily_source_sha256": "4447f9f1a293cb171a1d348401a115b7b0c547397ef790b817fbd04fe6177570",
+    "legacy_30min_issues": {
+      "extra_or_off_grid_subbar": 271,
+      "missing_subbar": 42
+    },
+    "legacy_30min_missing_by_session": {
+      "2001-03-29": 1,
+      "2004-11-30": 13,
+      "2013-08-22": 2,
+      "2026-05-29": 13,
+      "2026-06-01": 13
+    },
+    "legacy_30min_price_basis": "adjusted_not_verified_raw",
+    "raw_downloads_acquired": 0,
+    "raw_requests_denied_months": [
+      "2004-11",
+      "2026-06"
+    ]
+  },
+  "development_guard_probe": {
+    "exit_code": 2,
+    "performance_run": false,
+    "status": "rejected_no_prepared_data"
+  },
+  "indicator_unit": "daily_trading_sessions",
+  "interpretation": "Retrospective previously examined history. Software checks are not market-performance evidence.",
+  "monitor_guard_probe": {
+    "action": null,
+    "actionable": false,
+    "read_only": true
+  },
+  "performance_generated": false,
+  "preparation_probe": {
+    "exit_code": 3,
+    "performance_run": false,
+    "status": "data_not_ready"
+  },
+  "preservation": {
+    "changed_or_missing": [],
+    "files_checked": 425
+  },
+  "registered_candidates": 7225,
+  "schema": "qqq_daily_hourly_v5_implementation_receipt_v1",
+  "selection_slippage_bps": 3,
+  "slippage_scenarios_bps": [
+    1,
+    3,
+    10,
+    25
+  ],
+  "software_checks": {
+    "full_pytest_passed": 465,
+    "git_diff_check": "passed",
+    "new_python_format_check": "passed",
+    "new_v5_tests": 86,
+    "ruff_check_all": "passed"
+  },
+  "source_hashes": {
+    "configs/qqq_daily_hourly_v5.yaml": "02d2f999db5722831016c5055b849d1ebd0d6cb6882ff2d553fb8e4aa7727fa6",
+    "scripts/prepare_qqq_hourly_v5_data.py": "ebcba66593a75f8546b0b3e94126984e1ee2631f833e6192ea0b269fe0c613ec",
+    "scripts/run_qqq_daily_hourly_v5.py": "3d6d1b45e8f01afcebff9afafce2e85976ea0441a819caa473dede8372e52f99",
+    "src/trend_following/research_daily_hourly_v5.py": "e5c70ee5bac3438a4228b248e9bb93d6ecbf5a1a86dca0a57439cbf021d4a54f",
+    "src/trend_following/research_hourly_data_v5.py": "f35e91b7d096b0807d79f99a4f65442ba372d468b90409837873802468150673",
+    "src/trend_following/research_hourly_protocol_v5.py": "2c7cc07fe2c10680ba711a6ecb0b64413e9b5243358d9577079b265fab4641bb"
+  },
+  "status": "implemented_market_evaluation_blocked",
+  "taxes_enabled": false
+}

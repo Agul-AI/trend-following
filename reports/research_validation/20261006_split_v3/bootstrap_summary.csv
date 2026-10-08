@@ -1,0 +1,3 @@
+block_sessions,simulations,seed,observed_delta_pct_points,delta_percentile_025,delta_median,delta_percentile_975,role,interpretation
+20,5000,42,2312.9191255139417,-183.8026822223931,2444.7393567979702,50369.2348868865,primary,Conditional historical return uncertainty; no parameter reselection or strategy reexecution
+60,5000,42,2312.9191255139417,-134.07507986258227,2346.9782493981547,40928.426483475916,dependence_sensitivity,Conditional historical return uncertainty; no parameter reselection or strategy reexecution

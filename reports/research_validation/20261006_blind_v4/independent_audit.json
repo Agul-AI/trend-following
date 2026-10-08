@@ -1,0 +1,87 @@
+{
+  "schema": "qqq-v4-independent-audit-public-projection-v1",
+  "audit_version": "v3",
+  "post_evaluation_only": true,
+  "arithmetic_passed": true,
+  "custody_hash_and_phase_order_verified": true,
+  "custody_metadata_quality_passed": false,
+  "all_checks_passed": false,
+  "checks": {
+    "total": 717,
+    "passed": 716,
+    "failed": 1,
+    "failed_names": [
+      "custody_audit_timestamp_monotonicity"
+    ]
+  },
+  "coverage": {
+    "test_sessions": 2617,
+    "first_session": "2016-01-04",
+    "last_session": "2026-06-01",
+    "pretax_cases": [
+      "agree_l252_s63_vnone_c67",
+      "QQQ_buy_hold",
+      "synthetic3x_buy_hold",
+      "cash"
+    ],
+    "pretax_layers": [
+      "gross",
+      "trading",
+      "financing",
+      "expense"
+    ],
+    "pretax_case_layer_paths": 16,
+    "daily_states_reconciled": 41872,
+    "validation_candidates": 12,
+    "custody_audit_events": 30,
+    "hash_verified_result_files": 162,
+    "hash_verified_released_test_inputs": 4
+  },
+  "maximum_absolute_daily_reconciliation_errors": {
+    "cash": 1.3096723705530167e-10,
+    "equity": 3.5433913581073284e-09,
+    "quantity": 3.041122909053229e-11,
+    "returns": 9.818534874028728e-16,
+    "turnover": 2.3314683517128287e-15,
+    "price": 2.523847797419876e-11,
+    "terminal_fields": 3.5433913581073284e-09
+  },
+  "economic_comparison": {
+    "basis": "expense-inclusive pretax; hypothetical same-close terminal liquidation included once",
+    "selected": {
+      "CAGR": 0.16218381368988655,
+      "max_drawdown": -0.404257705009609,
+      "cash_excess_Sharpe": 0.5847250769771865,
+      "terminal_equity": 4762.9261881228595
+    },
+    "QQQ_buy_hold": {
+      "CAGR": 0.21122570612165315,
+      "max_drawdown": -0.35122705113035513,
+      "cash_excess_Sharpe": 0.8719295240055567,
+      "terminal_equity": 7316.204635287641
+    },
+    "selected_minus_QQQ_cash_excess_Sharpe": -0.2872044470283702,
+    "interpretation": "Primary benchmark superiority was not demonstrated."
+  },
+  "custody_metadata_defect": {
+    "affected_stages": [
+      "validation",
+      "test"
+    ],
+    "finding": "held_stage_exit copied the stage-start timestamp, causing two small timestamp regressions after packet sealing",
+    "preserved": true,
+    "phase_order": "Hash-chain append sequence and independently dated selection receipt verify selection before test; copied exit timestamps are not valid completion timestamps."
+  },
+  "method": "Independent NumPy/pandas reconstruction; no project engine, ledger, rate helper or policy execution. Raw split/dividend total returns, full-history synthetic NAV, causal piecewise rate accrual, nominal pre-cost targets, one-session-lagged fills, fractional drift, physical QQQ DRIP and hypothetical terminal liquidation reconstructed separately.",
+  "tax_scope": "Tax event totals, holdings/account/return/terminal identities and metrics using matched realized cash-tax returns verified. Full tax-lot, wash-sale, holding-period, income/filing and investor-specific legal tax compliance were not certified.",
+  "limitations": [
+    "Latest-vintage rates with assumed conservative availability, not historical release-time or ALFRED-vintage reconstruction.",
+    "Synthetic daily-reset 3x model and fixed transaction/funding/drag assumptions, not an observed investable instrument history.",
+    "Historical staged out-of-sample evidence, not live performance, income assurance or demonstrated statistical/economic edge.",
+    "Internal coordinator-controlled hashes and append order are consistency evidence, not externally anchored signatures.",
+    "Kernel restrictions cover launched child processes; this audit does not certify erased human knowledge or kernel restriction of unsandboxed same-user agent tools.",
+    "Engine/kernel hash declaration consistency checked; actual engine/kernel source bytes were deliberately not imported or read by this auditor."
+  ],
+  "audit_checker_sha256": "2687b961500537b6bb9506213f59993da9466a92b815f67474bf18448c85abb1",
+  "technical_audit_history": "v1-v3 snapshots retained. Revisions clarified date-to-NY-close clocks, lagged target export/header representation, existing nominal pre-cost execution convention, and cash zero-quantity QQQ placeholder. No frozen strategy, cost settings, input or primary output was changed."
+}

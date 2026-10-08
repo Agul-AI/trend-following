@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "purpose": "Publication projection, not a substitute executable private manifest",
+  "source_revision_before_selection": "b885cd2b32504c0ae7c54ec17ca0a710baebe12d",
+  "manifest_sha256": "9e8aad4c77c87d4f55d2d79a96f00bd2ac3a2928656ab1e8c0d9869dd985e671",
+  "selection_sha256": "562c815ec9c06295dfc4f6c92e232e967d79f95d71316527c82e14fe7845f1de",
+  "frozen_at_utc": "2026-10-06T16:45:00.582025+00:00",
+  "selection_started_at_utc": "2026-10-06T16:45:02.257878+00:00",
+  "selection_completed_at_utc": "2026-10-06T16:45:09.051366+00:00",
+  "test_started_at_utc": "2026-10-06T16:45:58.385140+00:00",
+  "test_completed_at_utc": "2026-10-06T16:46:13.191533+00:00",
+  "selected_spec": {
+    "name": "ma200_alloc_3_3",
+    "kind": "ma",
+    "asset": "synthetic_3x",
+    "ma_sessions": 200,
+    "allocation": 1.0
+  },
+  "source_quality": {
+    "rows": [
+      {
+        "segment": "development",
+        "sessions": 2519,
+        "first_session": "2002-01-02",
+        "last_session": "2011-12-30",
+        "missing_relative_to_reference": 0
+      },
+      {
+        "segment": "validation",
+        "sessions": 1006,
+        "first_session": "2012-01-03",
+        "last_session": "2015-12-31",
+        "missing_relative_to_reference": 0
+      },
+      {
+        "segment": "test",
+        "sessions": 2617,
+        "first_session": "2016-01-04",
+        "last_session": "2026-06-01",
+        "missing_relative_to_reference": 0
+      }
+    ],
+    "feature_only_warmup_sessions": 543,
+    "daily_source_rows": 6685,
+    "reference_scope": "Session dates only; not price validation",
+    "selected_distributions": 87
+  },
+  "rate_quality": {
+    "DFF": {
+      "rows": 10135,
+      "availability_rederived": true,
+      "annual_rate_rederived": true
+    },
+    "DTB3": {
+      "rows": 6941,
+      "availability_rederived": true,
+      "annual_rate_rederived": true
+    }
+  },
+  "code_files": [
+    {
+      "path": "pyproject.toml",
+      "sha256": "69a75028094f7dc4808e2b8509f0cd3bc23c5d7bd4c3d13e87d90b0aaee04e49",
+      "bytes": 1035
+    },
+    {
+      "path": "configs/qqq_split_v3.yaml",
+      "sha256": "2e175301afd16d3d9a566e52065498cb1074392f4660b7e44fd51cb753e3fa67",
+      "bytes": 4754
+    },
+    {
+      "path": "scripts/run_qqq_split_study.py",
+      "sha256": "b459c25e3443dbaa23a37ad8ad9811043e18384c984233908a59a57156f51cfd",
+      "bytes": 2183
+    },
+    {
+      "path": "src/trend_following/__init__.py",
+      "sha256": "576bbb671998607083a675d8c4e406088bf6854aa0d507a7064b704b3f7b8262",
+      "bytes": 90
+    },
+    {
+      "path": "src/trend_following/research_split_v3.py",
+      "sha256": "3a64e35f8d46afdc1bf1d4869db335b66750ca01c2ced23abadfc70ce5a036a1",
+      "bytes": 28760
+    },
+    {
+      "path": "src/trend_following/research_split_protocol_v3.py",
+      "sha256": "3a97f254be0e3747083d889024481b060cebd1ce31e87800729139946e13e4d2",
+      "bytes": 30298
+    },
+    {
+      "path": "src/trend_following/research_ledger.py",
+      "sha256": "739933356404423df2ba9e72b875cfe2bba0d31fa7e602c731df6954f6063338",
+      "bytes": 39709
+    },
+    {
+      "path": "src/trend_following/research_rates.py",
+      "sha256": "c93ff7712b9df421abd72b1f8ff3482c2c05e396d7d61359de59512cb8300520",
+      "bytes": 8430
+    },
+    {
+      "path": "tests/test_research_split_v3.py",
+      "sha256": "245b0bc2c8ecf298612bacd63495d91c6a250e64af90ba64be36755cdeb71aa9",
+      "bytes": 16328
+    },
+    {
+      "path": "tests/test_research_split_protocol_v3.py",
+      "sha256": "b160ddb7321cd0de69a58b636eb95347aae27bf625dc21aead9449380b0f5299",
+      "bytes": 10226
+    }
+  ],
+  "input_files": [
+    {
+      "path": "inputs/QQQ_daily.parquet",
+      "sha256": "4447f9f1a293cb171a1d348401a115b7b0c547397ef790b817fbd04fe6177570",
+      "bytes": 321623
+    },
+    {
+      "path": "inputs/QQQ_reference_daily.parquet",
+      "sha256": "80180f626850ed196aed0c3a775b2252e20ff209eb0fc323ed8766c6b1d5329d",
+      "bytes": 342177
+    },
+    {
+      "path": "inputs/DFF_available.csv",
+      "sha256": "d4ba0370aa830eadb99e415a404e533028961d3cd2fed50c9805dbe972bc8b47",
+      "bytes": 2050398
+    },
+    {
+      "path": "inputs/DTB3_available.csv",
+      "sha256": "78be8d5e30f424b3600b5ef96bd069ba78cb6eab1c8593fdc712d8e0f3262365",
+      "bytes": 1498583
+    },
+    {
+      "path": "inputs/DFF_raw.csv",
+      "sha256": "094ba5cfee117734ed0a86e73c134854386a3a88c3d0862d93cc63b98121934c",
+      "bytes": 162181
+    },
+    {
+      "path": "inputs/DTB3_raw.csv",
+      "sha256": "cb2361a90a46a2388aa1b2876e0a68e0aef25c979dae2b7040b53550c9ba6451",
+      "bytes": 114650
+    },
+    {
+      "path": "inputs/metadata.json",
+      "sha256": "cc1fde9308562ae31a9d226e36ba5fb335442e14ff7a2ec73644e91271c9b0b7",
+      "bytes": 1988
+    }
+  ],
+  "dependencies": {
+    "python": "3.12.11",
+    "numpy": "2.4.6",
+    "pandas": "2.2.3",
+    "PyYAML": "6.0.2",
+    "pyarrow": "20.0.0",
+    "tzdata": "2025.2",
+    "pytz": "2025.2",
+    "python-dateutil": "2.9.0.post0"
+  },
+  "software_tests_passed": 327,
+  "new_split_tests": 43,
+  "independent_accounting_checks_passed": 210,
+  "prior_research_disclosure": "The historical period was previously explored. Test observations are excluded from this parameter-selection procedure, but are not an untouched research holdout.",
+  "integrity_limitation": "Local timestamped hashes and published source revision, not independent market-data notarization"
+}

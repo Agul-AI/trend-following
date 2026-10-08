@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "scope": "prelaunch cache semantics and source-restoration evidence; not forward execution evidence",
+  "primary_source_documentation": "https://www.alphavantage.co/documentation/",
+  "timestamp_convention": "current cached AV15/30 inputs use interval-start labels; verified empirically, not a universal vendor timestamp guarantee",
+  "nested_close_check": "AV30 close at start t equals AV15 close at t+15min; production normalization repeats this check for every selected fallback subbar",
+  "original_independent_audit_rows_per_asset": 117,
+  "selected_core_subbars_verified_per_asset": 61,
+  "full_session_fallback_days": [
+    "2024-11-29",
+    "2024-12-24",
+    "2025-07-03",
+    "2025-11-28",
+    "2025-12-24",
+    "2026-01-30",
+    "2026-02-02"
+  ],
+  "raw_restoration": "intraday adjusted close times same-provider daily raw close divided by daily adjusted close; no second split adjustment",
+  "inputs": [
+    {
+      "asset": "QQQ",
+      "role": "30min",
+      "cache_filename": "QQQ.parquet",
+      "sha256": "0269d166f2788d94259ad52c653ac04ca3f3bb888f943e18a36ecc7c83bd0eb9",
+      "bytes": 4064127
+    },
+    {
+      "asset": "QQQ",
+      "role": "15min",
+      "cache_filename": "QQQ.parquet",
+      "sha256": "039c80f00dd8af4e91758f0f4bd3ce6d5f072ac7ee0a781617a0777b6305c72d",
+      "bytes": 7349335
+    },
+    {
+      "asset": "QQQ",
+      "role": "daily_factor",
+      "cache_filename": "QQQ.parquet",
+      "sha256": "4447f9f1a293cb171a1d348401a115b7b0c547397ef790b817fbd04fe6177570",
+      "bytes": 321623
+    },
+    {
+      "asset": "TQQQ",
+      "role": "30min",
+      "cache_filename": "TQQQ.parquet",
+      "sha256": "25e355653dfa6cbd7366966b99441b67fb0f07f9e779c1fe92aeaedb19a672c6",
+      "bytes": 2479835
+    },
+    {
+      "asset": "TQQQ",
+      "role": "15min",
+      "cache_filename": "TQQQ.parquet",
+      "sha256": "bf67d08aea2a8a95cf231e8f055741fdd7284a30d076b93d214c09e79dc0236c",
+      "bytes": 4555877
+    },
+    {
+      "asset": "TQQQ",
+      "role": "daily_factor",
+      "cache_filename": "TQQQ.parquet",
+      "sha256": "b7e5e1f135d8f5823330f6e41b1894c0c5d1e5cce8141c28413726acf90e3726",
+      "bytes": 201390
+    }
+  ],
+  "audit_report": "reports/research_validation/20261005_oos_v2_source_audit.md",
+  "limitation": "historical adjustment restoration is retrospective. Original cache retrieval time is not independently known; local observation is recorded at package assembly. Future fallback caches must preserve and pass the same source-specific nested checks."
+}

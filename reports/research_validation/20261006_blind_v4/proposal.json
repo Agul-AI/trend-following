@@ -1,0 +1,165 @@
+{
+  "schema_version": 4,
+  "policy_sha256": "133efba4330d524ae5caaebbc0d6f7d391c42b572a50cbc932369bec2451e785",
+  "development_log_sha256": "052c01adf3c4a88e1abf61f34db0aeb24e180ac8123a851b2c44e6d309705fe3",
+  "family_description": "Two positive trailing gross daily-reset 3x log-compounding paths; otherwise cash. Fixed one-third/two-thirds eligibility allocation; no volatility ceiling in the frozen grid.",
+  "candidates": [
+    {
+      "candidate_id": "agree_l84_s63_vnone_c33",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 84,
+        "short_window": 63,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.3333333333333333
+      },
+      "history_sessions": 85,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l84_s63_vnone_c67",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 84,
+        "short_window": 63,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.6666666666666666
+      },
+      "history_sessions": 85,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l126_s42_vnone_c33",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 126,
+        "short_window": 42,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.3333333333333333
+      },
+      "history_sessions": 127,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l126_s42_vnone_c67",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 126,
+        "short_window": 42,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.6666666666666666
+      },
+      "history_sessions": 127,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l126_s63_vnone_c33",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 126,
+        "short_window": 63,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.3333333333333333
+      },
+      "history_sessions": 127,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l126_s63_vnone_c67",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 126,
+        "short_window": 63,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.6666666666666666
+      },
+      "history_sessions": 127,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l126_s84_vnone_c33",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 126,
+        "short_window": 84,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.3333333333333333
+      },
+      "history_sessions": 127,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l126_s84_vnone_c67",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 126,
+        "short_window": 84,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.6666666666666666
+      },
+      "history_sessions": 127,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l189_s63_vnone_c33",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 189,
+        "short_window": 63,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.3333333333333333
+      },
+      "history_sessions": 190,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l189_s63_vnone_c67",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 189,
+        "short_window": 63,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.6666666666666666
+      },
+      "history_sessions": 190,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l252_s63_vnone_c33",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 252,
+        "short_window": 63,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.3333333333333333
+      },
+      "history_sessions": 253,
+      "complexity_rank": 2
+    },
+    {
+      "candidate_id": "agree_l252_s63_vnone_c67",
+      "parameters": {
+        "mode": "agreement",
+        "long_window": 252,
+        "short_window": 63,
+        "vol_window": 63,
+        "volatility_ceiling": null,
+        "cap": 0.6666666666666666
+      },
+      "history_sessions": 253,
+      "complexity_rank": 2
+    }
+  ],
+  "publication_scope": "Projection of private handoff; absolute paths omitted, identical candidate grid and policy source"
+}

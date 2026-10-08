@@ -1,0 +1,371 @@
+protocol_id: qqq_research_v1
+schema_version: 1
+hypothesis: A small predeclared pool of QQQ trend/leverage policies may improve net
+  risk-adjusted performance relative to simple exposures. Test rather than assume
+  improvement; risk diagnosis is a valid negative result.
+classification: retrospective_reconstruction_not_independent_historical_oos
+candidates:
+  cash:
+    name: cash
+    kind: cash
+    product_leverage: 3.0
+    long_ma_days: 200
+    short_ma_days: 20
+    medium_ma_days: 50
+    macd_fast_days: 12
+    macd_slow_days: 24
+    macd_signal_days: 9
+    entry_confirm_bars: 2
+    exit_confirm_bars: 3
+    exit_buffer: 0.01
+    bear_filter_slope_days: 30
+    bear_filter_buffer: 0.01
+    profit_lock_scheme: &id001
+    - - 3.0
+      - 0.75
+    - - 4.0
+      - 0.5
+    q100_activation_gain: 1.1
+    q100_trim_weight: 0.5
+    peak_stop_drawdown: 0.4
+    vol_window_days: 84
+    vol_lookback_days: 126
+    vol_trigger: 0.95
+    vol_recover: 0.2
+    vol_cap_effective: 1.0
+    cooldown_trading_days: 0
+    max_changes_per_session: 1
+    delay_bars: 1
+    use_bear_filter: true
+    use_profit_lock: true
+    use_qtrim: true
+    use_peak_stop: true
+    complexity: 0
+    complexity_rank: 0
+    role: fallback_and_benchmark
+  qqq200ma1x:
+    name: qqq200ma1x
+    kind: trend_1x
+    product_leverage: 3.0
+    long_ma_days: 200
+    short_ma_days: 20
+    medium_ma_days: 50
+    macd_fast_days: 12
+    macd_slow_days: 24
+    macd_signal_days: 9
+    entry_confirm_bars: 2
+    exit_confirm_bars: 3
+    exit_buffer: 0.01
+    bear_filter_slope_days: 30
+    bear_filter_buffer: 0.01
+    profit_lock_scheme: *id001
+    q100_activation_gain: 1.1
+    q100_trim_weight: 0.5
+    peak_stop_drawdown: 0.4
+    vol_window_days: 84
+    vol_lookback_days: 126
+    vol_trigger: 0.95
+    vol_recover: 0.2
+    vol_cap_effective: 1.0
+    cooldown_trading_days: 0
+    max_changes_per_session: 1
+    delay_bars: 1
+    use_bear_filter: true
+    use_profit_lock: true
+    use_qtrim: true
+    use_peak_stop: true
+    complexity: 1
+    complexity_rank: 1
+    role: selection_candidate
+    effective_leverage: 1
+  qqq200ma2x:
+    name: qqq200ma2x
+    kind: trend_2x
+    product_leverage: 3.0
+    long_ma_days: 200
+    short_ma_days: 20
+    medium_ma_days: 50
+    macd_fast_days: 12
+    macd_slow_days: 24
+    macd_signal_days: 9
+    entry_confirm_bars: 2
+    exit_confirm_bars: 3
+    exit_buffer: 0.01
+    bear_filter_slope_days: 30
+    bear_filter_buffer: 0.01
+    profit_lock_scheme: *id001
+    q100_activation_gain: 1.1
+    q100_trim_weight: 0.5
+    peak_stop_drawdown: 0.4
+    vol_window_days: 84
+    vol_lookback_days: 126
+    vol_trigger: 0.95
+    vol_recover: 0.2
+    vol_cap_effective: 1.0
+    cooldown_trading_days: 0
+    max_changes_per_session: 1
+    delay_bars: 1
+    use_bear_filter: true
+    use_profit_lock: true
+    use_qtrim: true
+    use_peak_stop: true
+    complexity: 2
+    complexity_rank: 2
+    role: selection_candidate
+    effective_leverage: 2
+  anchor:
+    name: anchor
+    kind: anchor
+    product_leverage: 3.0
+    long_ma_days: 200
+    short_ma_days: 20
+    medium_ma_days: 50
+    macd_fast_days: 12
+    macd_slow_days: 24
+    macd_signal_days: 9
+    entry_confirm_bars: 2
+    exit_confirm_bars: 3
+    exit_buffer: 0.01
+    bear_filter_slope_days: 30
+    bear_filter_buffer: 0.01
+    profit_lock_scheme: *id001
+    q100_activation_gain: 1.1
+    q100_trim_weight: 0.5
+    peak_stop_drawdown: 0.4
+    vol_window_days: 84
+    vol_lookback_days: 126
+    vol_trigger: 0.95
+    vol_recover: 0.2
+    vol_cap_effective: 1.0
+    cooldown_trading_days: 0
+    max_changes_per_session: 1
+    delay_bars: 1
+    use_bear_filter: true
+    use_profit_lock: true
+    use_qtrim: true
+    use_peak_stop: true
+    complexity: 3
+    complexity_rank: 3
+    role: selection_candidate
+  b5:
+    name: b5
+    kind: b5
+    product_leverage: 3.0
+    long_ma_days: 200
+    short_ma_days: 20
+    medium_ma_days: 50
+    macd_fast_days: 12
+    macd_slow_days: 24
+    macd_signal_days: 9
+    entry_confirm_bars: 2
+    exit_confirm_bars: 3
+    exit_buffer: 0.01
+    bear_filter_slope_days: 30
+    bear_filter_buffer: 0.01
+    profit_lock_scheme: *id001
+    q100_activation_gain: 1.1
+    q100_trim_weight: 0.5
+    peak_stop_drawdown: 0.4
+    vol_window_days: 84
+    vol_lookback_days: 126
+    vol_trigger: 0.95
+    vol_recover: 0.2
+    vol_cap_effective: 1.0
+    cooldown_trading_days: 5
+    max_changes_per_session: 1
+    delay_bars: 1
+    use_bear_filter: true
+    use_profit_lock: true
+    use_qtrim: true
+    use_peak_stop: true
+    complexity: 4
+    complexity_rank: 4
+    role: selection_candidate_and_fixed_policy_track
+selection:
+  objective: median_inner_annual_net_cost_excess_return_sharpe
+  tax_basis: pretax_investor_tax_scenarios_evaluation_only
+  risk_constraint: worst_inner_annual_max_drawdown_not_below_minus_0_45
+  max_inner_drawdown: -0.45
+  tie_tolerance: 1.0e-08
+  tie_break: lower_complexity_rank_then_candidate_id
+  fallback: cash
+  minimum_training_years: 3
+  inner_validation: expanding_training_then_one_calendar_year_validation
+  inner_first_validation_year: 2005
+  inner_window: all_eligible_complete_annual_validation_windows
+  minimum_complete_validation_years: 2
+  exclude_partial_inner_years: true
+  minimum_inner_observations: 200
+  no_positive_score_policy: cash
+evaluation:
+  train_start: '2002-01-10'
+  outer_folds:
+  - train_end: '2008-12-31'
+    test_start: '2009-01-01'
+    test_end: '2011-12-31'
+  - train_end: '2011-12-31'
+    test_start: '2012-01-01'
+    test_end: '2014-12-31'
+  - train_end: '2014-12-31'
+    test_start: '2015-01-01'
+    test_end: '2017-12-31'
+  - train_end: '2017-12-31'
+    test_start: '2018-01-01'
+    test_end: '2020-12-31'
+  - train_end: '2020-12-31'
+    test_start: '2021-01-01'
+    test_end: '2023-12-31'
+  - train_end: '2023-12-31'
+    test_start: '2024-01-01'
+    test_end: '2026-12-31'
+  warmup: trailing_history_only_excluded_from_evaluation_pnl
+  selector_data_boundary: only_observations_and_outcomes_available_before_test_start
+  portfolio: one_continuous_account_no_candidate_wealth_or_tax_basis_import
+  signal_state_on_switch: causal_history_allowed_account_state_never_imported
+  fixed_b5_reported_separately: true
+  history_end: latest_local_bar_recorded_in_manifest
+  historical_holdout_claim: prohibited_all_currently_known_history_is_retrospective
+  genuine_holdout: first_complete_XNYS_session_after_final_code_and_protocol_freeze
+  final_code_freeze_required: true
+  final_code_freeze_timestamp: null
+  genuine_holdout_start: null
+  final_partial_outer_fold: report_actual_available_end_explicitly
+strategy:
+  calendar: XNYS
+  timezone: America/New_York
+  signal_frequency: hourly
+  legacy_bars_per_day: 6
+  partial_bar_policy: exclude_incomplete_bars
+  action_timing: completed_signal_then_next_tradable_close_no_same_bar_return
+  max_position_changes_per_session: 1
+  exposure_policy: state_change_target_weight_then_drift_not_continuous_leverage_cap
+  daily_reset_synthetic_leverage: 3
+  b5_parameters:
+    macd_days:
+    - 12
+    - 24
+    - 9
+    macd_average: sma
+    long_ma_days: 200
+    entry_confirmation_bars: 2
+    exit_confirmation_bars: 3
+    exit_below_ma_buffer: 0.01
+    vol_window_days: 84
+    vol_percentile_lookback_days: 126
+    vol_trigger_percentile: 0.95
+    vol_recovery_percentile: 0.2
+    effective_leverage_at_derisk_allocation: 1.0
+    recovery_cooldown_trading_days: 5
+    profit_lock_gain_weight:
+    - - 3.0
+      - 0.75
+    - - 4.0
+      - 0.5
+    dynamic_trim_activation_gain: 1.1
+    dynamic_trim_distance_quantile: 1.0
+    dynamic_trim_weight: 0.5
+    dynamic_trim_reentry: ma20
+    bear_filter_buffer: 0.01
+    bear_filter_slope_days: 30
+    bear_filter_require_20gt50: true
+    trade_peak_stop: 0.4
+  anchor_difference: recovery_cooldown_trading_days_0
+  simple_qqq_rule: close_above_trailing_200_trading_day_ma_no_other_overlays
+  execution_version: fill_referenced_v1_repaired_account_state_not_legacy_28_9pct_backtest
+  profit_lock_state: actual_fill_referenced_on_entry_no_import_of_hypothetical_candidate_trade_state
+costs:
+  transaction_cost_bps: 1.0
+  slippage_bps: 5.0
+  financing_series: DFF
+  financing_spread_bps: 50.0
+  financing_day_count: 360
+  cash_series: DTB3
+  cash_proxy: 91_day_discount_quote_converted_to_ACT365_investment_yield_not_bill_total_return
+  cash_spread_bps: 0.0
+  cash_day_count: 365
+  publication_lag_US_federal_business_days: 2
+  publication_hour_America_New_York: 18
+  rates_vintage: latest_vintage_not_point_in_time
+  rates_max_age_days: 10
+  missing_rates_policy: fail_no_zero_fill_no_BIL_financing
+  synthetic_fund_expense_annual: 0.0095
+  synthetic_extra_tracking_drag_annual: 0.005
+  actual_tqqq_no_duplicate_fund_costs: true
+  sensitivities:
+    slippage_bps:
+    - 0
+    - 5
+    - 10
+    - 20
+    - 30
+    financing_spread_bps:
+    - 0
+    - 50
+    - 100
+    - 200
+    extra_execution_delay_bars:
+    - 0
+    - 1
+    - 6
+taxes:
+  primary_selection: tax_free
+  scenarios:
+  - tax_free
+  - hypothetical_ST24_LT15_cash24
+  taxable_results_require: explicit_ledger_lots_distributions_holding_periods_wash_sale_policy
+  actual_user_tax_liability_claim: prohibited
+benchmarks:
+- cash
+- qqq_buy_hold
+- qqq200ma1x
+- actual_tqqq_available_overlap
+reporting:
+  metrics:
+  - CAGR
+  - excess_return_Sharpe
+  - max_drawdown
+  - turnover
+  - trade_count
+  - exposure
+  - terminal_wealth
+  cost_waterfall:
+  - gross
+  - trading_costs
+  - financing_expenses_tracking
+  - hypothetical_taxes
+  all_folds_including_failures: true
+  bootstrap:
+    block_lengths_trading_days:
+    - 60
+    - 126
+    - 252
+    target_simulations_each: 1000
+    seed: 42
+  forward_checkpoints_months:
+  - 6
+  - 12
+  success_requires_positive_performance: false
+  deployment_claim: prohibited
+provenance:
+  code_roots:
+  - src
+  - scripts
+  - tests
+  - configs
+  - docs
+  data_globs:
+  - data/raw/alpha_vantage_60min/QQQ.parquet
+  - data/raw/alpha_vantage_60min/TQQQ.parquet
+  - data/raw/synthetic_3x_60min/QQQ_3X_CALC.parquet
+  - data/raw/alpha_vantage_daily_adjusted/QQQ.parquet
+  - data/raw/alpha_vantage_daily_adjusted/TQQQ.parquet
+  - data/raw/yfinance_60min/QQQ.parquet
+  - data/raw/yfinance_60min/TQQQ.parquet
+  - data/raw/research_rates/**/*.csv
+  - data/raw/research_rates/**/*.json
+  research_inventory_roots:
+  - scripts
+  - reports/strategy_improvement
+  - reports/tables
+  - reports/review_packets
+  inventory_limitations: file_names_are_not_a_complete_research_trial_count

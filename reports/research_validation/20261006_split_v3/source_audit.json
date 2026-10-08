@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "scope": "Daily-only fresh chronological split; coverage and accounting assumptions, no new strategy performance inspected or calculated.",
+  "source_observed_at_utc": "2026-10-06T16:29:07.281211+00:00",
+  "partitions": {
+    "development": [
+      "2002-01-01",
+      "2011-12-31"
+    ],
+    "validation": [
+      "2012-01-01",
+      "2015-12-31"
+    ],
+    "sealed_test": [
+      "2016-01-01",
+      "2026-06-01"
+    ]
+  },
+  "daily_sources": [
+    {
+      "sha256": "4447f9f1a293cb171a1d348401a115b7b0c547397ef790b817fbd04fe6177570",
+      "bytes": 321623,
+      "rows": 6685,
+      "first_timestamp": "1999-11-01 00:00:00",
+      "last_timestamp": "2026-06-01 00:00:00",
+      "duplicates": 0,
+      "columns": [
+        "date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "adj_close",
+        "volume",
+        "dividend_amount",
+        "split_coefficient"
+      ],
+      "periods": {
+        "development": {
+          "rows": 2519,
+          "sessions": 2519,
+          "session_row_count_distribution": {
+            "1": 2519
+          },
+          "null_cells": 0
+        },
+        "validation": {
+          "rows": 1006,
+          "sessions": 1006,
+          "session_row_count_distribution": {
+            "1": 1006
+          },
+          "null_cells": 0
+        },
+        "sealed_test": {
+          "rows": 2617,
+          "sessions": 2617,
+          "session_row_count_distribution": {
+            "1": 2617
+          },
+          "null_cells": 0
+        }
+      },
+      "role": "alpha_vantage_daily_adjusted",
+      "relative_source": "alpha_vantage_daily_adjusted/QQQ.parquet",
+      "usage": "primary raw close and action source"
+    },
+    {
+      "sha256": "9965708a629f288223bc21cc3c3145ae0121f52cbe3e4958cfa0f77c4b26476b",
+      "bytes": 342185,
+      "rows": 6937,
+      "first_timestamp": "1999-03-10 00:00:00",
+      "last_timestamp": "2026-10-06 00:00:00",
+      "duplicates": 0,
+      "columns": [
+        "date",
+        "open",
+        "high",
+        "low",
+        "close",
+        "adj_close",
+        "volume"
+      ],
+      "periods": {
+        "development": {
+          "rows": 2519,
+          "sessions": 2519,
+          "session_row_count_distribution": {
+            "1": 2519
+          },
+          "null_cells": 0
+        },
+        "validation": {
+          "rows": 1006,
+          "sessions": 1006,
+          "session_row_count_distribution": {
+            "1": 1006
+          },
+          "null_cells": 0
+        },
+        "sealed_test": {
+          "rows": 2617,
+          "sessions": 2617,
+          "session_row_count_distribution": {
+            "1": 2617
+          },
+          "null_cells": 0
+        }
+      },
+      "role": "yfinance_daily",
+      "relative_source": "yfinance_daily/QQQ.parquet",
+      "usage": "independent date coverage only; no strategy outcomes"
+    }
+  ],
+  "rate_sources": [
+    {
+      "sha256": "094ba5cfee117734ed0a86e73c134854386a3a88c3d0862d93cc63b98121934c",
+      "bytes": 162181,
+      "relative_source": "research_rates/20261002_research_v1/DFF_raw.csv"
+    },
+    {
+      "sha256": "d4ba0370aa830eadb99e415a404e533028961d3cd2fed50c9805dbe972bc8b47",
+      "bytes": 2050398,
+      "relative_source": "research_rates/20261002_research_v1/DFF_available.csv"
+    },
+    {
+      "sha256": "cb2361a90a46a2388aa1b2876e0a68e0aef25c979dae2b7040b53550c9ba6451",
+      "bytes": 114650,
+      "relative_source": "research_rates/20261002_research_v1/DTB3_raw.csv"
+    },
+    {
+      "sha256": "78be8d5e30f424b3600b5ef96bd069ba78cb6eab1c8593fdc712d8e0f3262365",
+      "bytes": 1498583,
+      "relative_source": "research_rates/20261002_research_v1/DTB3_available.csv"
+    },
+    {
+      "sha256": "cc1fde9308562ae31a9d226e36ba5fb335442e14ff7a2ec73644e91271c9b0b7",
+      "bytes": 1988,
+      "relative_source": "research_rates/20261002_research_v1/metadata.json"
+    }
+  ],
+  "date_validation": {
+    "development": 2519,
+    "validation": 1006,
+    "test": 2617,
+    "total": 6142,
+    "AV_Yahoo_dates_equal_in_each_partition": true,
+    "primary_duplicates": 0,
+    "primary_missing_cells_in_partitions": 0,
+    "distributions_by_partition": [
+      28,
+      17,
+      42
+    ],
+    "splits_in_partitions": 0
+  },
+  "rates": {
+    "raw_rows": {
+      "DFF": 10135,
+      "DTB3": 7238
+    },
+    "normalized_rows": {
+      "DFF": 10135,
+      "DTB3": 6941
+    },
+    "latest_vintage_not_point_in_time": true,
+    "modeled_release_lag": "2 US federal business days at18:00 America/New_York",
+    "rebuild_available_at_equal": true,
+    "rebuild_rate_max_abs_error": 1e-16,
+    "daily16h_validity_checks": 6142,
+    "missing_or_stale_failures": 0,
+    "maximum_known_rate_age_days": 3.9166666666666665,
+    "negative_DTB3_intervals": 9,
+    "negative_DFF_intervals": 0
+  },
+  "sealed_cost_assumptions_requested_by_root": {
+    "funding": "DFF plus50bp ACT/360 applied once to daily reset debt2timesprior syntheticNAV",
+    "fund_expense_annual": 0.0095,
+    "extra_drag_annual": 0.005,
+    "expense_clock": "ACT/365",
+    "cash": "DTB3 converted91dayinvestmentyield ACT/365; negative yields retained",
+    "QQQ_dividend_cash": "explicit ex-date immediate cash credit approximation; not actual payable-date availability",
+    "distribution_tax": "ordinary-income hypothetical scenario; qualification unknown",
+    "timestamp": "16:00 America/New_York accounting clock on each observed session, not claimed actual early-close timestamps",
+    "investor_rebalance": "Synthetic fractional allocations rebalance only when target changes and otherwise drift; physical QQQ full0/1 controls reinvest ex-date cash each daily accounting close with costs under root-approved every_bar mode."
+  },
+  "claims_excluded": [
+    "genuine unseen historical holdout",
+    "point-in-time vendor vintage",
+    "actual TQQQ instrument return",
+    "actual investor tax compliance",
+    "verified historical dividend pay dates",
+    "actual early-close execution",
+    "performance success"
+  ],
+  "immutable_requirement": "Copy and hash-bind approved source bytes before protocol seal; original files are mutable and no source path alone guarantees immutability."
+}

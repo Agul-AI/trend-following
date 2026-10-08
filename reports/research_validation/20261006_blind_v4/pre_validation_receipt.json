@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "stage": "locked_before_validation",
+  "protocol_sha256": "ea1c50f9ec34ee3c153ec4c97ffebf173eedd7835eabf7affff2c69861240ee5",
+  "locked_at_utc": "2026-10-06T18:48:59.073692+00:00",
+  "candidate_grid_sha256": "c78064edff9d4d85f2f62e3fbdeafe54feda015873615354212467187c03dcd0",
+  "policy_sha256": "133efba4330d524ae5caaebbc0d6f7d391c42b572a50cbc932369bec2451e785",
+  "explored_configurations": 28,
+  "frozen_candidates": 12,
+  "software_tests_passed": 379,
+  "new_tests": 52,
+  "scope": "Fresh developer only received through-2011 raw data and generic accounting kernels; numerical child processes sandboxed; same-user tools instruction-restricted",
+  "prior_rules_or_results_given_to_developer": false,
+  "validation_evaluation_started": false,
+  "test_evaluation_started": false,
+  "runtime_versions": {
+    "python": "3.12.11",
+    "numpy": "2.4.6",
+    "pandas": "2.2.3",
+    "PyYAML": "6.0.2",
+    "pyarrow": "20.0.0",
+    "tzdata": "2025.2",
+    "pytz": "2025.2",
+    "python-dateutil": "2.9.0.post0"
+  }
+}

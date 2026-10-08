@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "publication_scope": "Projected final custody record; raw data/private paths/audit syscall logs omitted",
+  "source_revision_before_validation": "ee2a8db9cbe157a3b2c9475167571ec249e30d53",
+  "source_research_context": "fresh fork_turns none; only raw development packet and generic accounting kernels supplied",
+  "development_seal_sha256": "790069b5f12e3da869411b3ab9f025b37d7e9aa79c664bfeb47f9eccd5eadeb5",
+  "protocol_sha256": "ea1c50f9ec34ee3c153ec4c97ffebf173eedd7835eabf7affff2c69861240ee5",
+  "proposal_candidate_grid_sha256": "c78064edff9d4d85f2f62e3fbdeafe54feda015873615354212467187c03dcd0",
+  "policy_sha256": "133efba4330d524ae5caaebbc0d6f7d391c42b572a50cbc932369bec2451e785",
+  "selection_sha256": "1e86d5bec8e27af395f1f841d657862b4716e435a199e915c8464208a2ed87b8",
+  "locked_at_utc": "2026-10-06T18:48:59.073692+00:00",
+  "validation_started_at_utc": "2026-10-06T18:55:15.853266+00:00",
+  "selected_at_utc": "2026-10-06T18:55:20.084317+00:00",
+  "test_started_at_utc": "2026-10-06T18:58:32.726189+00:00",
+  "test_completed_at_utc": "2026-10-06T18:58:41.336122+00:00",
+  "selected": {
+    "candidate_id": "agree_l252_s63_vnone_c67",
+    "parameters": {
+      "mode": "agreement",
+      "long_window": 252,
+      "short_window": 63,
+      "vol_window": 63,
+      "volatility_ceiling": null,
+      "cap": 0.6666666666666666
+    },
+    "history_sessions": 253,
+    "complexity_rank": 2
+  },
+  "explored_configurations": 28,
+  "frozen_candidates": 12,
+  "software_tests_passed": 379,
+  "new_software_tests": 52,
+  "production_kernel_probe_checks_passed": 11,
+  "development_scored_sessions": 2519,
+  "development_feature_warmup_sessions": 543,
+  "validation_scored_sessions": 1006,
+  "test_scored_sessions": 2617,
+  "stages": {
+    "development": {
+      "availability_limitation": "assumed conservative lag, not historical release-time reconstruction",
+      "end": "2011-12-31",
+      "rate_cutoff_utc": "2011-12-31T21:00:00+00:00",
+      "rate_limitation": "latest_vintage_not_point_in_time; no ALFRED vintages retrieved",
+      "raw_price_columns": [
+        "session",
+        "close",
+        "dividend_amount",
+        "split_coefficient"
+      ],
+      "scoring_start": "2002-01-01",
+      "session_count": 3062,
+      "session_first": "1999-11-01",
+      "session_last": "2011-12-30",
+      "stage": "development"
+    },
+    "test": {
+      "availability_limitation": "assumed conservative lag, not historical release-time reconstruction",
+      "end": "2026-06-01",
+      "rate_cutoff_utc": "2026-06-01T20:00:00+00:00",
+      "rate_limitation": "latest_vintage_not_point_in_time; no ALFRED vintages retrieved",
+      "raw_price_columns": [
+        "session",
+        "close",
+        "dividend_amount",
+        "split_coefficient"
+      ],
+      "scoring_start": "2016-01-01",
+      "session_count": 2617,
+      "session_first": "2016-01-04",
+      "session_last": "2026-06-01",
+      "stage": "test"
+    },
+    "validation": {
+      "availability_limitation": "assumed conservative lag, not historical release-time reconstruction",
+      "end": "2015-12-31",
+      "rate_cutoff_utc": "2015-12-31T21:00:00+00:00",
+      "rate_limitation": "latest_vintage_not_point_in_time; no ALFRED vintages retrieved",
+      "raw_price_columns": [
+        "session",
+        "close",
+        "dividend_amount",
+        "split_coefficient"
+      ],
+      "scoring_start": "2012-01-01",
+      "session_count": 1006,
+      "session_first": "2012-01-03",
+      "session_last": "2015-12-31",
+      "stage": "validation"
+    }
+  },
+  "tool_scope_limitation": "Unsandboxed same-user agent tools are not kernel-restricted; explicit allowlist and fresh context required",
+  "audit_scope_limitation": "Supplemental Python open/import audit is not a complete native syscall trace",
+  "timestamp_quality_limitation": "Held-stage exit payload reuses its start timestamp; actual phase order is established by custody hash-chain append order, separate selected_at and final test-completion timestamps. Preserved, not retroactively rewritten.",
+  "no_test_retuning": true,
+  "old_strategy_results_given_to_developer": false
+}

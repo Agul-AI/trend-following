@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Environments
+.env
+.venv/
+venv/
+
+# Local caches
+.matplotlib_cache/
+.cache/
+
+# Local job/runtime logs
+/logs/
+
+# Local-only notification helpers may include personal chat names/preferences.
+/scripts/send_preferred_strategy_wechat_update.py
+/scripts/run_preferred_strategy_update_and_wechat.sh
+/scripts/send_preferred_strategy_messages_update.py
+/scripts/run_preferred_strategy_update_and_message.sh
+
+# Data caches: keep directory structure, not downloaded market data
+/data/raw/*
+!/data/raw/.gitkeep
+/data/processed/*
+!/data/processed/.gitkeep
+
+# Generated research artifacts can become very large. Keep curated examples by
+# force-adding them when they are intentionally part of a commit.
+/reports/figures/*
+!/reports/figures/.gitkeep
+/reports/tables/*
+!/reports/tables/.gitkeep
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Private research inputs, full execution paths and exact local freezes
+/reports/research_validation/**/snapshot/
+/reports/research_validation/**/paths/
+/reports/research_validation/*_protocol/
+/reports/research_validation/*_forward_freeze/
+/reports/research_validation/*_forward_paper/
+/trading_journal/
+
+# Private prospective freezes and full checkpoint paths
+/reports/research_validation/*_oos_freeze/
+/reports/research_validation/*_oos_private/
+/reports/research_validation/*_split_private/
+/reports/research_validation/*_blind_private/

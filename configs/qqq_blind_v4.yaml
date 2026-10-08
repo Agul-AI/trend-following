@@ -1,0 +1,76 @@
+schema_version: 4
+study_id: qqq_blind_v4
+purpose: Data-only development in a fresh context with chronological release gates
+scope:
+  research_context: New agent with no inherited project turns or previous strategy results
+  development_data: Raw QQQ daily observations and timestamp-available rates through 2011 only
+  excluded_from_development: Earlier project rules, optimized parameters, results, validation prices and test prices
+  numerical_boundary: macOS deny-default sandbox; read-only allowlisted development input and generic accounting engine
+  tool_boundary: Agent instruction-based allowlist; unsandboxed same-user tools are not kernel-restricted
+  historical_scope: Historical out-of-sample evaluation, not live or claimed never-seen market history
+periods:
+  development: {start: '2002-01-01', end: '2011-12-31'}
+  validation: {start: '2012-01-01', end: '2015-12-31'}
+  test: {start: '2016-01-01', end: '2026-06-01'}
+data:
+  warmup_start: '1999-11-01'
+  allowed_price_fields: [session, close, dividend_amount, split_coefficient]
+  adjusted_prices: excluded
+  reference_scope: Independent session dates only
+  feature_history: Earlier raw observations available for features only; no warmup holdings or profits
+  signal_interface: Pure deterministic target(past_and_current_history, fixed_parameters)
+  history_limit_sessions: 1260
+  accounting_clock: '16:00 America/New_York on observed session dates, not actual early-close trading time'
+development:
+  max_explored_configurations: 32
+  max_frozen_candidates: 12
+  trial_reporting: Record all explored configurations and unsuccessful runs
+  policy_author: Fresh development agent only; coordinator does not recommend signal rules
+  freeze_before_validation: Policy source, candidate grid, accounting engine and selection rule
+selection:
+  objective: Pooled validation expense-inclusive pretax daily cash-excess Sharpe
+  annualization: 252
+  standard_deviation_ddof: 1
+  tie_tolerance: 0.0000000001
+  tie_break: Lower declared complexity_rank, then stable candidate_id
+  undefined_scores: Report and exclude; fail if no finite candidate
+  no_positive_score_hurdle: true
+  no_after_the_fact_drawdown_screen: true
+  development_agent_sees_validation: false
+  freeze_selected_rule_before_test: true
+execution:
+  initial_cash: 1000.0
+  target_range: [0.0, 1.0]
+  target_asset: Hypothetical daily-reset 3x QQQ total-return instrument
+  residual_cash: Causal DTB3 investment-yield proxy, including negative observations
+  signal_delay_sessions: 1
+  allocation: Rebalance only on target change; fractional allocations may drift
+  segment_initial_state: Flat cash, no pending orders or tax basis
+  terminal: Clone liquidation with costs and outstanding modeled taxes
+costs:
+  fee_bps: 1.0
+  slippage_bps: 5.0
+  financing_spread_bps: 50.0
+  expense_ratio: 0.0095
+  extra_drag: 0.005
+  short_tax_rate: 0.24
+  long_tax_rate: 0.15
+  interest_tax_rate: 0.24
+  wash_sales: true
+  borrowing: Two units per prior daily-reset NAV; DFF plus spread once on ACT/360
+  expenses: Declared fund expense plus tracking assumption once on ACT/365
+  rate_availability: Two US federal business days after observation at 18:00 New York
+  rates_vintage: Latest-vintage historical FRED, not reconstructed ALFRED release vintages
+  physical_qqq_distributions: Ex-date cash credit and reinvestment at accounting close; ordinary hypothetical tax character
+  synthetic_tax: Hypothetical FIFO fund-unit realizations, not actual TQQQ investor taxation
+evaluation:
+  candidates_tested: Selected validation winner only
+  benchmarks: [QQQ_buy_hold, synthetic3x_buy_hold, cash]
+  benchmark_entry: Independent second scored session close
+  primary_endpoint: Expense-inclusive pretax cash-excess Sharpe difference, selected rule minus QQQ buy-and-hold
+  secondary: [annualized_return, compounded_total_return, maximum_drawdown, volatility, exposure, turnover, costs, hypothetical_taxes]
+  cost_layers: [gross, trading, financing, expense, tax]
+  refit_during_test: false
+  expand_grid_after_validation: false
+  replace_winner_after_test: false
+  interpretation: Report risk and costs even when disappointing; no strategy deployment claim

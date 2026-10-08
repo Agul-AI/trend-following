@@ -1,0 +1,7 @@
+name,train_end,test_start,test_end,selected_candidate,candidate_pool,evaluation_label
+2009_2011,2008-12-31 15:00:00-05:00,2009-01-02 10:00:00-05:00,2011-12-30 15:00:00-05:00,anchor,"cash,qqq200ma1x,qqq200ma2x,anchor,b5",retrospective_nested
+2012_2014,2011-12-30 15:00:00-05:00,2012-01-03 10:00:00-05:00,2014-12-31 15:00:00-05:00,anchor,"cash,qqq200ma1x,qqq200ma2x,anchor,b5",retrospective_nested
+2015_2017,2014-12-31 15:00:00-05:00,2015-01-02 10:00:00-05:00,2017-12-29 15:00:00-05:00,anchor,"cash,qqq200ma1x,qqq200ma2x,anchor,b5",retrospective_nested
+2018_2020,2017-12-29 15:00:00-05:00,2018-01-02 10:00:00-05:00,2020-12-31 15:00:00-05:00,qqq200ma2x,"cash,qqq200ma1x,qqq200ma2x,anchor,b5",retrospective_nested
+2021_2023,2020-12-31 15:00:00-05:00,2021-01-04 10:00:00-05:00,2023-12-29 15:00:00-05:00,anchor,"cash,qqq200ma1x,qqq200ma2x,anchor,b5",retrospective_nested
+2024_2026,2023-12-29 15:00:00-05:00,2024-01-02 10:00:00-05:00,2026-06-01 15:00:00-04:00,anchor,"cash,qqq200ma1x,qqq200ma2x,anchor,b5",retrospective_nested
