@@ -74,7 +74,9 @@ def fabricated():
             benchmark,
             benchmark + 0.4,
         ]
-        for candidate, score in zip(helper.study.candidates_for_wait(hours), scores, strict=True):
+        for rank, (candidate, score) in enumerate(
+            zip(helper.study.candidates_for_wait(hours), scores, strict=True)
+        ):
             rows.append(
                 {
                     **base,
@@ -85,10 +87,47 @@ def fabricated():
                     "cagr": 0.04,
                     "max_drawdown": -0.2,
                     "terminal_equity": 1500,
+                    "trade_count": rank,
+                    "order_count": 2 * rank,
                 }
             )
     metrics = pd.DataFrame(rows)
     return metrics, pd.DataFrame(benchmarks), curves, helper.independent_counts(metrics, benchmark)
+
+
+def test_trade_median_is_over_all_configs_not_only_sharpe_winners(fabricated):
+    metrics, _, _, counts = fabricated
+    before = counts.copy(deep=True)
+    result = helper.add_trade_medians(metrics, counts)
+    assert result.median_completed_round_trips.eq(144).all()
+    assert result.median_one_way_orders.eq(288).all()
+    # Winners occupy mostly the upper-ranked synthetic counts: filtering by score
+    # would produce a different median and is expressly not allowed.
+    zero = metrics.loc[metrics.entry_confirmation_hours.eq(0)]
+    assert (
+        zero.loc[
+            zero.cash_excess_sharpe.gt(counts.BH_cash_excess_Sharpe.iloc[0] + 1e-10), "trade_count"
+        ].median()
+        != 144
+    )
+    pd.testing.assert_frame_equal(counts, before)
+
+
+@pytest.mark.parametrize("mutation", ["missing", "noninteger", "negative", "unpaired_orders"])
+def test_trade_medians_reject_invalid_or_incomplete_cohorts(fabricated, mutation):
+    metrics, _, _, counts = fabricated
+    metrics = metrics.copy()
+    if mutation == "missing":
+        metrics = metrics.iloc[1:]
+    elif mutation == "noninteger":
+        metrics["trade_count"] = metrics.trade_count.astype(float)
+        metrics.loc[0, "trade_count"] = 0.5
+    elif mutation == "negative":
+        metrics.loc[0, "order_count"] = -1
+    else:
+        metrics.loc[0, "order_count"] = 1
+    with pytest.raises(ValueError):
+        helper.add_trade_medians(metrics, counts)
 
 
 def payload():

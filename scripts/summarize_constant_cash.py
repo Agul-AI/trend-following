@@ -306,6 +306,58 @@ def validate_counts(saved, independent):
     return independent
 
 
+def add_trade_medians(metrics, counts):
+    """Enrich the public table across ALL 289 members, not just Sharpe winners.
+
+    The frozen engine's trade_count counts completed buy/sell round trips,
+    including terminal liquidation; order_count counts one-way executions.
+    This does not modify the sealed private counts or any strategy accounting.
+    """
+    required = {
+        "candidate_id",
+        "entry_confirmation_hours",
+        "exit_confirmation_hours",
+        "trade_count",
+        "order_count",
+    }
+    if not required.issubset(metrics):
+        raise ValueError("Trade medians require full candidate round-trip and order counts")
+    for column in ("trade_count", "order_count"):
+        values = pd.to_numeric(metrics[column], errors="coerce")
+        if (
+            not np.isfinite(values).all()
+            or values.lt(0).any()
+            or not values.eq(np.floor(values)).all()
+        ):
+            raise ValueError("Trade and order counts must be finite nonnegative integers")
+    if not metrics.order_count.eq(2 * metrics.trade_count).all():
+        raise ValueError("Terminal-reconciled one-way orders must equal twice round trips")
+    if len(counts) != 13 or counts.wait_hours.duplicated().any():
+        raise ValueError("Trade medians require exactly thirteen distinct wait rows")
+    rows = []
+    for hours in study.WAIT_HOURS:
+        cohort = metrics.loc[metrics.entry_confirmation_hours.eq(hours)]
+        expected = {c.candidate_id for c in study.candidates_for_wait(hours)}
+        if (
+            len(cohort) != 289
+            or cohort.candidate_id.duplicated().any()
+            or set(cohort.candidate_id) != expected
+            or not cohort.exit_confirmation_hours.eq(hours).all()
+        ):
+            raise ValueError("Trade medians require all 289 unchanged equal-wait members")
+        rows.append(
+            {
+                "wait_hours": hours,
+                "median_completed_round_trips": cohort.trade_count.median(),
+                "median_one_way_orders": cohort.order_count.median(),
+            }
+        )
+    result = counts.merge(pd.DataFrame(rows), on="wait_hours", how="left", validate="one_to_one")
+    if result[["median_completed_round_trips", "median_one_way_orders"]].isna().any().any():
+        raise ValueError("Trade median wait coverage is incomplete")
+    return result
+
+
 def validate_curves(bh, cash, benchmarks, initial_cash):
     for frame in (bh, cash):
         _schema(frame, CURVE, CURVE)
@@ -402,6 +454,7 @@ def publish(sidecar, output):
     counts = validate_counts(
         _read(private / "counts_by_wait.csv"), independent_counts(metrics, bh.cash_excess_sharpe)
     )
+    counts = add_trade_medians(metrics, counts)
     public_benchmarks = benchmarks.drop(
         columns=["candidate_id", *[c for c in IDENTITY if c in benchmarks]]
     )
@@ -440,6 +493,11 @@ def publish(sidecar, output):
         "undefined_scores_retained_in_289_denominator": True,
         "score_definition": "session_close_cash_excess_return_mean / sample_sd_ddof1 * sqrt(252)",
         "counts_independently_recomputed": True,
+        "trade_medians_scope": "all_289_configurations_per_wait_not_just_Sharpe_beating_members",
+        "trade_medians_period": "full_2001_to_2011_development_segment_not_annualized",
+        "trade_count_definition": "completed_buy_sell_round_trips_including_terminal_liquidation",
+        "one_way_order_count_definition": "buy_and_sell_executions_two_per_completed_round_trip",
+        "trade_medians_derived_from_candidate_metrics_not_private_count_file": True,
         "market_performance_recomputed_for_new_cash": True,
         "new_global_wait_or_strategy_selected": False,
         "later_stage_numerical_inputs_opened": False,

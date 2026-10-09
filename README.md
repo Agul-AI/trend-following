@@ -152,7 +152,7 @@ prepared freezes remain private and are **not included**. Synthetic software
 tests require no market-price inputs. Market preparation fails closed when
 verified local inputs or required authorization are missing.
 
-Publication checks passed **422 synthetic software tests**, Ruff lint and
+Publication checks passed **427 synthetic software tests**, Ruff lint and
 whitespace checks. These checks are separate from market performance; the
 eight frozen implementation files and immutable configuration remain unchanged.
 

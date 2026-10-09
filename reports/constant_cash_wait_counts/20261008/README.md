@@ -24,21 +24,27 @@ A beat requires a finite candidate score greater than the BH score by more than
 the same counts here. These are the new 3%-cash results, not relabeled results
 from the earlier variable-rate model.
 
-| Equal entry/exit wait (trading hours) | Required consecutive half-hour hits | Beat BH Sharpe / 289 | Percentage |
-|---:|---:|---:|---:|
-| 0 | 1 | 200 | 69.2% |
-| 0.5 | 2 | 208 | 72.0% |
-| 1 | 3 | 193 | 66.8% |
-| 1.5 | 4 | 192 | 66.4% |
-| 2 | 5 | 187 | 64.7% |
-| 2.5 | 6 | 180 | 62.3% |
-| 3 | 7 | 181 | 62.6% |
-| 3.5 | 8 | 173 | 59.9% |
-| 4 | 9 | 169 | 58.5% |
-| 4.5 | 10 | 171 | 59.2% |
-| 5 | 11 | 169 | 58.5% |
-| 5.5 | 12 | 159 | 55.0% |
-| 6 | 13 | 165 | 57.1% |
+| Equal entry/exit wait (trading hours) | Required half-hour hits | Beat BH Sharpe / 289 | Percentage | Median completed round trips |
+|---:|---:|---:|---:|---:|
+| 0 | 1 | 200 | 69.2% | 144 |
+| 0.5 | 2 | 208 | 72.0% | 92 |
+| 1 | 3 | 193 | 66.8% | 76 |
+| 1.5 | 4 | 192 | 66.4% | 66 |
+| 2 | 5 | 187 | 64.7% | 62 |
+| 2.5 | 6 | 180 | 62.3% | 59 |
+| 3 | 7 | 181 | 62.6% | 55 |
+| 3.5 | 8 | 173 | 59.9% | 53 |
+| 4 | 9 | 169 | 58.5% | 51 |
+| 4.5 | 10 | 171 | 59.2% | 49 |
+| 5 | 11 | 169 | 58.5% | 45 |
+| 5.5 | 12 | 159 | 55.0% | 44 |
+| 6 | 13 | 165 | 57.1% | 43 |
+
+The trade median is across **all 289 configurations at each wait**, not just the
+Sharpe-beating subset. It counts completed buy–sell round trips across the full
+2001–2011 development segment, including terminal liquidation—not trades per
+year. Median one-way buy/sell executions are exactly twice these values and are
+also retained in `counts_by_wait.csv`. The sealed private results are unchanged.
 
 The largest development count occurs at 0.5 hours, **208/289 (72.0%)**. That is
 a descriptive result, **not an established optimal future wait**. Beating this

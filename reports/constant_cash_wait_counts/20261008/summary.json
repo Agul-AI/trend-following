@@ -83,9 +83,10 @@
   ],
   "market_performance_recomputed_for_new_cash": true,
   "new_global_wait_or_strategy_selected": false,
+  "one_way_order_count_definition": "buy_and_sell_executions_two_per_completed_round_trip",
   "primary_beat_definition": "finite candidate cash-excess Sharpe > BH Sharpe + 1e-10",
   "project": "Trend Following Study",
-  "publication_helper_sha256": "a87230e80a5da49abef8606308640748c077fd6d1f8234c2223998a1b5e46661",
+  "publication_helper_sha256": "f68424de9675a981436a0b461c4e6c76d255571c63c60e49720ac354aeb741ed",
   "required_consecutive_hits_formula": "1 + 2 * wait_hours",
   "result_seal_payload_sha256": "23cfd8800aa4f673084695a3e7b428c9888a74b934e0b0f7cfa4c9a2c2170978",
   "same_entry_and_exit_wait": true,
@@ -96,5 +97,9 @@
   "strict_gt_count_also_reported": true,
   "taxes_financing_separate_fund_expenses": false,
   "total_bps_per_one_way_order": 4,
+  "trade_count_definition": "completed_buy_sell_round_trips_including_terminal_liquidation",
+  "trade_medians_derived_from_candidate_metrics_not_private_count_file": true,
+  "trade_medians_period": "full_2001_to_2011_development_segment_not_annualized",
+  "trade_medians_scope": "all_289_configurations_per_wait_not_just_Sharpe_beating_members",
   "undefined_scores_retained_in_289_denominator": true
 }
