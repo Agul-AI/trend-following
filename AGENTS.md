@@ -1,5 +1,13 @@
 # Trend Following Study — Repository Instructions
 
+- **Latest split override: redo validation for 2012–2018 only.** Keep the same
+  development-selected 159 shared indicator pairs at the 2/3/4-hour uniform
+  waits, fixed 3% nominal cash and 1+3 bp costs. Seal unchanged membership before
+  preparing/evaluating a new physically bounded 1999–2018 feature/price prefix.
+  Use no earlier validation/OOS outcome to reselect or replace pairs. The revised
+  historical OOS is 2019–May 28, 2026 (verified Alpha endpoint), still NOT
+  authorized for evaluation. Preserve all older sources/configs/results; do not
+  present this post-examination split change as genuinely untouched history.
 - **Latest stage authorization: intersection validation only.** Keep the daily
   indicator pairs beating cost-matched BH cash-excess Sharpe in development at
   every shared wait of 2, 3 and 4 hours, using fixed 3% nominal cash and 1+3 bp

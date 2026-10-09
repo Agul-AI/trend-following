@@ -1,0 +1,112 @@
+{
+  "all_477_no_unknown_gap_post_signal_flags": true,
+  "all_477_statistics_recomputed": true,
+  "all_order_counts_twice_completed_round_trips": true,
+  "candidate_count": 477,
+  "candidate_set_sha256": "c33cf5fba4f912f19e02fe9c71bd61ff8936db3122ba74c4f0b7af255981bd0c",
+  "cash_nominal_annual_rate": 0.03,
+  "chronology": {
+    "candidate_set_sealed_at": "2026-10-09T03:55:47.388062+00:00",
+    "finished_at": "2026-10-09T03:57:03.223113+00:00",
+    "market_outcomes_started_at": "2026-10-09T03:56:28.856391+00:00",
+    "prepared_at": "2026-10-09T03:56:06.233298+00:00"
+  },
+  "cohort_counts": [
+    {
+      "beat_BH_Sharpe_count": 9,
+      "below_BH_Sharpe_count": 150,
+      "configuration_count": 159,
+      "finite_Sharpe_count": 159,
+      "tie_BH_Sharpe_count": 0,
+      "undefined_Sharpe_count": 0,
+      "wait_hours": 2.0
+    },
+    {
+      "beat_BH_Sharpe_count": 12,
+      "below_BH_Sharpe_count": 147,
+      "configuration_count": 159,
+      "finite_Sharpe_count": 159,
+      "tie_BH_Sharpe_count": 0,
+      "undefined_Sharpe_count": 0,
+      "wait_hours": 3.0
+    },
+    {
+      "beat_BH_Sharpe_count": 7,
+      "below_BH_Sharpe_count": 152,
+      "configuration_count": 159,
+      "finite_Sharpe_count": 159,
+      "tie_BH_Sharpe_count": 0,
+      "undefined_Sharpe_count": 0,
+      "wait_hours": 4.0
+    }
+  ],
+  "costs_bps_per_order": {
+    "commission": 1,
+    "slippage": 3
+  },
+  "freeze_sha256": "9a052427d051b3a4cb7117adbed71665cc38dab538ba0e6a47eba8a5fd2ecbaa",
+  "historical_oos_evaluated": false,
+  "historical_oos_period": {
+    "end": "2026-05-28",
+    "start": "2019-01-01"
+  },
+  "independent_dividend_actions": 29,
+  "independent_split_actions": 0,
+  "max_absolute_reconciliation_deltas": {
+    "buy_and_hold_ledger_absolute": 0.0,
+    "cash_ledger_absolute": 0.0,
+    "wait_2_annualized_volatility": 8.326672684688674e-16,
+    "wait_2_cagr": 0.0,
+    "wait_2_cash_excess_sharpe": 3.6637359812630166e-15,
+    "wait_2_max_drawdown": 0.0,
+    "wait_2_terminal_equity": 0.0,
+    "wait_3_annualized_volatility": 7.91033905045424e-16,
+    "wait_3_cagr": 0.0,
+    "wait_3_cash_excess_sharpe": 3.6637359812630166e-15,
+    "wait_3_max_drawdown": 0.0,
+    "wait_3_terminal_equity": 0.0,
+    "wait_4_annualized_volatility": 7.494005416219807e-16,
+    "wait_4_cagr": 0.0,
+    "wait_4_cash_excess_sharpe": 3.3306690738754696e-15,
+    "wait_4_max_drawdown": 0.0,
+    "wait_4_terminal_equity": 0.0
+  },
+  "no_2019plus_numeric_price_rows": true,
+  "no_selection_filtering_or_replacement": true,
+  "original_frozen_implementation_hash_count": 10,
+  "original_implementation_and_pair_candidate_hashes_unchanged": true,
+  "pair_count": 159,
+  "passed": true,
+  "period": {
+    "end": "2018-12-31",
+    "start": "2012-01-01"
+  },
+  "prefix_audit": {
+    "OOS_numeric_rows_parsed": 0,
+    "daily_sessions": 4822,
+    "first_validation_session": "2012-01-03",
+    "last_validation_session": "2018-12-31",
+    "observed_bars": 61850,
+    "prices_synthesized": false,
+    "scheduled_bars": 61866,
+    "unknown_missing_slots": 14,
+    "validation_known_halt_slots": 7,
+    "validation_sessions": 1760,
+    "validation_unknown_missing_slots": 0
+  },
+  "prior_history_previously_examined": true,
+  "private_independent_audit_sha256": "2c73ff18121223d7d3c686d4fd21b9e924473d49a282c8e6cb928bb85d32031e",
+  "public_all_1760_BH_and_cash_marks_match_private_release": true,
+  "public_all_477_development_selection_rows_match_unchanged_frozen_rows": true,
+  "public_all_477_validation_rows_match_private_release": true,
+  "public_count_table_and_two_benchmarks_match_private_release": true,
+  "public_trade_columns_label_round_trips_vs_one_way_orders_correctly": true,
+  "raw_share_BH_and_event_clock_cash_ledgers_recomputed": true,
+  "schema": "trend_following_validation_2018_independent_output_audit_v1",
+  "session_count": 1760,
+  "wait_hours": [
+    2.0,
+    3.0,
+    4.0
+  ]
+}

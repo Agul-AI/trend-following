@@ -7,7 +7,15 @@ current study, its dependencies and software tests. Git history is preserved.
 
 ## Current status: intersection validation complete; historical OOS closed
 
-**Latest authorized follow-up: shared-pair validation only.** The 159 indicator
+**Latest resplit:** validation is now **2012–2018**; future historical OOS is
+**2019–May 28, 2026**, the verified Alpha endpoint. The same frozen 159 pairs at
+all three shared waits were reevaluated with unchanged 3% nominal cash/costs.
+At 2/3/4 hours, **9/12/7 of 159** beat revised validation BH cash-excess Sharpe
+**0.85621**; no candidate was removed, replaced or promoted. OOS was not run.
+This split change is after prior history examination, not untouched confirmation.
+[Revised validation report](reports/resplit_validation/20261008/README.md).
+
+**Preserved earlier follow-up: 2012–2015 shared-pair validation.** The 159 indicator
 pairs beating development BH Sharpe at **all three 2/3/4-hour waits** were sealed
 before validation access, then evaluated at every retained wait in 2012–2015.
 All **477 validation instances** remain; none beats the fresh cost-matched BH
@@ -165,7 +173,7 @@ prepared freezes remain private and are **not included**. Synthetic software
 tests require no market-price inputs. Market preparation fails closed when
 verified local inputs or required authorization are missing.
 
-Publication checks passed **532 synthetic software tests**, Ruff lint and
+Publication checks passed **639 synthetic software tests**, Ruff lint and
 whitespace checks. These checks are separate from market performance; the
 eight frozen implementation files and immutable configuration remain unchanged.
 

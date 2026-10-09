@@ -23,5 +23,10 @@ allowed_diagnostic:
   production_study: false
   optimal_wait_selected: false
 later_stages:
-  validation: authorized_only_for_sealed_development_intersection_of_2_3_4_hour_BH_Sharpe_beats
+  validation: authorized_only_for_same_sealed_159_pair_intersection_revalidation_2012_to_2018
   historical_oos: on_hold_no_new_explicit_authorization
+research_periods:
+  development: {start: '2001-01-01', end: '2011-12-31'}
+  validation: {start: '2012-01-01', end: '2018-12-31'}
+  historical_oos: {start: '2019-01-01', end: '2026-05-28'}
+  endpoint_note: verified_Alpha_half_hour_coverage_ends_2026_05_28_not_full_calendar_2026
