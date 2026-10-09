@@ -1,0 +1,228 @@
+{
+  "archived_results_read": false,
+  "audit_date": "2026-10-08",
+  "audit_scope": {
+    "QQQ": "independent raw-share and corporate-action replay; no frozen engine simulation called",
+    "cash": "independent causal rate integration and sequential compounding on the supplied source event clock; no frozen engine simulation called"
+  },
+  "benchmark_metrics": [
+    {
+      "cagr": 0.20965143539203157,
+      "cash_excess_sharpe": 0.8681085072633602,
+      "commission": 0.8244192234826249,
+      "gross_terminal_equity": 7246.496187771498,
+      "max_drawdown": -0.3511955075769815,
+      "policy": "buy_and_hold",
+      "slippage": 0.8244816756495901,
+      "slippage_bps": 1.0,
+      "terminal_equity": 7243.598168929139
+    },
+    {
+      "cagr": 0.023112930734976445,
+      "cash_excess_sharpe": null,
+      "commission": 0,
+      "gross_terminal_equity": 1268.3517618695726,
+      "max_drawdown": -4.6522661973913415e-06,
+      "policy": "cash",
+      "slippage": 0,
+      "slippage_bps": 1.0,
+      "terminal_equity": 1268.3517618695726
+    },
+    {
+      "cagr": 0.20960492679945997,
+      "cash_excess_sharpe": 0.8679363909830963,
+      "commission": 0.8241295097276913,
+      "gross_terminal_equity": 7246.496187771498,
+      "max_drawdown": -0.3511955075769815,
+      "policy": "buy_and_hold",
+      "slippage": 2.4729504863055727,
+      "slippage_bps": 3.0,
+      "terminal_equity": 7240.701308946657
+    },
+    {
+      "cagr": 0.023112930734976445,
+      "cash_excess_sharpe": null,
+      "commission": 0,
+      "gross_terminal_equity": 1268.3517618695726,
+      "max_drawdown": -4.6522661973913415e-06,
+      "policy": "cash",
+      "slippage": 0,
+      "slippage_bps": 3.0,
+      "terminal_equity": 1268.3517618695726
+    },
+    {
+      "cagr": 0.20944216073840405,
+      "cash_excess_sharpe": 0.8673331735575421,
+      "commission": 0.8231164232720654,
+      "gross_terminal_equity": 7246.496187771498,
+      "max_drawdown": -0.35119550757698137,
+      "policy": "buy_and_hold",
+      "slippage": 8.237403834337211,
+      "slippage_bps": 10.0,
+      "terminal_equity": 7230.571415000925
+    },
+    {
+      "cagr": 0.023112930734976445,
+      "cash_excess_sharpe": null,
+      "commission": 0,
+      "gross_terminal_equity": 1268.3517618695726,
+      "max_drawdown": -4.6522661973913415e-06,
+      "policy": "cash",
+      "slippage": 0,
+      "slippage_bps": 10.0,
+      "terminal_equity": 1268.3517618695726
+    },
+    {
+      "cagr": 0.20909344909816907,
+      "cash_excess_sharpe": 0.8660363427413298,
+      "commission": 0.8209502877931286,
+      "gross_terminal_equity": 7246.496187771498,
+      "max_drawdown": -0.3511955075769815,
+      "policy": "buy_and_hold",
+      "slippage": 20.562696354542517,
+      "slippage_bps": 25.0,
+      "terminal_equity": 7208.912135526935
+    },
+    {
+      "cagr": 0.023112930734976445,
+      "cash_excess_sharpe": null,
+      "commission": 0,
+      "gross_terminal_equity": 1268.3517618695726,
+      "max_drawdown": -4.6522661973913415e-06,
+      "policy": "cash",
+      "slippage": 0,
+      "slippage_bps": 25.0,
+      "terminal_equity": 1268.3517618695726
+    }
+  ],
+  "candidate_strategy_reexecuted_for_this_audit": false,
+  "commission_bps": 1,
+  "control_checks": {
+    "10bps/buy_and_hold": {
+      "actual_orders_only_costs": true,
+      "all_2615_daily_marks_match": true,
+      "daily_equity_max_abs_error": 5.4569682106375694e-12,
+      "daily_return_max_abs_error": 5.360295540768334e-16,
+      "independent_metrics_match": true
+    },
+    "10bps/cash": {
+      "actual_orders_only_costs": true,
+      "all_2615_daily_marks_match": true,
+      "daily_equity_max_abs_error": 1.3869794202037156e-11,
+      "daily_return_max_abs_error": 1.5543122344752192e-15,
+      "independent_metrics_match": true
+    },
+    "1bps/buy_and_hold": {
+      "actual_orders_only_costs": true,
+      "all_2615_daily_marks_match": true,
+      "daily_equity_max_abs_error": 3.183231456205249e-12,
+      "daily_return_max_abs_error": 6.565928356572215e-16,
+      "independent_metrics_match": true
+    },
+    "1bps/cash": {
+      "actual_orders_only_costs": true,
+      "all_2615_daily_marks_match": true,
+      "daily_equity_max_abs_error": 1.3869794202037156e-11,
+      "daily_return_max_abs_error": 1.5543122344752192e-15,
+      "independent_metrics_match": true
+    },
+    "25bps/buy_and_hold": {
+      "actual_orders_only_costs": true,
+      "all_2615_daily_marks_match": true,
+      "daily_equity_max_abs_error": 8.185452315956354e-12,
+      "daily_return_max_abs_error": 5.377642775528102e-16,
+      "independent_metrics_match": true
+    },
+    "25bps/cash": {
+      "actual_orders_only_costs": true,
+      "all_2615_daily_marks_match": true,
+      "daily_equity_max_abs_error": 1.3869794202037156e-11,
+      "daily_return_max_abs_error": 1.5543122344752192e-15,
+      "independent_metrics_match": true
+    },
+    "3bps/buy_and_hold": {
+      "actual_orders_only_costs": true,
+      "all_2615_daily_marks_match": true,
+      "daily_equity_max_abs_error": 3.637978807091713e-12,
+      "daily_return_max_abs_error": 5.435105490669834e-16,
+      "independent_metrics_match": true
+    },
+    "3bps/cash": {
+      "actual_orders_only_costs": true,
+      "all_2615_daily_marks_match": true,
+      "daily_equity_max_abs_error": 1.3869794202037156e-11,
+      "daily_return_max_abs_error": 1.5543122344752192e-15,
+      "independent_metrics_match": true
+    }
+  },
+  "corporate_actions": {
+    "all_exdate_reinvestment_opens_verified": true,
+    "dividend_count": 42,
+    "split_count": 0
+  },
+  "daily_valuation_hour_ny": 17,
+  "digest_bindings": {
+    "configuration_sha256": "2838a701f748e587922e9499aa6115307543b2d78b4cb52c73e393d2119e8d2c",
+    "frozen_implementation_sha256": {
+      "research_alpha_reconciliation_v5.py": "11c5d5b83b43b71ff22efd590eb863d660a006caec02824fd1a4b89d90ceed63",
+      "research_daily_hourly_v5.py": "de718c8d9f16870e2907327f6e1aa8fc386993fcaaa1a5486e5029845bc7cd0d",
+      "research_hourly_data_v5.py": "4dfdf6591456b037b6aca3617b77154fd3d94b868da873da54c9179080e23a80",
+      "research_quality_engine_v5.py": "39cc48e4cd616ec0b5ed1ef6381821f85a2a70fab3572ba40bfab1784dee81ca",
+      "research_quality_protocol_v5.py": "771fc81ca01a2d482789a2890939c2d63f16a6285cf7c3ea791f96fe4aa63005",
+      "research_rates.py": "c93ff7712b9df421abd72b1f8ff3482c2c05e396d7d61359de59512cb8300520",
+      "run_qqq_gap_flags_v5.py": "72a4effb5564391610917853793e4f57a34bb8e320d575e3544cefe5e1d2a826",
+      "run_qqq_reconciled_v5.py": "87d076d21f51ddf8d46b712c2be0655bfd1d2c4b7c0c1b4eda04b93f8927fd54"
+    },
+    "native_source_sha256_by_role": {
+      "15min": "039c80f00dd8af4e91758f0f4bd3ce6d5f072ac7ee0a781617a0777b6305c72d",
+      "30min": "0269d166f2788d94259ad52c653ac04ca3f3bb888f943e18a36ecc7c83bd0eb9",
+      "daily": "4447f9f1a293cb171a1d348401a115b7b0c547397ef790b817fbd04fe6177570",
+      "native_daily_json": "4b0c67ffdd5ebaa584db07d65173b7d7c876b857e275ce73de67f0cacfa4ae22"
+    },
+    "prepared_sha256": "df455209e7d71f81d4db0df00b0c467623d05475875924e99166cf42a689fc38",
+    "private_full_audit_receipt_sha256": "1394924906b57bd35527025421ff7bdfdfac14578d029779ef6e793f86edc751",
+    "published_summary_sha256": "3530aa8b9b878329870621fa7f452a7f872a88529eef9b8fed21262d571ebda1",
+    "registration_sha256": "9c3d2dc292e020054521894c268e9b473eb177ae98201e69312cc3b08694b7ce",
+    "stage_prefix_manifest_sha256": "70571409517e4e323f180554af02deac3829c9912b7e2320d6fd09f3ac8308e1",
+    "stage_seal_sha256": "ddb679a2a46e442490cc0ccb485ce1e0b566c6d9be91a0c0b8e715f3f8a53d96",
+    "winner_payload_sha256": "5632920d870c89472f7707d288b66c4be0adf1e734e9efeff86a605ffe91a77f"
+  },
+  "frozen_implementation_files_checked": 8,
+  "frozen_implementation_unchanged": true,
+  "historical_interpretation": "retrospective previously examined history, not untouched OOS or live evidence",
+  "initial_cash": 1000,
+  "metric_definitions": {
+    "cagr": "(terminal/initial)^(1/calendar_years)-1 using segment first safe open to final17NY",
+    "cash_excess_sharpe": "sqrt(252)*mean(daily_return-cash_daily_return)/sample_std(excess), ddof1; zero excess deviation undefined",
+    "exposure": "actual elapsed calendar seconds invested, not fraction of rows",
+    "max_drawdown": "minimum daily17NY wealth/running_peak minus1 including initial1000"
+  },
+  "private_paths_or_credentials_or_consent_exported": false,
+  "project": "Trend Following Study",
+  "raw_quote_values_exported": false,
+  "reconciliation": {
+    "all_control_daily_marks_match": true,
+    "all_control_metrics_actual_order_costs_holding_and_exposure_match": true,
+    "max_daily_equity_abs_error_all_controls_and_costs": 1.3869794202037156e-11
+  },
+  "schema": "independent_passive_control_audit_v1",
+  "scored_interval": {
+    "end": "2026-05-28",
+    "start": "2016-01-04"
+  },
+  "scored_sessions": 2615,
+  "sealed_winner_gate_before_numeric_load": true,
+  "slippage_bps": [
+    1,
+    3,
+    10,
+    25
+  ],
+  "source_quality_counts": {
+    "known_halt_overlap_slots": 0,
+    "unknown_missing_slots": 0
+  },
+  "stage": "historical-oos",
+  "terminal_RTH_then_cash17_verified": true,
+  "trades_exported": false
+}

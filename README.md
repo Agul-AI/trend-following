@@ -18,10 +18,36 @@ All **56,644** configurations have now been backtested once after **1 bp commiss
 | Causal cash proxy | 2.00% | 0.00% | — |
 
 These are **in-sample, development-selected results**, not proof of a strategy
-that works out of sample. Validation and historical OOS have not been run.
-Nine family finalists are sealed; gap flags do not filter or rank any candidate.
+that works out of sample. The nine sealed family finalists subsequently entered
+validation; its single sealed winner then entered historical OOS. Gap flags do
+not filter or rank any candidate.
 
 [Full current report, every configuration and post-gap flags](reports/development/20261008/README.md).
+
+## Completed validation and historical comparison
+
+Validation selected **daily EMA200 entry with a 5.5-hour confirmation wait and
+daily EMA100 exit with a 2.5-hour wait**. Waits are trading hours after the first
+qualifying half-hour hit. Only **nine** finalists were evaluated in validation;
+only this **one locked winner** was evaluated in historical OOS, unchanged across
+all four slippage scenarios.
+
+Baseline results include **1 bp commission + 3 bps adverse slippage per order**:
+
+| Segment / portfolio | Net CAGR | Maximum drawdown loss | Cash-excess Sharpe |
+|---|---:|---:|---:|
+| Validation 2012–2015: selected winner | 11.43% | 13.96% | 0.930 |
+| Validation: QQQ buy-and-hold | 19.88% | 13.94% | 1.288 |
+| Historical 2016–May 28, 2026: locked winner | 13.81% | 23.08% | 0.795 |
+| Historical: QQQ buy-and-hold | 20.96% | 35.12% | 0.868 |
+
+The winner had lower historical drawdown and volatility, but **lower CAGR and
+cash-excess Sharpe than buy-and-hold in both segments**. Lower risk does not
+demonstrate overall superiority. Validation is selection data; historical OOS
+is **retrospective, previously examined history**, not untouched or live evidence.
+
+[Validation ranking and comparison](reports/validation/20261008/README.md) ·
+[Historical comparison and all four costs](reports/historical_oos/20261008/README.md).
 
 ## Frozen research contract
 
@@ -69,11 +95,21 @@ prepared freezes remain private and are **not included**. Synthetic software
 tests require no market-price inputs. Market preparation fails closed when
 verified local inputs or required authorization are missing.
 
+Publication checks passed **215 synthetic software tests**, Ruff lint and
+whitespace checks. These checks are separate from market performance; the
+eight frozen implementation files and immutable configuration remain unchanged.
+
 ```bash
 python scripts/run_qqq_research.py prepare
-# The user-authorized current development run uses only its <=2011 prefix:
+# Stage commands require private inputs, authorization and intact frozen seals.
+# Development, validation and historical OOS are already completed for this freeze.
 python scripts/run_qqq_research.py development
+python scripts/run_qqq_research.py validation
+python scripts/run_qqq_research.py historical-oos
 ```
+
+Do not change parameters and present a rerun as the same locked evaluation.
+Future market runs still require the appropriate authorization and stage gates.
 
 The active immutable configuration is
 `configs/qqq_daily_halfhour_v5_gap_flags_v2.yaml`. The public command and study

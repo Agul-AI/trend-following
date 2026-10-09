@@ -3,8 +3,12 @@
 This is the current 56,644-configuration QQQ/cash operating contract. Prices are
 Alpha Vantage only; the fixed historical endpoint is May 28, 2026. The
 2001–2011 development sweep and independent QA of the current results and
-cost-matched QQQ buy-and-hold comparison have completed. Validation and historical
-OOS have not been run.
+cost-matched QQQ buy-and-hold comparison have completed. Validation evaluated
+only nine sealed finalists; historical OOS evaluated only its locked daily
+EMA200/EMA100 winner, with 5.5/2.5-hour entry/exit waits, across four cost
+scenarios. Both stages are complete. The winner's lower historical drawdown
+does not demonstrate superiority: CAGR and cash-excess Sharpe were below
+buy-and-hold in both validation and historical OOS.
 
 ## Daily rules and half-hour confirmations
 
@@ -111,7 +115,12 @@ Development scores every configuration by finite daily cash-excess Sharpe
 per entry/exit family cell, maximum nine; undefined cells are excluded, and an
 all-undefined grid stops. Differences within 1e-10 tie on stable candidate ID.
 Only sealed finalists may enter validation; only its sealed winner may enter
-historical OOS. No validation/OOS market evaluation has occurred.
+historical OOS. These gates were satisfied for the completed nine-finalist
+validation and single-winner historical evaluation; they continue to govern
+future runs. No post-OOS reselection is permitted under the same freeze.
+
+Current results: [validation](../../reports/validation/20261008/README.md) and
+[historical comparison](../../reports/historical_oos/20261008/README.md).
 
 Install `.[dev,research]`, then use `python scripts/run_qqq_research.py --help`.
 The active configuration is `configs/qqq_daily_halfhour_v5_gap_flags_v2.yaml` and

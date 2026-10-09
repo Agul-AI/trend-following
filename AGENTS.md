@@ -14,9 +14,11 @@
   immutable config and eight frozen implementation dependencies byte-identical
   during a running or sealed study; internal versioned filenames/schema IDs are
   technical identifiers, not public version-number branding.
-- Current development is 2001–2011 against cost-matched QQQ buy-and-hold. Do not
-  run validation or historical OOS until the required frozen selections and user
-  authorization permit it. Previously inspected historical OOS is retrospective.
+- Current development (2001–2011), nine-finalist validation (2012–2015) and
+  single-locked-winner historical OOS (2016–May 28, 2026) have completed against
+  cost-matched QQQ buy-and-hold. The same winner was used at all four OOS costs.
+  Future runs still require frozen selections, intact seals and user authorization;
+  do not retune after evaluation or describe retrospective history as untouched OOS.
 - Hold the last filled position during missing source intervals. Gap flags are
   descriptive only and never filter, rank, or replace configurations.
 - Never commit credentials, downloaded/raw prices, processed market packets,

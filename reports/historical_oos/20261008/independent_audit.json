@@ -1,0 +1,170 @@
+{
+  "chronology": {
+    "oos_started_at": "2026-10-09T00:51:50.474054+00:00",
+    "validation_finished_at": "2026-10-09T00:50:09.513990+00:00",
+    "winner_locked_before_oos": true
+  },
+  "commission_bps": 1,
+  "same_daily_clocks_and_cash_reference": true,
+  "same_decisions_across_costs": true,
+  "scenarios": {
+    "10bps": {
+      "buy_and_hold": {
+        "cagr": 0.20944216073840405,
+        "cash_excess_sharpe": 0.8673331735575397,
+        "cost_drag_return": 0.01592477277056878,
+        "gross_terminal_equity": 7246.496187771491,
+        "max_drawdown": -0.35119550757698137,
+        "terminal_equity": 7230.571415000923,
+        "total_commission": 0.8231164232720649,
+        "total_slippage": 8.237403834337199,
+        "volatility": 0.22191394551904975
+      },
+      "cash": {
+        "cagr": 0.023112930734976445,
+        "cash_excess_sharpe": null,
+        "cost_drag_return": 0.0,
+        "gross_terminal_equity": 1268.3517618695712,
+        "max_drawdown": -4.652266197835431e-06,
+        "terminal_equity": 1268.3517618695712,
+        "total_commission": 0.0,
+        "total_slippage": 0.0,
+        "volatility": 0.001668736042360975
+      },
+      "winner": {
+        "cagr": 0.13188490544650433,
+        "cash_excess_sharpe": 0.756495887880953,
+        "cost_drag_return": 0.34250860636896824,
+        "gross_terminal_equity": 3971.0402570492734,
+        "max_drawdown": -0.2356132651081717,
+        "terminal_equity": 3628.531650680305,
+        "total_commission": 15.153677146453717,
+        "total_slippage": 151.53945339890038,
+        "volatility": 0.1486119582697872
+      }
+    },
+    "1bps": {
+      "buy_and_hold": {
+        "cagr": 0.20965143539203157,
+        "cash_excess_sharpe": 0.8681085072633571,
+        "cost_drag_return": 0.00289801884235203,
+        "gross_terminal_equity": 7246.496187771491,
+        "max_drawdown": -0.35119550757698137,
+        "terminal_equity": 7243.598168929139,
+        "total_commission": 0.8244192234826248,
+        "total_slippage": 0.8244816756490809,
+        "volatility": 0.22191630470282572
+      },
+      "cash": {
+        "cagr": 0.023112930734976445,
+        "cash_excess_sharpe": null,
+        "cost_drag_return": 0.0,
+        "gross_terminal_equity": 1268.3517618695712,
+        "max_drawdown": -4.652266197835431e-06,
+        "terminal_equity": 1268.3517618695712,
+        "total_commission": 0.0,
+        "total_slippage": 0.0,
+        "volatility": 0.001668736042360975
+      },
+      "winner": {
+        "cagr": 0.13994279643061058,
+        "cash_excess_sharpe": 0.8061498382004216,
+        "cost_drag_return": 0.06459394234455203,
+        "gross_terminal_equity": 3971.0402570492734,
+        "max_drawdown": -0.2293962052485039,
+        "terminal_equity": 3906.4463147047213,
+        "total_commission": 15.849270888303419,
+        "total_slippage": 15.84929907839432,
+        "volatility": 0.14821166301463237
+      }
+    },
+    "25bps": {
+      "buy_and_hold": {
+        "cagr": 0.20909344909816885,
+        "cash_excess_sharpe": 0.8660363427413287,
+        "cost_drag_return": 0.03758405224456237,
+        "gross_terminal_equity": 7246.496187771491,
+        "max_drawdown": -0.3511955075769815,
+        "terminal_equity": 7208.912135526929,
+        "total_commission": 0.8209502877931278,
+        "total_slippage": 20.562696354542304,
+        "volatility": 0.22191158392158986
+      },
+      "cash": {
+        "cagr": 0.023112930734976445,
+        "cash_excess_sharpe": null,
+        "cost_drag_return": 0.0,
+        "gross_terminal_equity": 1268.3517618695712,
+        "max_drawdown": -4.652266197835431e-06,
+        "terminal_equity": 1268.3517618695712,
+        "total_commission": 0.0,
+        "total_slippage": 0.0,
+        "volatility": 0.001668736042360975
+      },
+      "winner": {
+        "cagr": 0.11858142489462709,
+        "cash_excess_sharpe": 0.6740192550393171,
+        "cost_drag_return": 0.762462852535004,
+        "gross_terminal_equity": 3971.0402570492734,
+        "max_drawdown": -0.24630082453023627,
+        "terminal_equity": 3208.5774045142693,
+        "total_commission": 14.074645995130684,
+        "total_slippage": 351.88158928565656,
+        "volatility": 0.14936951223617773
+      }
+    },
+    "3bps": {
+      "buy_and_hold": {
+        "cagr": 0.20960492679945997,
+        "cash_excess_sharpe": 0.8679363909830933,
+        "cost_drag_return": 0.005794878824835905,
+        "gross_terminal_equity": 7246.496187771491,
+        "max_drawdown": -0.35119550757698137,
+        "terminal_equity": 7240.701308946655,
+        "total_commission": 0.8241295097276911,
+        "total_slippage": 2.4729504863050353,
+        "volatility": 0.22191571923794887
+      },
+      "cash": {
+        "cagr": 0.023112930734976445,
+        "cash_excess_sharpe": null,
+        "cost_drag_return": 0.0,
+        "gross_terminal_equity": 1268.3517618695712,
+        "max_drawdown": -4.652266197835431e-06,
+        "terminal_equity": 1268.3517618695712,
+        "total_commission": 0.0,
+        "total_slippage": 0.0,
+        "volatility": 0.001668736042360975
+      },
+      "winner": {
+        "cagr": 0.13814721150225107,
+        "cash_excess_sharpe": 0.7951077075754412,
+        "cost_drag_return": 0.12813718585292644,
+        "gross_terminal_equity": 3971.0402570492734,
+        "max_drawdown": -0.23078207527831718,
+        "terminal_equity": 3842.903071196347,
+        "total_commission": 15.6914206779917,
+        "total_slippage": 47.07451294137294,
+        "volatility": 0.14829706936440135
+      }
+    }
+  },
+  "scope": "CURRENT already-sealed winner only; no parameter fitting or strategy execution performed by audit.",
+  "seal_digests": {
+    "data_freeze_payload_sha256": "df455209e7d71f81d4db0df00b0c467623d05475875924e99166cf42a689fc38",
+    "historical_oos_stage_payload_sha256": "d8e15a09c3511a0bf67818ad7ca3cc3daa17a5e85b12aaee9d2b546cdedadc6e",
+    "registration_payload_sha256": "9c3d2dc292e020054521894c268e9b473eb177ae98201e69312cc3b08694b7ce",
+    "winner_payload_sha256": "5632920d870c89472f7707d288b66c4be0adf1e734e9efeff86a605ffe91a77f"
+  },
+  "selection_after_evaluation": false,
+  "slippage_bps": [
+    1,
+    3,
+    10,
+    25
+  ],
+  "stage": "historical-oos",
+  "status": "pass",
+  "winner_id": "v5_30m__entry_ema_200__exit_ema_100__entry_hours_5p5__exit_hours_2p5",
+  "winner_unchanged_all_four_costs": true
+}

@@ -1,0 +1,9 @@
+{
+  "README.md": "59346af52dddea21b4e630f4940404509ca1ffdfb090c42f5cc3f70ce0040858",
+  "candidate_ranking.csv": "781ea9ec26c3070e26a109279c9bb25a626ff4bd05dd3a4adcd932d5c925b268",
+  "daily_portfolio_curves.csv": "6542b2486177bd8eb8bd9ea702103b996030bce61d19515a64876a7cbddffa16",
+  "independent_audit.json": "a1a7c47be17cba858e4057f4d493f1dd6abdbb39d3f8bd2329a95a6e024ea4be",
+  "independent_control_audit.json": "b91070657895c1322b8e2258e60384f8273b8f16e684bfbcd4a05285113daf0c",
+  "summary.json": "1638579a0e92343d5f9fecc3960053fd96f8bdd01ce085eaa4417fc106576ec5",
+  "winner_benchmark_comparison.csv": "11b2f18a2a0d698021c9396bad957c3d433753d8f2c0b7b0fc7b050483039468"
+}

@@ -1,0 +1,45 @@
+{
+  "costs_include_commission_and_adverse_slippage": true,
+  "daily_valuation_hour_ny": 17,
+  "evaluated_candidates": 1,
+  "flags_used_for_selection": false,
+  "historical_oos_interpretation": "retrospective previously examined history, not untouched OOS or live evidence",
+  "interval": {
+    "end": "2026-05-28",
+    "start": "2016-01-01"
+  },
+  "post_evaluation_reselection": false,
+  "primary_metric": "daily_cash_excess_sharpe_252_ddof1",
+  "private_paths_or_consent_text_exported": false,
+  "project": "Trend Following Study",
+  "raw_quotes_or_trades_exported": false,
+  "same_winner_all_costs": true,
+  "selected_candidate": {
+    "entry_confirmation_hours": 5.5,
+    "entry_rule": {
+      "family": "EMA",
+      "fast": null,
+      "period": 200,
+      "signal": null,
+      "slow": null
+    },
+    "exit_confirmation_hours": 2.5,
+    "exit_rule": {
+      "family": "EMA",
+      "fast": null,
+      "period": 100,
+      "signal": null,
+      "slow": null
+    }
+  },
+  "selected_candidate_id": "v5_30m__entry_ema_200__exit_ema_100__entry_hours_5p5__exit_hours_2p5",
+  "selection_tie_tolerance": 1e-10,
+  "slippage_bps_scenarios": [
+    1,
+    3,
+    10,
+    25
+  ],
+  "stage": "historical-oos",
+  "winner_payload_sha256": "5632920d870c89472f7707d288b66c4be0adf1e734e9efeff86a605ffe91a77f"
+}

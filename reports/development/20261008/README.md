@@ -22,9 +22,12 @@ No taxes, financing or separate fund-expense charge is modeled.
 **This does not establish out-of-sample superiority.** The leader was selected
 from 56,644 variants on the same development history used to measure these
 results. The 0.583 Sharpe is not presented as a strong stand-alone selling point.
-Validation (2012–2015) and historical OOS have **not** been evaluated. Nine
-finite family finalists are sealed; the leader below is not yet a validation
-winner. Counts include all configurations; no gap-flag exclusions were applied.
+Nine finite family finalists were sealed. Subsequent
+[validation](../../validation/20261008/README.md) selected EMA200/EMA100, **not
+the development leader below**, before the locked winner entered
+[historical evaluation](../../historical_oos/20261008/README.md). The figures
+here remain the original development results. Counts include all configurations;
+no gap-flag exclusions were applied.
 
 ## Development leader, not a validated trading recommendation
 
@@ -76,7 +79,8 @@ removed from the current tree; Git history remains as explicitly requested.
 
 ## Software and publication checks
 
-The current-only suite passes **203 software tests**. These are separate from
+At development publication, the current-only suite passed **203 software tests**.
+These are separate from
 the **56,644 actual development simulations**. Ruff and whitespace checks pass.
 All eight frozen implementation files and the immutable current configuration
 remain byte-identical; price inputs/authorizations remain private.

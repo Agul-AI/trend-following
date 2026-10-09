@@ -51,7 +51,9 @@ def canonical_hash(value):
 
 def file_hash(path):
     path = Path(path)
-    require(path.is_file() and not path.is_symlink(), f"Missing/unsafe current artifact: {path}")
+    require(
+        path.is_file() and not path.is_symlink(), f"Missing/unsafe current artifact: {path.name}"
+    )
     digest = hashlib.sha256()
     with path.open("rb") as stream:
         for piece in iter(lambda: stream.read(1024 * 1024), b""):
@@ -62,8 +64,11 @@ def file_hash(path):
 def read_seal(path):
     file_hash(path)
     sealed = json.loads(Path(path).read_text())
-    require(set(sealed) >= {"payload", "payload_sha256"}, f"Missing seal fields: {path}")
-    require(canonical_hash(sealed["payload"]) == sealed["payload_sha256"], f"Seal mismatch: {path}")
+    require(set(sealed) >= {"payload", "payload_sha256"}, f"Missing seal fields: {Path(path).name}")
+    require(
+        canonical_hash(sealed["payload"]) == sealed["payload_sha256"],
+        f"Seal mismatch: {Path(path).name}",
+    )
     return sealed["payload"]
 
 
@@ -650,11 +655,11 @@ def audit_current_development(study, config_path, project_root=None, curve_dirs=
             and float(m.slippage_bps.iloc[0]) == 3,
             "Current benchmark curve costs differ",
         )
-        curves[str(directory)] = audit_curve(d, m.iloc[0], calendar)
+        curves[str(m.candidate_id.iloc[0])] = audit_curve(d, m.iloc[0], calendar)
     return dict(
         status="pass",
         stage="development",
-        study=str(study),
+        study_id=str(config["study_id"]),
         candidate_count=COUNT,
         no_gap_flag_filtering=True,
         selection="finite_cash_excess_sharpe_only_then_ID_within_1e-10",

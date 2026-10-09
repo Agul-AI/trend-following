@@ -1,0 +1,39 @@
+{
+  "benchmark_curves": {
+    "buy_and_hold": {
+      "cash_excess_sharpe": 1.2876426567333332,
+      "max_drawdown": -0.1394104228812072,
+      "terminal_equity": 2063.5577874206315,
+      "volatility": 0.14916625699991082
+    },
+    "cash": {
+      "cash_excess_sharpe": null,
+      "max_drawdown": -1.3772647557974693e-06,
+      "terminal_equity": 1002.3179870242961,
+      "volatility": 3.8599694309208726e-05
+    }
+  },
+  "candidate_count": 9,
+  "end_session": "2015-12-31",
+  "independent_primary_only_selection": true,
+  "scope": "Read CURRENT validation only; no OOS numerical artifacts opened.",
+  "scored_sessions": 1006,
+  "seal_digests": {
+    "data_freeze_payload_sha256": "df455209e7d71f81d4db0df00b0c467623d05475875924e99166cf42a689fc38",
+    "registration_payload_sha256": "9c3d2dc292e020054521894c268e9b473eb177ae98201e69312cc3b08694b7ce",
+    "validation_stage_payload_sha256": "ad008717f66a39039999cb4254db4d35da209bf02febe9bf6cb399f81a5cae1b",
+    "winner_payload_sha256": "5632920d870c89472f7707d288b66c4be0adf1e734e9efeff86a605ffe91a77f"
+  },
+  "sealed_before_oos": true,
+  "stage": "validation",
+  "start_session": "2012-01-03",
+  "status": "pass",
+  "winner_id": "v5_30m__entry_ema_200__exit_ema_100__entry_hours_5p5__exit_hours_2p5",
+  "winner_metrics": {
+    "cagr": 0.11434521488142502,
+    "cash_excess_sharpe": 0.9303372303685423,
+    "max_drawdown": -0.13960550217464962,
+    "terminal_equity": 1541.2093112978241
+  },
+  "winner_payload_sha256": "5632920d870c89472f7707d288b66c4be0adf1e734e9efeff86a605ffe91a77f"
+}
