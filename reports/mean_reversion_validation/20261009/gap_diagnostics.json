@@ -1,0 +1,58 @@
+{
+  "active_window_count": 0,
+  "counting_unit": "distinct_confirmed_decisions_per_candidate",
+  "counts_are_distinct_confirmed_decisions": true,
+  "descriptive_only": true,
+  "diagnostics_policy": {
+    "affects_selection": false,
+    "descriptive_only": true,
+    "enabled": true,
+    "event_kind": "confirmed_buy_sell_signals_not_fills",
+    "event_limit": 2500000,
+    "held_position": "last_observed_filled_position_not_pending_target",
+    "persist_all_candidate_events": true,
+    "persist_all_candidate_flags": true,
+    "scope": "unknown_missing",
+    "window": "after_gap_end_through_next_trading_session_close"
+  },
+  "enabled": true,
+  "event_limit": 2500000,
+  "event_rows_are_decision_to_gap_associations": true,
+  "event_table_unit": "confirmed_decision_gap_window_associations",
+  "gap_prices_repaired": false,
+  "held_position": "last_executed_observed_position_not_a_pending_target",
+  "stage": "validation",
+  "stored_event_rows": 0,
+  "total_confirmed_buy_decisions": 0,
+  "total_confirmed_decisions": 0,
+  "total_confirmed_sell_decisions": 0,
+  "total_event_rows": 0,
+  "truncated": false,
+  "used_for_filtering_ranking_or_selection": false,
+  "window_boundary": "gap_end < decision_at <= strictly_next_NY_trading_session_market_close",
+  "window_count": 2,
+  "windows": [
+    {
+      "gap_end": "2001-03-29T15:00:00+00:00",
+      "gap_start": "2001-03-29T14:30:00+00:00",
+      "next_session": "2001-03-30",
+      "next_session_time_source": "input_calendar",
+      "overlaps_scored_segment": false,
+      "right_censored": false,
+      "right_censored_by_scored_end": false,
+      "right_censored_by_staged_end": false,
+      "window_end": "2001-03-30T21:00:00+00:00"
+    },
+    {
+      "gap_end": "2004-11-30T21:00:00+00:00",
+      "gap_start": "2004-11-30T14:30:00+00:00",
+      "next_session": "2004-12-01",
+      "next_session_time_source": "input_calendar",
+      "overlaps_scored_segment": false,
+      "right_censored": false,
+      "right_censored_by_scored_end": false,
+      "right_censored_by_staged_end": false,
+      "window_end": "2004-12-01T21:00:00+00:00"
+    }
+  ]
+}

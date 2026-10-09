@@ -1,5 +1,15 @@
 # Trend Following Study — Repository Instructions
 
+- **Latest separate-study authorization: mean-reversion validation only.**
+  The user explicitly requested testing the **32 baseline development cases
+  beating cost-matched buy-and-hold Sharpe** on **2012–2018**. Seal that exact
+  development-only membership before reading the bounded validation packet;
+  retain every case with unchanged daily parameters, shared 3-hour wait,
+  fixed 3% nominal cash and all four existing execution-cost scenarios. Do not
+  substitute the earlier 20-finalist shortlist, retune, replace or select a new
+  winner. Historical OOS **2019–May 28, 2026 remains closed**. Add a separate
+  validation command/module without modifying any frozen development or trend
+  sources/results. Previously examined history remains retrospective research.
 - **Latest separate-study authorization: mean-reversion development only.**
   Implement/evaluate the independent 90-configuration SMA/EMA-distance,
   z-score and RSI QQQ/cash study on 2001–2011. Persistent-oversold entry,

@@ -1,0 +1,211 @@
+{
+  "OOS_numeric_rows_parsed_attestation": 0,
+  "audit_scope": "independent_arithmetic_recomputation_of_new_derived_validation_wealth_paths_not_independent_market_or_signal_replay",
+  "audit_status": "passed",
+  "baseline_BH": {
+    "cagr": 0.16591849151284532,
+    "cash_excess_sharpe": 0.8562138923376627,
+    "max_drawdown": -0.22794455226435584,
+    "terminal_equity": 2927.869788144952
+  },
+  "baseline_family_summary": [
+    {
+      "BH_beater_median_CAGR": null,
+      "BH_beater_median_Sharpe": null,
+      "BH_beater_median_round_trips": null,
+      "all_median_Sharpe": 0.49472318122094827,
+      "all_median_round_trips": 9.0,
+      "beat_BH_Sharpe_count": 0,
+      "configurations": 6,
+      "family": "SMA_DISTANCE"
+    },
+    {
+      "BH_beater_median_CAGR": null,
+      "BH_beater_median_Sharpe": null,
+      "BH_beater_median_round_trips": null,
+      "all_median_Sharpe": 0.4510228644587847,
+      "all_median_round_trips": 2.5,
+      "beat_BH_Sharpe_count": 0,
+      "configurations": 4,
+      "family": "EMA_DISTANCE"
+    },
+    {
+      "BH_beater_median_CAGR": 0.08154743105470219,
+      "BH_beater_median_Sharpe": 0.8743512228741447,
+      "BH_beater_median_round_trips": 29.0,
+      "all_median_Sharpe": 0.47162450966092795,
+      "all_median_round_trips": 29.0,
+      "beat_BH_Sharpe_count": 1,
+      "configurations": 5,
+      "family": "ZSCORE"
+    },
+    {
+      "BH_beater_median_CAGR": null,
+      "BH_beater_median_Sharpe": null,
+      "BH_beater_median_round_trips": null,
+      "all_median_Sharpe": 0.5078747568979178,
+      "all_median_round_trips": 69.0,
+      "beat_BH_Sharpe_count": 0,
+      "configurations": 17,
+      "family": "RSI"
+    },
+    {
+      "BH_beater_median_CAGR": 0.08154743105470219,
+      "BH_beater_median_Sharpe": 0.8743512228741447,
+      "BH_beater_median_round_trips": 29.0,
+      "all_median_Sharpe": 0.5029030339306663,
+      "all_median_round_trips": 14.5,
+      "beat_BH_Sharpe_count": 1,
+      "configurations": 32,
+      "family": "ALL"
+    }
+  ],
+  "best_baseline_by_validation_Sharpe_descriptive_only_not_selected": {
+    "annualized_volatility": 0.057348820127055264,
+    "average_holding_hours": 169.60344827586206,
+    "cagr": 0.08154743105470219,
+    "candidate_id": "mr_30m__zscore_10__entry_m2__exit_0__shared_hours_3",
+    "cash_excess_sharpe": 0.8743512228741447,
+    "cost_drag_return": 0.040624723171752745,
+    "entry_threshold": -2.0,
+    "exit_threshold": 0.0,
+    "exposure_fraction": 0.08023196065477502,
+    "family": "ZSCORE",
+    "max_drawdown": -0.08834611673351545,
+    "period": 10,
+    "terminal_equity": 1730.8317919401659,
+    "trade_count": 29,
+    "trades_per_year": 4.143972203870905
+  },
+  "bounded_packet_metadata_cutoff_verified": "2018-12-31",
+  "candidate_count": 32,
+  "candidate_scenario_count": 128,
+  "cash_references_match": true,
+  "cost_scenario_comparisons": [
+    {
+      "BH_CAGR": 0.165985135266139,
+      "BH_Sharpe": 0.8565683423258011,
+      "BH_drawdown": -0.22794455226435584,
+      "family_beat_counts": {
+        "ALL": 1,
+        "EMA_DISTANCE": 0,
+        "RSI": 0,
+        "SMA_DISTANCE": 0,
+        "ZSCORE": 1
+      },
+      "slippage_bps": 1.0
+    },
+    {
+      "BH_CAGR": 0.16591849151284532,
+      "BH_Sharpe": 0.8562138923376627,
+      "BH_drawdown": -0.22794455226435584,
+      "family_beat_counts": {
+        "ALL": 1,
+        "EMA_DISTANCE": 0,
+        "RSI": 0,
+        "SMA_DISTANCE": 0,
+        "ZSCORE": 1
+      },
+      "slippage_bps": 3.0
+    },
+    {
+      "BH_CAGR": 0.16568526827384922,
+      "BH_Sharpe": 0.8549707938741131,
+      "BH_drawdown": -0.22794455226435595,
+      "family_beat_counts": {
+        "ALL": 0,
+        "EMA_DISTANCE": 0,
+        "RSI": 0,
+        "SMA_DISTANCE": 0,
+        "ZSCORE": 0
+      },
+      "slippage_bps": 10.0
+    },
+    {
+      "BH_CAGR": 0.16518565988171585,
+      "BH_Sharpe": 0.8522939015840307,
+      "BH_drawdown": -0.22794455226435584,
+      "family_beat_counts": {
+        "ALL": 0,
+        "EMA_DISTANCE": 0,
+        "RSI": 0,
+        "SMA_DISTANCE": 0,
+        "ZSCORE": 0
+      },
+      "slippage_bps": 25.0
+    }
+  ],
+  "development_membership_reproduced": true,
+  "development_results_read_only_for_authorized_membership": true,
+  "earlier_validation_or_OOS_numeric_outcomes_opened": false,
+  "freeze_sha256": "51afb3e72dcc47251a886e7255b382aea6e5bc65469fb7c60a0e1a3e0e28054a",
+  "historical_OOS_prices_or_returns_opened": false,
+  "historical_oos_authorized": false,
+  "limits": [
+    "No independent market-price, corporate-action, signal or transaction replay; saved derived wealth paths are the arithmetic evidence inputs.",
+    "Exposure, turnover, trade-count and holding fields checked for reconciliation and range, not replayed from private trade ledgers.",
+    "Bounded price custody and OOS exclusion checked through metadata, frozen adapter code and chronology; raw market prices not opened by this auditor.",
+    "Previously examined validation history remains retrospective, not genuinely untouched confirmation.",
+    "Historical OOS remains closed and no validation winner or replacement is selected."
+  ],
+  "maximum_absolute_arithmetic_errors": {
+    "Sharpe_difference_vs_BH": 0.0,
+    "annualized_turnover": 0.0,
+    "annualized_volatility": 0.0,
+    "cagr": 0.0,
+    "candidate_BH_reference": 0.0,
+    "candidate_cash_terminal": 0.0,
+    "cash_excess_sharpe": 0.0,
+    "cash_wealth_from_ref": 3.410605131648481e-12,
+    "comparison_development_BH_cash_excess_sharpe": 0.0,
+    "comparison_development_Sharpe_difference_vs_BH": 0.0,
+    "comparison_development_cagr": 0.0,
+    "comparison_development_cash_excess_sharpe": 0.0,
+    "comparison_development_max_drawdown": 0.0,
+    "comparison_development_trade_count": 0.0,
+    "comparison_development_trades_per_year": 0.0,
+    "comparison_validation_BH_cash_excess_sharpe": 0.0,
+    "comparison_validation_Sharpe_difference_vs_BH": 0.0,
+    "comparison_validation_cagr": 0.0,
+    "comparison_validation_cash_excess_sharpe": 0.0,
+    "comparison_validation_max_drawdown": 0.0,
+    "comparison_validation_trade_count": 0.0,
+    "comparison_validation_trades_per_year": 0.0,
+    "cost_drag_return": 0.0,
+    "cross_cost_cash_wealth": 0.0,
+    "daily_returns": 0.0,
+    "development_BH_reference": 0.0,
+    "max_drawdown": 0.0,
+    "passive_annualized_volatility": 0.0,
+    "passive_cagr": 0.0,
+    "passive_cash_excess_sharpe": 0.0,
+    "passive_cash_reference": 0.0,
+    "passive_daily_returns": 0.0,
+    "passive_max_drawdown": 0.0,
+    "passive_terminal_equity": 0.0,
+    "passive_total_return": 0.0,
+    "passive_trades_per_year": 0.0,
+    "summary_medians": 0.0,
+    "terminal_equity": 0.0,
+    "total_return": 0.0,
+    "trades_per_year": 0.0
+  },
+  "membership_source": "all_32_finite_development_baseline_Sharpe_BH_beaters_not_20_family_finalists",
+  "new_private_result_hashes_match": true,
+  "new_validation_results_only": true,
+  "no_validation_winner_selected": true,
+  "passive_scenario_count": 8,
+  "period": {
+    "end": "2018-12-31",
+    "start": "2012-01-01"
+  },
+  "protected_existing_file_hash_count": 171,
+  "protected_existing_file_hashes_match": true,
+  "public_artifact_hashes_match_before_audit_extension": true,
+  "raw_market_prices_opened": false,
+  "same_candidates_at_all_four_cost_scenarios": true,
+  "scored_sessions": 1760,
+  "selection_precedes_new_packet_preparation_and_performance": true,
+  "selection_sha256": "0a5d5641c1c31b6796b785868c0b4785cf81231b79ee38241e03238b084b00a0",
+  "source_hashes_match": true
+}

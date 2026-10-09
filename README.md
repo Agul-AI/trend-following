@@ -2,8 +2,9 @@
 
 **Repository:** [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
 The **Trend Following Study** tests **56,644 configurations** of daily indicators
-and half-hour confirmation on unlevered QQQ/cash. This tree contains only the
-current study, its dependencies and software tests. Git history is preserved.
+and half-hour confirmation on unlevered QQQ/cash. The tree also contains the
+separate current mean-reversion study, shared dependencies and software tests.
+Git history is preserved; archived studies are not reintroduced.
 
 ## Current status: intersection validation complete; historical OOS closed
 
@@ -45,11 +46,11 @@ records; this hold cannot make their periods genuinely untouched again. See the
 [development-only shortlist and hold](reports/development_shortlist_hold/20261008/README.md).
 The hold is operational, not a newly installed runtime interlock.
 
-**Timing policy for new/restarted studies:** one globally fixed wait, equal for
-entry and exit and shared by every configuration. Retain **2, 3 and 4 trading
-hours** as development choices; one final global value is still awaiting the
-user's choice. Do not tune waits independently or treat this as a new executed
-study. Previously sealed configurations remain unchanged.
+**Timing policy for new/restarted studies:** the user fixed **3 trading hours**,
+equal for entry and exit and shared by every configuration: seven consecutive
+half-hour checks. The earlier **2/3/4-hour** comparison remains a frozen record,
+not independently tunable waits for new studies. Previously sealed
+configurations remain unchanged.
 
 [Retained 2/3/4-hour comparison](reports/retained_wait_choices/20261008/README.md):
 289 indicator pairs at each choice, 867 total development configurations. No
@@ -185,6 +186,36 @@ The separate command offers no validation or OOS execution route. Existing trend
 sources, frozen results and monitors remain unchanged. All future new/restarted
 studies use a fixed shared 3-hour wait; old freezes are not rewritten.
 
+### Separate mean-reversion validation
+
+The user authorized **all 32 baseline development cases beating cost-matched
+QQQ buy-and-hold Sharpe**, not the separate 20-finalist list, for **2012–2018**
+validation. Membership is sealed before reading a physically bounded
+1999–2018 input packet; a new data/code/accounting freeze precedes execution.
+Every candidate keeps its daily parameters, shared 3-hour wait and cash/cost
+assumptions. There is no retuning, replacement or validation-winner selection.
+Historical OOS **2019–May 28, 2026 remains closed**.
+
+Completed validation: **1/32** beats buy-and-hold cash-excess Sharpe at baseline
+1+3-bp costs; **0/32** beats its CAGR. The only Sharpe beater is 10-day z-score,
+entry ≤−2 and exit ≥0: **0.87435 Sharpe, 8.15% CAGR, 8.83% daily drawdown loss**,
+versus BH **0.85621, 16.59%, 22.79%**. It completed **29 round trips (4.14/year)**;
+no case beats matched BH Sharpe at 10/25-bp slippage.
+[All 32 validation results and four costs](reports/mean_reversion_validation/20261009/README.md).
+
+```bash
+python scripts/run_mean_reversion_validation.py check
+python scripts/run_mean_reversion_validation.py seal-selection --authorization /path/to/private-receipt.json
+python scripts/run_mean_reversion_validation.py freeze
+python scripts/run_mean_reversion_validation.py validation
+python scripts/run_mean_reversion_validation.py report
+```
+
+This separate command exposes no historical OOS route. The original development
+command and all frozen trend and mean-reversion development sources/results
+remain unchanged. Previously examined history is retrospective research, not
+untouched confirmation.
+
 ### Frozen trend-following entry point
 
 ```bash
@@ -198,7 +229,7 @@ prepared freezes remain private and are **not included**. Synthetic software
 tests require no market-price inputs. Market preparation fails closed when
 verified local inputs or required authorization are missing.
 
-Publication checks passed **789 synthetic software tests**, Ruff lint and
+Publication checks passed **885 synthetic software tests**, Ruff lint and
 whitespace checks. These checks are separate from market performance; the
 eight frozen implementation files and immutable configuration remain unchanged.
 
