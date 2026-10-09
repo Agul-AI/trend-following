@@ -1,0 +1,26 @@
+schema: trend_following_shared_research_assumptions
+project: Trend Following Study
+scope: all_new_or_restarted_studies_preserve_previously_sealed_records
+cash:
+  annual_rate: 0.03
+  rate_type: fixed_nominal_annual_research_assumption
+  accrual: simple_ACT365_each_elapsed_calendar_interval_compounded_at_events
+  effective_annual_yield_is_exactly_3_percent: false
+  convention_status: nominal_default_pending_optional_user_preference
+  source: predeclared_model_assumption_not_FRED_or_measured_deposit_returns
+confirmation:
+  policy: one_global_wait_equal_for_entry_and_exit_shared_across_all_configurations
+  wait_hours: null
+  value_status: awaiting_user_choice
+  counter_unit: consecutive_completed_half_hour_qualifying_observations
+  required_checks_formula: 1_plus_2_times_wait_hours
+allowed_diagnostic:
+  stage: development_only
+  common_wait_hours: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]
+  entry_wait_equals_exit_wait: true
+  indicator_pairs_per_wait: 289
+  production_study: false
+  optimal_wait_selected: false
+later_stages:
+  validation: on_hold_no_new_explicit_authorization
+  historical_oos: on_hold_no_new_explicit_authorization

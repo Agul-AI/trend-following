@@ -1,0 +1,100 @@
+{
+  "benchmark_statistics": {
+    "buy_and_hold": {
+      "cagr": -0.0004075673216287212,
+      "cash_excess_sharpe": 0.04332982424247732,
+      "max_drawdown": -0.7039988195366682,
+      "terminal_equity": 995.526648811703
+    },
+    "cash": {
+      "cagr": 0.030452711148542644,
+      "cash_excess_sharpe": null,
+      "max_drawdown": 0.0,
+      "terminal_equity": 1390.862472038107
+    }
+  },
+  "cash_policy": {
+    "annual_rate": 0.03,
+    "day_count": "ACT/365",
+    "effective_annual_cash_growth": "slightly_above_3pct_due_to_interval_compounding",
+    "freshness_adapter": "repeat_identical_preknown_assumption_at_daily_UTC_boundaries",
+    "includes_closures": true,
+    "known_at": "before_first_supplied_clock_instant",
+    "per_clock_interval_return": "0.03 * elapsed_calendar_seconds / (365 * 86400)",
+    "rate_type": "fixed_nominal_annual_research_assumption",
+    "risk_free_reference": "same_assumed_cash_clock_returns_for_all_candidates_and_BH",
+    "source": "user_assumption_not_DTB3_or_observed_market_yield",
+    "wealth": "multiply_one_plus_interval_return_on_each_frozen_event_clock_interval"
+  },
+  "commission_bps_per_one_way_order": 1,
+  "common_confirmation_hours": [
+    0.0,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    2.5,
+    3.0,
+    3.5,
+    4.0,
+    4.5,
+    5.0,
+    5.5,
+    6.0
+  ],
+  "configurations_evaluated": 3757,
+  "configurations_per_wait": 289,
+  "counts_independently_recomputed": true,
+  "derived_input_sha256": {
+    "benchmark_metrics.csv": "1ec7e8c335968e137c1386f713ddb5c8d3f32c6ed18b0ddcbe8de5c24b728e11",
+    "buy_and_hold_daily.csv": "843c3704177cf1a8ab0dde314fb3b31cd5151bd8e3c55604e5dc9d1b0777301a",
+    "candidate_metrics.csv": "e078db78aa1c38095d4b177f5199e17848847b05dbda5842073ae1ee85d7286a",
+    "cash_daily.csv": "c9965ca747d0c8238cbaa98a3b459d355a94d1b37b2560fdd1fbbfc8d0247c43",
+    "counts_by_wait.csv": "007aef46222e37376a6d22a79192fb8a4bc6b75479c070ba510bbc936bb8b58a"
+  },
+  "development_manifest_sha256": "dd163ef720c3c6780a66054625d774c152279f8dd58cfd2ea30d163a32fdef51",
+  "development_period": {
+    "end": "2011-12-31",
+    "start": "2001-01-01"
+  },
+  "effective_cash_cagr": 0.030452711148542644,
+  "first_scored_session": "2001-01-02",
+  "freeze_payload_sha256": "2c6d0f0235050f6c3ceabdf9015acb04bae678eb8ab7a38d704081002b11b998",
+  "implementation_source_sha256": {
+    "scripts/run_qqq_gap_flags_v5.py": "72a4effb5564391610917853793e4f57a34bb8e320d575e3544cefe5e1d2a826",
+    "scripts/run_qqq_reconciled_v5.py": "87d076d21f51ddf8d46b712c2be0655bfd1d2c4b7c0c1b4eda04b93f8927fd54",
+    "src/trend_following/research_alpha_reconciliation_v5.py": "11c5d5b83b43b71ff22efd590eb863d660a006caec02824fd1a4b89d90ceed63",
+    "src/trend_following/research_constant_cash.py": "0f5babf0de632184f3730c60944e08da9c1e6a298bde13368dee17603a3b7886",
+    "src/trend_following/research_daily_hourly_v5.py": "de718c8d9f16870e2907327f6e1aa8fc386993fcaaa1a5486e5029845bc7cd0d",
+    "src/trend_following/research_hourly_data_v5.py": "4dfdf6591456b037b6aca3617b77154fd3d94b868da873da54c9179080e23a80",
+    "src/trend_following/research_quality_engine_v5.py": "39cc48e4cd616ec0b5ed1ef6381821f85a2a70fab3572ba40bfab1784dee81ca",
+    "src/trend_following/research_quality_protocol_v5.py": "771fc81ca01a2d482789a2890939c2d63f16a6285cf7c3ea791f96fe4aa63005",
+    "src/trend_following/research_rates.py": "c93ff7712b9df421abd72b1f8ff3482c2c05e396d7d61359de59512cb8300520"
+  },
+  "indicator_unit": "daily_sessions",
+  "initial_capital": 1000.0,
+  "last_scored_session": "2011-12-30",
+  "later_stage_numerical_inputs_opened": false,
+  "limitations": [
+    "In-sample development diagnostic, not OOS confirmation",
+    "Hypothetical commission, slippage and cash yield",
+    "No optimal wait chosen and no new candidate shortlist selected",
+    "Prior sealed DTB3 studies remain unchanged, not relabeled as 3% results"
+  ],
+  "market_performance_recomputed_for_new_cash": true,
+  "new_global_wait_or_strategy_selected": false,
+  "primary_beat_definition": "finite candidate cash-excess Sharpe > BH Sharpe + 1e-10",
+  "project": "Trend Following Study",
+  "publication_helper_sha256": "a87230e80a5da49abef8606308640748c077fd6d1f8234c2223998a1b5e46661",
+  "required_consecutive_hits_formula": "1 + 2 * wait_hours",
+  "result_seal_payload_sha256": "23cfd8800aa4f673084695a3e7b428c9888a74b934e0b0f7cfa4c9a2c2170978",
+  "same_entry_and_exit_wait": true,
+  "scope": "development_only_3pct_cash_common_wait_diagnostic",
+  "score_definition": "session_close_cash_excess_return_mean / sample_sd_ddof1 * sqrt(252)",
+  "scored_sessions": 2767,
+  "slippage_bps_per_one_way_order": 3,
+  "strict_gt_count_also_reported": true,
+  "taxes_financing_separate_fund_expenses": false,
+  "total_bps_per_one_way_order": 4,
+  "undefined_scores_retained_in_289_denominator": true
+}

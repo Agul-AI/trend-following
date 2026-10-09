@@ -1,0 +1,9 @@
+{
+  "README.md": "58ae112e4f1bcdb8d00c20c08fc9f658ef2451e2dc1044a9a7379bf64e1c2c32",
+  "benchmark_daily_curves.csv": "496c56a7c274d3b4998cc3b9a59a1403ab3740357ee579aa037406c3101b8fc0",
+  "benchmark_metrics.csv": "d7302a8467b66f3f8fc2befa9b463a28a21d162692de1abe11576c232ea14015",
+  "candidate_metrics.csv": "5b1f1caf75d74751b001154325704bf227d69d1937e3cddd3b0e95e752528dce",
+  "counts_by_wait.csv": "21775785f2623e22b671f0bdffd1958e2a7be55d2d387cf20cdd88040564881a",
+  "independent_audit.json": "6552febd26f680a006ff102314e70689af0bd7d1229255aaaeb1b817ccc75c76",
+  "summary.json": "b5833c4d6623e3cd9a1fd19fc11ba0c30e0e54ee2065a55879025d6ed7f9538a"
+}

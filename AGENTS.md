@@ -1,5 +1,16 @@
 # Trend Following Study — Repository Instructions
 
+- **Latest cash policy for all new/restarted studies:** fixed 3% annual cash
+  interest replaces the variable DTB3 proxy. The default convention preserves
+  nominal ACT/365 accrual with event-time compounding; do not describe its
+  effective cash CAGR as exactly 3% APY. An optional APY/nominal preference is
+  pending. Preserve old sealed sources/configs/results and label their old cash
+  model honestly; new results must be recalculated, not relabeled.
+- The user's per-wait beat-BH question authorizes a **development-only timing
+  diagnostic** under the new cash assumption: 13 cohorts, each with the same 289
+  indicator pairs and a shared entry/exit wait of 0–6 hours by 0.5. This permits
+  separately sealed diagnostic accounting, not a production study, selected
+  optimal wait, new 45-option selection, validation/OOS access or a monitor change.
 - **Latest timing policy for all new/restarted studies:** use one globally fixed
   confirmation wait for both entry and exit, shared by every indicator pair and
   study. Do not optimize separate waits per side, configuration, or security.

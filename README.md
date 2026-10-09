@@ -7,6 +7,17 @@ current study, its dependencies and software tests. Git history is preserved.
 
 ## Current status: development-only shortlist hold
 
+**Cash assumption for all new/restarted studies:** fixed **3% nominal annual
+interest**, accrued ACT/365 and compounded on the existing event clock, replaces
+the variable DTB3 proxy. Cash-only effective CAGR is slightly above 3%, not exactly
+3% APY; the optional convention choice remains open. Old sealed results below
+retain their original cash model and must not be relabeled as 3%-cash results.
+
+The [new development beat-BH counts](reports/constant_cash_wait_counts/20261008/README.md)
+recompute all 289 indicator pairs at each equal entry/exit wait under this cash
+assumption. These 13 timing diagnostics do not choose the global production wait
+or authorize validation/OOS. [Shared future assumptions](configs/shared_research_assumptions.yaml).
+
 Select and freeze **45 options from 2001–2011 development only**, then stop.
 Validation and historical evaluation are **not authorized for further work**
 until the user explicitly opens the relevant stage. The selection criterion is
@@ -141,7 +152,7 @@ prepared freezes remain private and are **not included**. Synthetic software
 tests require no market-price inputs. Market preparation fails closed when
 verified local inputs or required authorization are missing.
 
-Publication checks passed **340 synthetic software tests**, Ruff lint and
+Publication checks passed **422 synthetic software tests**, Ruff lint and
 whitespace checks. These checks are separate from market performance; the
 eight frozen implementation files and immutable configuration remain unchanged.
 
