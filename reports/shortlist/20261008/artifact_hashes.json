@@ -1,0 +1,11 @@
+{
+  "README.md": "2d7d1353257115fdbdd10a71546b4b15d00fdd3d3525dbf6a583c708f37ebee2",
+  "development_shortlist.csv": "2217a21d830b22f7b15dd662e9200f8c6b9da8cd9b98698622988c2cd206f14f",
+  "historical_cost_comparison.csv": "478bc83584179a642ebe674900455604d22b98611748d49b9bb87b4239059f81",
+  "historical_oos_daily_curves.csv.gz": "b7afda1337637924d977bbf398774db4c2306cf409ad2d23ad58f6a8aa45afe5",
+  "independent_audit.json": "1c80204c62fd032bb4faaa51aaeb0cca6b75743be7c0b58acddefb270f4c389c",
+  "summary.json": "1d416bbb3bed4872af320620372b04d006ad19fbd86900e76b94644cf5b32f3c",
+  "validation_and_historical_baseline.csv": "71333310205a5491e1849b31d07e0240b91501ca5f70673236b436a556c7ac75",
+  "validation_comparison.csv": "59dedf2a06fa8f7aab4014a84774662dbefafb564b7e5ed134aebccad247ad94",
+  "validation_daily_curves.csv.gz": "514c22f131ebf7f02d373f880587feff22ff03984f1e77bcbd117b209d0c305f"
+}

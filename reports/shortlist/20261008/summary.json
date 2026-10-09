@@ -1,0 +1,638 @@
+{
+  "all_selected_candidates_retained_in_both_later_stages": true,
+  "candidate_count": 45,
+  "candidate_ids": [
+    "v5_30m__entry_sma_100__exit_sma_50__entry_hours_6p5__exit_hours_0",
+    "v5_30m__entry_sma_10__exit_sma_20__entry_hours_0p5__exit_hours_0",
+    "v5_30m__entry_sma_20__exit_sma_50__entry_hours_3__exit_hours_0",
+    "v5_30m__entry_sma_10__exit_sma_50__entry_hours_2__exit_hours_0",
+    "v5_30m__entry_sma_50__exit_sma_50__entry_hours_6p5__exit_hours_0",
+    "v5_30m__entry_sma_20__exit_ema_100__entry_hours_0__exit_hours_3",
+    "v5_30m__entry_sma_10__exit_ema_100__entry_hours_1p5__exit_hours_1",
+    "v5_30m__entry_sma_250__exit_ema_100__entry_hours_1p5__exit_hours_1",
+    "v5_30m__entry_sma_50__exit_ema_250__entry_hours_0__exit_hours_5p5",
+    "v5_30m__entry_sma_20__exit_ema_250__entry_hours_0__exit_hours_5p5",
+    "v5_30m__entry_sma_250__exit_macd_96_208_72__entry_hours_1__exit_hours_0p5",
+    "v5_30m__entry_sma_250__exit_macd_12_26_9__entry_hours_0__exit_hours_0p5",
+    "v5_30m__entry_sma_100__exit_macd_96_208_72__entry_hours_3p5__exit_hours_0",
+    "v5_30m__entry_sma_100__exit_macd_48_104_36__entry_hours_6p5__exit_hours_6p5",
+    "v5_30m__entry_sma_250__exit_macd_6_13_5__entry_hours_4p5__exit_hours_6p5",
+    "v5_30m__entry_ema_100__exit_sma_50__entry_hours_3__exit_hours_0",
+    "v5_30m__entry_ema_200__exit_sma_50__entry_hours_4p5__exit_hours_0",
+    "v5_30m__entry_ema_10__exit_sma_20__entry_hours_0p5__exit_hours_0",
+    "v5_30m__entry_ema_250__exit_sma_50__entry_hours_4p5__exit_hours_0",
+    "v5_30m__entry_ema_10__exit_sma_50__entry_hours_2p5__exit_hours_0",
+    "v5_30m__entry_ema_200__exit_ema_100__entry_hours_5p5__exit_hours_2p5",
+    "v5_30m__entry_ema_20__exit_ema_100__entry_hours_1p5__exit_hours_3",
+    "v5_30m__entry_ema_10__exit_ema_100__entry_hours_2__exit_hours_1p5",
+    "v5_30m__entry_ema_50__exit_ema_100__entry_hours_1__exit_hours_3",
+    "v5_30m__entry_ema_250__exit_ema_100__entry_hours_2__exit_hours_1",
+    "v5_30m__entry_ema_200__exit_macd_96_208_72__entry_hours_1__exit_hours_0p5",
+    "v5_30m__entry_ema_250__exit_macd_96_208_72__entry_hours_1__exit_hours_0p5",
+    "v5_30m__entry_ema_250__exit_macd_6_13_5__entry_hours_5__exit_hours_6",
+    "v5_30m__entry_ema_250__exit_macd_12_26_9__entry_hours_2__exit_hours_0p5",
+    "v5_30m__entry_ema_200__exit_macd_6_13_5__entry_hours_5p5__exit_hours_6",
+    "v5_30m__entry_macd_96_208_72__exit_sma_50__entry_hours_6p5__exit_hours_0",
+    "v5_30m__entry_macd_96_208_72__exit_sma_200__entry_hours_1__exit_hours_0p5",
+    "v5_30m__entry_macd_24_52_18__exit_sma_250__entry_hours_0__exit_hours_1p5",
+    "v5_30m__entry_macd_12_26_9__exit_sma_50__entry_hours_3p5__exit_hours_0",
+    "v5_30m__entry_macd_96_208_72__exit_sma_100__entry_hours_4__exit_hours_6p5",
+    "v5_30m__entry_macd_96_208_72__exit_ema_100__entry_hours_2__exit_hours_1p5",
+    "v5_30m__entry_macd_12_26_9__exit_ema_100__entry_hours_2__exit_hours_3p5",
+    "v5_30m__entry_macd_96_208_72__exit_ema_200__entry_hours_1__exit_hours_6p5",
+    "v5_30m__entry_macd_6_13_5__exit_ema_250__entry_hours_5__exit_hours_5p5",
+    "v5_30m__entry_macd_24_52_18__exit_ema_100__entry_hours_1__exit_hours_3",
+    "v5_30m__entry_macd_96_208_72__exit_macd_48_104_36__entry_hours_0p5__exit_hours_6p5",
+    "v5_30m__entry_macd_12_26_9__exit_macd_96_208_72__entry_hours_0__exit_hours_0",
+    "v5_30m__entry_macd_96_208_72__exit_macd_12_26_9__entry_hours_3p5__exit_hours_0p5",
+    "v5_30m__entry_macd_48_104_36__exit_macd_96_208_72__entry_hours_0__exit_hours_0",
+    "v5_30m__entry_macd_96_208_72__exit_macd_96_208_72__entry_hours_2p5__exit_hours_0"
+  ],
+  "candidate_set_sha256": "82af1084f29a0fb8d270616bf2301b84530a6ae5fcc37089a91cf117a244219c",
+  "comparisons": {
+    "development": [
+      {
+        "candidate_count": 45,
+        "commission_bps": 1,
+        "comparison_tolerance": 1e-10,
+        "finite_primary_scores": 45,
+        "slippage_bps": 3,
+        "statistics": {
+          "annualized_turnover": {
+            "finite_count": 45,
+            "max": 46.725931324703595,
+            "median": 9.636087004705406,
+            "min": 2.545381472941048
+          },
+          "annualized_volatility": {
+            "finite_count": 45,
+            "max": 0.18206737219956548,
+            "median": 0.14139995943213549,
+            "min": 0.08684112672345128
+          },
+          "average_holding_hours": {
+            "finite_count": 45,
+            "max": 3597.8214285714284,
+            "median": 970.801724137931,
+            "min": 199.96498054474708
+          },
+          "cagr": {
+            "finite_count": 45,
+            "max": 0.08863812904322721,
+            "median": 0.06955100916833068,
+            "min": 0.034683490560575736
+          },
+          "cash_excess_sharpe": {
+            "finite_count": 45,
+            "max": 0.582507837434033,
+            "median": 0.4259942809877919,
+            "min": 0.169660081242257
+          },
+          "cost_drag_return": {
+            "finite_count": 45,
+            "max": 0.5582440926275708,
+            "median": 0.09289518182148754,
+            "min": 0.017873919766766902
+          },
+          "exposure_fraction": {
+            "finite_count": 45,
+            "max": 0.6182513610155329,
+            "median": 0.5228116063875612,
+            "min": 0.2577288556052043
+          },
+          "max_drawdown": {
+            "finite_count": 45,
+            "max": -0.09560853374630673,
+            "median": -0.19532870669803637,
+            "min": -0.5073096684226808
+          },
+          "trade_count": {
+            "finite_count": 45,
+            "max": 257,
+            "median": 53.0,
+            "min": 14
+          }
+        },
+        "total_one_way_bps": 4,
+        "undefined_primary_scores_retained": 0,
+        "versus": {
+          "buy_and_hold": {
+            "better_all_three": 45,
+            "control_cagr": -0.00040787647597384513,
+            "control_cash_excess_sharpe": 0.07785530790766033,
+            "control_max_drawdown": -0.7039988195366682,
+            "higher_cash_excess_sharpe": 45,
+            "higher_net_cagr": 45,
+            "shallower_daily_drawdown": 45
+          },
+          "cash": {
+            "better_all_three": null,
+            "control_cagr": 0.020041971148965,
+            "control_cash_excess_sharpe": null,
+            "control_max_drawdown": 0.0,
+            "higher_cash_excess_sharpe": null,
+            "higher_net_cagr": 45,
+            "shallower_daily_drawdown": 0
+          }
+        }
+      }
+    ],
+    "historical-oos": [
+      {
+        "candidate_count": 45,
+        "commission_bps": 1,
+        "comparison_tolerance": 1e-10,
+        "finite_primary_scores": 45,
+        "slippage_bps": 1,
+        "statistics": {
+          "annualized_turnover": {
+            "finite_count": 45,
+            "max": 43.442649132709015,
+            "median": 8.650085004300491,
+            "min": 2.8833616681001644
+          },
+          "annualized_volatility": {
+            "finite_count": 45,
+            "max": 0.16987581647434866,
+            "median": 0.143310736364326,
+            "min": 0.07991831577385793
+          },
+          "average_holding_hours": {
+            "finite_count": 45,
+            "max": 4678.233333333334,
+            "median": 1562.2222222222222,
+            "min": 231.63888888888889
+          },
+          "cagr": {
+            "finite_count": 45,
+            "max": 0.17812414249305153,
+            "median": 0.14671495062503292,
+            "min": 0.043426901831178144
+          },
+          "cash_excess_sharpe": {
+            "finite_count": 45,
+            "max": 1.1354085325064918,
+            "median": 0.8807112853353563,
+            "min": 0.28684764869963036
+          },
+          "cost_drag_return": {
+            "finite_count": 45,
+            "max": 0.501898388888073,
+            "median": 0.0703777930556962,
+            "min": 0.019465874194409025
+          },
+          "exposure_fraction": {
+            "finite_count": 45,
+            "max": 0.8445649013271593,
+            "median": 0.6702346531774466,
+            "min": 0.2921396397632071
+          },
+          "max_drawdown": {
+            "finite_count": 45,
+            "max": -0.10684778712745102,
+            "median": -0.17876233958229748,
+            "min": -0.2712192111441345
+          },
+          "trade_count": {
+            "finite_count": 45,
+            "max": 226,
+            "median": 45.0,
+            "min": 15
+          }
+        },
+        "total_one_way_bps": 2,
+        "undefined_primary_scores_retained": 0,
+        "versus": {
+          "buy_and_hold": {
+            "better_all_three": 0,
+            "control_cagr": 0.20965143539203157,
+            "control_cash_excess_sharpe": 0.8681085072633571,
+            "control_max_drawdown": -0.35119550757698137,
+            "higher_cash_excess_sharpe": 23,
+            "higher_net_cagr": 0,
+            "shallower_daily_drawdown": 45
+          },
+          "cash": {
+            "better_all_three": null,
+            "control_cagr": 0.023112930734976445,
+            "control_cash_excess_sharpe": null,
+            "control_max_drawdown": -4.652266197835431e-06,
+            "higher_cash_excess_sharpe": null,
+            "higher_net_cagr": 45,
+            "shallower_daily_drawdown": 0
+          }
+        }
+      },
+      {
+        "candidate_count": 45,
+        "commission_bps": 1,
+        "comparison_tolerance": 1e-10,
+        "finite_primary_scores": 45,
+        "slippage_bps": 3,
+        "statistics": {
+          "annualized_turnover": {
+            "finite_count": 45,
+            "max": 43.43830660495904,
+            "median": 8.64922034169538,
+            "min": 2.8830734472317903
+          },
+          "annualized_volatility": {
+            "finite_count": 45,
+            "max": 0.16990713602142055,
+            "median": 0.14332284852069055,
+            "min": 0.08007690997052895
+          },
+          "average_holding_hours": {
+            "finite_count": 45,
+            "max": 4678.233333333334,
+            "median": 1562.2222222222222,
+            "min": 231.63888888888889
+          },
+          "cagr": {
+            "finite_count": 45,
+            "max": 0.17726380799835906,
+            "median": 0.14319319665937513,
+            "min": 0.03998241947980907
+          },
+          "cash_excess_sharpe": {
+            "finite_count": 45,
+            "max": 1.113650868498282,
+            "median": 0.8678672588101685,
+            "min": 0.2450175384445419
+          },
+          "cost_drag_return": {
+            "finite_count": 45,
+            "max": 0.9604155521716593,
+            "median": 0.13966621449850572,
+            "min": 0.03877664341427362
+          },
+          "exposure_fraction": {
+            "finite_count": 45,
+            "max": 0.8445649013271593,
+            "median": 0.6702346531774466,
+            "min": 0.2921396397632071
+          },
+          "max_drawdown": {
+            "finite_count": 45,
+            "max": -0.11005735454519316,
+            "median": -0.17997105973023741,
+            "min": -0.27369288740252273
+          },
+          "trade_count": {
+            "finite_count": 45,
+            "max": 226,
+            "median": 45.0,
+            "min": 15
+          }
+        },
+        "total_one_way_bps": 4,
+        "undefined_primary_scores_retained": 0,
+        "versus": {
+          "buy_and_hold": {
+            "better_all_three": 0,
+            "control_cagr": 0.20960492679945997,
+            "control_cash_excess_sharpe": 0.8679363909830933,
+            "control_max_drawdown": -0.35119550757698137,
+            "higher_cash_excess_sharpe": 22,
+            "higher_net_cagr": 0,
+            "shallower_daily_drawdown": 45
+          },
+          "cash": {
+            "better_all_three": null,
+            "control_cagr": 0.023112930734976445,
+            "control_cash_excess_sharpe": null,
+            "control_max_drawdown": -4.652266197835431e-06,
+            "higher_cash_excess_sharpe": null,
+            "higher_net_cagr": 45,
+            "shallower_daily_drawdown": 0
+          }
+        }
+      },
+      {
+        "candidate_count": 45,
+        "commission_bps": 1,
+        "comparison_tolerance": 1e-10,
+        "finite_primary_scores": 45,
+        "slippage_bps": 10,
+        "statistics": {
+          "annualized_turnover": {
+            "finite_count": 45,
+            "max": 43.42312142313042,
+            "median": 8.646196743543678,
+            "min": 2.8820655811812257
+          },
+          "annualized_volatility": {
+            "finite_count": 45,
+            "max": 0.17002577263229945,
+            "median": 0.14337478334021067,
+            "min": 0.08069396014748562
+          },
+          "average_holding_hours": {
+            "finite_count": 45,
+            "max": 4678.233333333334,
+            "median": 1562.2222222222222,
+            "min": 231.63888888888889
+          },
+          "cagr": {
+            "finite_count": 45,
+            "max": 0.17425758059132246,
+            "median": 0.13095201011771485,
+            "min": 0.028016024221868774
+          },
+          "cash_excess_sharpe": {
+            "finite_count": 45,
+            "max": 1.0375665664508966,
+            "median": 0.8088786811125991,
+            "min": 0.09990293858958141
+          },
+          "cost_drag_return": {
+            "finite_count": 45,
+            "max": 2.2748848541663964,
+            "median": 0.37383806766468114,
+            "min": 0.10516065994535438
+          },
+          "exposure_fraction": {
+            "finite_count": 45,
+            "max": 0.8445649013271593,
+            "median": 0.6702346531774466,
+            "min": 0.2921396397632071
+          },
+          "max_drawdown": {
+            "finite_count": 45,
+            "max": -0.1212002891322137,
+            "median": -0.18612032066730433,
+            "min": -0.2822850497701873
+          },
+          "trade_count": {
+            "finite_count": 45,
+            "max": 226,
+            "median": 45.0,
+            "min": 15
+          }
+        },
+        "total_one_way_bps": 11,
+        "undefined_primary_scores_retained": 0,
+        "versus": {
+          "buy_and_hold": {
+            "better_all_three": 0,
+            "control_cagr": 0.20944216073840405,
+            "control_cash_excess_sharpe": 0.8673331735575397,
+            "control_max_drawdown": -0.35119550757698137,
+            "higher_cash_excess_sharpe": 12,
+            "higher_net_cagr": 0,
+            "shallower_daily_drawdown": 45
+          },
+          "cash": {
+            "better_all_three": null,
+            "control_cagr": 0.023112930734976445,
+            "control_cash_excess_sharpe": null,
+            "control_max_drawdown": -4.652266197835431e-06,
+            "higher_cash_excess_sharpe": null,
+            "higher_net_cagr": 45,
+            "shallower_daily_drawdown": 0
+          }
+        }
+      },
+      {
+        "candidate_count": 45,
+        "commission_bps": 1,
+        "comparison_tolerance": 1e-10,
+        "finite_primary_scores": 45,
+        "slippage_bps": 25,
+        "statistics": {
+          "annualized_turnover": {
+            "finite_count": 45,
+            "max": 43.39065315654745,
+            "median": 8.639731823206365,
+            "min": 2.8799106077354573
+          },
+          "annualized_volatility": {
+            "finite_count": 45,
+            "max": 0.1703269804717173,
+            "median": 0.14353583422314906,
+            "min": 0.08233097054205768
+          },
+          "average_holding_hours": {
+            "finite_count": 45,
+            "max": 4678.233333333334,
+            "median": 1562.2222222222222,
+            "min": 231.63888888888889
+          },
+          "cagr": {
+            "finite_count": 45,
+            "max": 0.16784147157667162,
+            "median": 0.109672751614863,
+            "min": -0.005677862063475758
+          },
+          "cash_excess_sharpe": {
+            "finite_count": 45,
+            "max": 0.8834594301010636,
+            "median": 0.6740192550393171,
+            "min": -0.2025574255027367
+          },
+          "cost_drag_return": {
+            "finite_count": 45,
+            "max": 4.013845703835668,
+            "median": 0.8345827239490159,
+            "min": 0.24130509945039194
+          },
+          "exposure_fraction": {
+            "finite_count": 45,
+            "max": 0.8445649013271593,
+            "median": 0.6702346531774466,
+            "min": 0.2921396397632071
+          },
+          "max_drawdown": {
+            "finite_count": 45,
+            "max": -0.1513138546436612,
+            "median": -0.22160732209928335,
+            "min": -0.30972460988964057
+          },
+          "trade_count": {
+            "finite_count": 45,
+            "max": 226,
+            "median": 45.0,
+            "min": 15
+          }
+        },
+        "total_one_way_bps": 26,
+        "undefined_primary_scores_retained": 0,
+        "versus": {
+          "buy_and_hold": {
+            "better_all_three": 0,
+            "control_cagr": 0.20909344909816885,
+            "control_cash_excess_sharpe": 0.8660363427413287,
+            "control_max_drawdown": -0.3511955075769815,
+            "higher_cash_excess_sharpe": 4,
+            "higher_net_cagr": 0,
+            "shallower_daily_drawdown": 45
+          },
+          "cash": {
+            "better_all_three": null,
+            "control_cagr": 0.023112930734976445,
+            "control_cash_excess_sharpe": null,
+            "control_max_drawdown": -4.652266197835431e-06,
+            "higher_cash_excess_sharpe": null,
+            "higher_net_cagr": 40,
+            "shallower_daily_drawdown": 0
+          }
+        }
+      }
+    ],
+    "validation": [
+      {
+        "candidate_count": 45,
+        "commission_bps": 1,
+        "comparison_tolerance": 1e-10,
+        "finite_primary_scores": 45,
+        "slippage_bps": 3,
+        "statistics": {
+          "annualized_turnover": {
+            "finite_count": 45,
+            "max": 54.55215611911657,
+            "median": 10.00956993011312,
+            "min": 2.0019139860226236
+          },
+          "annualized_volatility": {
+            "finite_count": 45,
+            "max": 0.14255307519842547,
+            "median": 0.10452529407089885,
+            "min": 0.045483314855718125
+          },
+          "average_holding_hours": {
+            "finite_count": 45,
+            "max": 8559.875,
+            "median": 1499.05,
+            "min": 210.1651376146789
+          },
+          "cagr": {
+            "finite_count": 45,
+            "max": 0.1624831904314823,
+            "median": 0.05727594334743524,
+            "min": 0.01779525105591806
+          },
+          "cash_excess_sharpe": {
+            "finite_count": 45,
+            "max": 1.148541997739063,
+            "median": 0.6448468955574018,
+            "min": 0.2273451195558346
+          },
+          "cost_drag_return": {
+            "finite_count": 45,
+            "max": 0.11389568754235779,
+            "median": 0.024146472884026708,
+            "min": 0.0045276815041836475
+          },
+          "exposure_fraction": {
+            "finite_count": 45,
+            "max": 0.9826997528536122,
+            "median": 0.6950813583051186,
+            "min": 0.21126016085944085
+          },
+          "max_drawdown": {
+            "finite_count": 45,
+            "max": -0.07510938067654127,
+            "median": -0.1514397693944044,
+            "min": -0.22384417681646684
+          },
+          "trade_count": {
+            "finite_count": 45,
+            "max": 109,
+            "median": 20.0,
+            "min": 4
+          }
+        },
+        "total_one_way_bps": 4,
+        "undefined_primary_scores_retained": 0,
+        "versus": {
+          "buy_and_hold": {
+            "better_all_three": 0,
+            "control_cagr": 0.19879569372018713,
+            "control_cash_excess_sharpe": 1.2876426567333332,
+            "control_max_drawdown": -0.1394104228812072,
+            "higher_cash_excess_sharpe": 0,
+            "higher_net_cagr": 0,
+            "shallower_daily_drawdown": 13
+          },
+          "cash": {
+            "better_all_three": null,
+            "control_cagr": 0.000579663893526261,
+            "control_cash_excess_sharpe": null,
+            "control_max_drawdown": -1.3772647557974693e-06,
+            "higher_cash_excess_sharpe": null,
+            "higher_net_cagr": 45,
+            "shallower_daily_drawdown": 0
+          }
+        }
+      }
+    ]
+  },
+  "costs_include_commission_and_adverse_slippage": true,
+  "daily_curve_stages": [
+    "validation",
+    "historical-oos"
+  ],
+  "daily_valuation_hour_ny": 17,
+  "descriptive_development_gap_flags": {
+    "flags_used_for_selection": false,
+    "post_gap_confirmed_signals": 2,
+    "post_gap_flagged_candidates": 1
+  },
+  "development_benchmark_comparison_sha256": "56e19d32b212b778709f27d53adce6a6fa940a82a8cb2d8e60d1a1ff68f50e21",
+  "family_cell_counts": {
+    "EMA/EMA": 5,
+    "EMA/MACD": 5,
+    "EMA/SMA": 5,
+    "MACD/EMA": 5,
+    "MACD/MACD": 5,
+    "MACD/SMA": 5,
+    "SMA/EMA": 5,
+    "SMA/MACD": 5,
+    "SMA/SMA": 5
+  },
+  "historical_label": "exploratory_retrospective_extension_after_prior_validation_and_historical_oos_exposure",
+  "interpretation": "Exploratory retrospective extension after previous validation/historical OOS exposure; not untouched OOS, live evidence or a newly selected winner.",
+  "later_stage_winner_selected": false,
+  "parent_development_metrics_sha256": "daa80712d9b975c189e1a0b26aff0adbad1017d79b94778392e040235ad990fa",
+  "per_family": 5,
+  "post_evaluation_reselection": false,
+  "primary_metric": "daily_cash_excess_sharpe_252_ddof1",
+  "prior_validation_and_historical_oos_already_examined": true,
+  "private_paths_or_consent_text_exported": false,
+  "project": "Trend Following Study",
+  "raw_quote_values_or_trades_exported": false,
+  "scope": "fixed_development_shortlist_followup",
+  "segments": {
+    "development": {
+      "end": "2011-12-31",
+      "start": "2001-01-01"
+    },
+    "feature_history_start": "1999-11-01",
+    "historical-oos": {
+      "end": "2026-05-28",
+      "start": "2016-01-01"
+    },
+    "portfolio_reset": "flat_cash_no_pending_order_no_streak_at_each_scored_segment",
+    "validation": {
+      "end": "2015-12-31",
+      "start": "2012-01-01"
+    },
+    "warmup": {
+      "end": "2000-12-31",
+      "start": "1999-11-01"
+    }
+  },
+  "selection": {
+    "all_selected_candidates_retained_in_both_later_stages": true,
+    "candidate_count": 45,
+    "distinctness": "entry_indicator_exit_indicator_pair_ignoring_confirmation_durations",
+    "gap_flags_affect_selection": false,
+    "later_stage_selection": false,
+    "per_family": 5,
+    "primary_metric": "development_daily_cash_excess_sharpe_after_1bp_commission_3bp_slippage",
+    "tie_break": "lexicographically_smallest_stable_candidate_id",
+    "tie_tolerance": 1e-10
+  },
+  "shortlist_registration_sha256": "34cdb3336b3cd89a6d7d71a72aca98c71a5805820a3cb173d9b9ddce347ef368",
+  "taxes_financing_and_separate_fund_expense_charges": false
+}

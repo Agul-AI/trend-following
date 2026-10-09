@@ -19,6 +19,12 @@
   cost-matched QQQ buy-and-hold. The same winner was used at all four OOS costs.
   Future runs still require frozen selections, intact seals and user authorization;
   do not retune after evaluation or describe retrospective history as untouched OOS.
+- The separately sealed shortlist follow-up retains 45 development-selected
+  configurations through both validation and all four historical cost scenarios.
+  It was designed after prior phase exposure and is exploratory retrospective
+  research, not a replacement winner or untouched confirmation. Keep its sealed
+  selection/protocol/public-dispatch sources byte-identical; use the public
+  `scripts/run_qqq_research.py shortlist` route. Do not change the original monitor.
 - Hold the last filled position during missing source intervals. Gap flags are
   descriptive only and never filter, rank, or replace configurations.
 - Never commit credentials, downloaded/raw prices, processed market packets,

@@ -5,6 +5,29 @@ The **Trend Following Study** tests **56,644 configurations** of daily indicator
 and half-hour confirmation on unlevered QQQ/cash. This tree contains only the
 current study, its dependencies and software tests. Git history is preserved.
 
+## Diversified shortlist follow-up: keep 45 options, not one winner
+
+The follow-up selects **five distinct indicator pairs per entry/exit family
+cell from development only**, retaining their development-selected confirmation
+waits. The same **45 options** entered validation and all four historical cost
+scenarios without eliminating or replacing any member.
+
+At 1 bp commission + 3 bps adverse slippage per order:
+
+| Comparison across the fixed set | Validation 2012–2015 | Historical 2016–May 28, 2026 |
+|---|---:|---:|
+| Median candidate CAGR | 5.73% | 14.32% |
+| QQQ buy-and-hold CAGR | 19.88% | 20.96% |
+| Candidates with higher net CAGR than QQQ | 0/45 | 0/45 |
+| Candidates with higher cash-excess Sharpe than QQQ | 0/45 | 22/45 |
+| Candidates with shallower daily drawdown than QQQ | 13/45 | 45/45 |
+
+**This is exploratory retrospective research after the earlier phase outputs
+were examined, not untouched OOS.** The median describes separate candidates,
+not an ensemble portfolio. The original single-winner results and monitor are
+unchanged. [All 45 options, results and costs](reports/shortlist/20261008/README.md)
+· [Follow-up design](docs/research_validation/shortlist_followup.md).
+
 ## Current development results (2001–2011)
 
 All **56,644** configurations have now been backtested once after **1 bp commission
@@ -95,7 +118,7 @@ prepared freezes remain private and are **not included**. Synthetic software
 tests require no market-price inputs. Market preparation fails closed when
 verified local inputs or required authorization are missing.
 
-Publication checks passed **215 synthetic software tests**, Ruff lint and
+Publication checks passed **315 synthetic software tests**, Ruff lint and
 whitespace checks. These checks are separate from market performance; the
 eight frozen implementation files and immutable configuration remain unchanged.
 
@@ -106,6 +129,8 @@ python scripts/run_qqq_research.py prepare
 python scripts/run_qqq_research.py development
 python scripts/run_qqq_research.py validation
 python scripts/run_qqq_research.py historical-oos
+# Separately sealed, user-authorized exploratory fixed-set comparison:
+python scripts/run_qqq_research.py shortlist --help
 ```
 
 Do not change parameters and present a rerun as the same locked evaluation.

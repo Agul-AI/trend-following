@@ -16,3 +16,8 @@ See the [development comparison](../../reports/development/20261008/README.md),
 [historical cost comparison](../../reports/historical_oos/20261008/README.md).
 Future reruns remain subject to the frozen selection and authorization gates.
 Software tests, source reconciliation and preparation are not performance.
+
+The subsequent [diversified shortlist follow-up](shortlist_followup.md) keeps
+45 development-selected indicator pairs through both later periods, with no
+validation attrition or historical winner selection. It is exploratory after
+the earlier phase outputs were seen; see [all options and comparisons](../../reports/shortlist/20261008/README.md).

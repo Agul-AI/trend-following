@@ -1,0 +1,93 @@
+{
+  "audit": "independent_saved_derived_curves_and_selection_provenance",
+  "audit_scope": "validation_and_historical_oos",
+  "candidate_set_sha256": "82af1084f29a0fb8d270616bf2301b84530a6ae5fcc37089a91cf117a244219c",
+  "caveat": "Exploratory retrospective follow-up after prior validation/historical exposure; not untouched OOS or an ensemble portfolio.",
+  "checks": {
+    "all45_retained_in_all4_historical_costs": true,
+    "all45_retained_in_validation": true,
+    "daily_equity_returns_terminal_cagr_ddof1_sharpe_volatility_drawdown_reconciled": true,
+    "descriptive_counts_and_medians_independently_verified": true,
+    "development_only_selection_matches_independent_oracle": true,
+    "gross_shadow_and_position_cost_invariance": true,
+    "public_daily_curve_exports_match_private_sealed_outputs": true,
+    "public_metric_exports_match_private_sealed_outputs": true,
+    "same_clock_and_cash_reference": true,
+    "seal_before_validation_before_historical_oos": true,
+    "source_config_and_old_sealed_artifacts_unchanged": true,
+    "turnover_cost_orders_exposure_holding_duration_reconciled": true
+  },
+  "chronology": {
+    "historical_oos_finished_at": "2026-10-09T01:21:59.628229+00:00",
+    "historical_oos_started_at": "2026-10-09T01:20:54.523794+00:00",
+    "set_sealed_at": "2026-10-09 01:19:24.648803+00:00",
+    "validation_finished_at": "2026-10-09T01:20:16.356267+00:00",
+    "validation_started_at": "2026-10-09T01:19:51.423847+00:00"
+  },
+  "cost_invariance_policies_checked": 47,
+  "development_flagged_members": 1,
+  "development_locked_candidates": 45,
+  "development_post_gap_decisions": 2,
+  "distinct_indicator_pairs_per_family": 5,
+  "family_cells": 9,
+  "frozen_input_file_hashes_verified": 35,
+  "largest_independent_math_absolute_error": {
+    "annualized_turnover": 0.0,
+    "annualized_volatility": 0.0,
+    "cagr": 0.0,
+    "cash_excess_Sharpe": 0.0,
+    "cash_excess_sharpe": 0.0,
+    "cash_terminal_equity": 5.002220859751105e-12,
+    "cost_drag_return": 0.0,
+    "max_drawdown": 0.0,
+    "terminal_equity": 0.0,
+    "total_return": 0.0
+  },
+  "no_later_outcomes_used_for_selection": true,
+  "no_market_strategy_runs_by_auditor": true,
+  "original_grid_configurations": 56644,
+  "original_immutable_file_count_verified": 99,
+  "project": "Trend Following Study",
+  "public_export_metric_groups_verified": 235,
+  "registration_sha256": "34cdb3336b3cd89a6d7d71a72aca98c71a5805820a3cb173d9b9ddce347ef368",
+  "scenario_summary": [
+    {
+      "derived_curve_rows": 47282,
+      "metric_rows": 47,
+      "session_count": 1006,
+      "slippage_bps": 3.0,
+      "stage": "validation"
+    },
+    {
+      "derived_curve_rows": 122905,
+      "metric_rows": 47,
+      "session_count": 2615,
+      "slippage_bps": 1.0,
+      "stage": "historical-oos"
+    },
+    {
+      "derived_curve_rows": 122905,
+      "metric_rows": 47,
+      "session_count": 2615,
+      "slippage_bps": 3.0,
+      "stage": "historical-oos"
+    },
+    {
+      "derived_curve_rows": 122905,
+      "metric_rows": 47,
+      "session_count": 2615,
+      "slippage_bps": 10.0,
+      "stage": "historical-oos"
+    },
+    {
+      "derived_curve_rows": 122905,
+      "metric_rows": 47,
+      "session_count": 2615,
+      "slippage_bps": 25.0,
+      "stage": "historical-oos"
+    }
+  ],
+  "scope": "Read-only independent selection-provenance, integrity and derived-series arithmetic audit; not an independent strategy/accounting reimplementation or market-data reconstruction.",
+  "status": "passed",
+  "validated_curve_groups": 235
+}
