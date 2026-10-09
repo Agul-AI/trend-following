@@ -1,0 +1,61 @@
+schema: qqq_mean_reversion_development
+study_name: Mean-Reversion Study
+security: QQQ
+exposure: unlevered_long_or_cash
+historical_label: retrospective_previously_examined_history
+grid:
+  ma_periods: [10, 20, 50]
+  ma_entry_thresholds: [-0.02, -0.04, -0.06]
+  ma_exit_thresholds: [0.0, 0.01]
+  zscore_periods: [10, 20, 50]
+  zscore_entry_thresholds: [-1.5, -2.0, -2.5]
+  zscore_exit_thresholds: [-0.5, 0.0, 0.5]
+  rsi_periods: [2, 5, 14]
+  rsi_entry_thresholds: [10.0, 20.0, 30.0]
+  rsi_exit_thresholds: [50.0, 60.0, 70.0]
+  candidate_count: 90
+  same_family_and_period_for_entry_exit: true
+signals:
+  indicator_unit: daily_sessions
+  sampling_minutes: 30
+  confirmation_hours: 3.0
+  required_consecutive_checks: 7
+  entry: finite_feature_less_than_or_equal_to_entry_threshold_while_cash
+  exit: finite_feature_greater_than_or_equal_to_exit_threshold_while_long
+  entry_mode: persistent_oversold_not_confirmed_recovery
+  daily_finalize_hour_ny: 17
+  zscore_ddof: 1
+  rsi_smoothing: Wilder
+  extra_risk_exits: false
+periods:
+  initialization: {start: '1999-11-01', end: '2000-12-31'}
+  development: {start: '2001-01-01', end: '2011-12-31'}
+  validation: {start: '2012-01-01', end: '2018-12-31'}
+  historical_oos: {start: '2019-01-01', end: '2026-05-28'}
+accounting:
+  initial_cash: 1000.0
+  cash_nominal_annual_rate: 0.03
+  cash_day_count: ACT/365
+  commission_bps: 1.0
+  baseline_slippage_bps: 3.0
+  slippage_bps_scenarios: [1.0, 3.0, 10.0, 25.0]
+  taxes: false
+  financing: false
+  separate_fund_expenses: false
+selection:
+  metric: daily_cash_excess_sharpe
+  annualization: 252
+  standard_deviation_ddof: 1
+  finalists_per_family: 5
+  maximum_finalists: 20
+  finite_scores_only: true
+  tie_tolerance: 1.0e-10
+  minimum_trade_filter: false
+  maximum_trade_filter: false
+  must_beat_buy_and_hold: false
+protocol:
+  authorized_stage: development
+  validation_authorized: false
+  historical_oos_authorized: false
+  gap_policy: hold_cancel_pending_reset_streaks
+  post_gap_flags: descriptive_never_selection_filters

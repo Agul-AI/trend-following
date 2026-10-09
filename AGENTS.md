@@ -1,5 +1,18 @@
 # Trend Following Study — Repository Instructions
 
+- **Latest separate-study authorization: mean-reversion development only.**
+  Implement/evaluate the independent 90-configuration SMA/EMA-distance,
+  z-score and RSI QQQ/cash study on 2001–2011. Persistent-oversold entry,
+  recovery-only exit, fixed 3% nominal cash and all four existing execution-cost
+  scenarios; select up to five finite baseline-Sharpe candidates per family
+  without trade-count or BH eligibility filters. Validation 2012–2018 and
+  historical OOS 2019–May 28, 2026 remain closed for this study. Use
+  `scripts/run_mean_reversion_research.py`; preserve the frozen trend entrypoint,
+  all earlier sources/results, monitors and resumes. This additive current
+  study is not archived-study code or a replacement trend winner.
+- **The global wait is now fixed at 3 trading hours** for both entry and exit
+  in all future new/restarted studies: seven consecutive half-hour checks.
+  This supersedes older “wait pending” notes below, not historical frozen runs.
 - **Latest split override: redo validation for 2012–2018 only.** Keep the same
   development-selected 159 shared indicator pairs at the 2/3/4-hour uniform
   waits, fixed 3% nominal cash and 1+3 bp costs. Seal unchanged membership before

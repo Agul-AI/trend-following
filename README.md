@@ -162,6 +162,31 @@ for source roles, blackout handling, diagnostics and staged release gates.
 
 ## Setup and public entry point
 
+### Separate mean-reversion development study
+
+The additive **Mean-Reversion Study** tests 90 QQQ/cash configurations on
+2001–2011 only: SMA/EMA percentage distance, sample-standard-deviation z-score,
+and Wilder RSI. It uses a shared 3-hour entry/exit confirmation, fixed 3%
+nominal cash interest and cost-matched QQQ buy-and-hold. Persistent oversold
+entry is not confirmation of a rebound; exits require indicator recovery.
+There are no stop-loss, holding-limit or trade-frequency filters.
+
+```bash
+python scripts/run_mean_reversion_research.py --help
+python scripts/run_mean_reversion_research.py check
+# Freeze requires private inputs and the matching human development authorization.
+python scripts/run_mean_reversion_research.py freeze --authorization /path/to/private-receipt.json
+python scripts/run_mean_reversion_research.py development
+python scripts/run_mean_reversion_research.py report
+```
+
+[Development results and full assumptions](reports/mean_reversion_development/20261009/README.md).
+The separate command offers no validation or OOS execution route. Existing trend
+sources, frozen results and monitors remain unchanged. All future new/restarted
+studies use a fixed shared 3-hour wait; old freezes are not rewritten.
+
+### Frozen trend-following entry point
+
 ```bash
 python -m pip install -e '.[dev,research]'
 python -m pytest
@@ -173,7 +198,7 @@ prepared freezes remain private and are **not included**. Synthetic software
 tests require no market-price inputs. Market preparation fails closed when
 verified local inputs or required authorization are missing.
 
-Publication checks passed **641 synthetic software tests**, Ruff lint and
+Publication checks passed **789 synthetic software tests**, Ruff lint and
 whitespace checks. These checks are separate from market performance; the
 eight frozen implementation files and immutable configuration remain unchanged.
 

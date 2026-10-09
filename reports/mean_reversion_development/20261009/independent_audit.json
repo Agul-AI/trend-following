@@ -1,0 +1,188 @@
+{
+  "audit_scope": "independent_arithmetic_recomputation_of_new_derived_development_wealth_paths_not_independent_market_or_signal_replay",
+  "audit_status": "passed",
+  "baseline_BH": {
+    "cagr": -0.0004075673216287212,
+    "cash_excess_sharpe": 0.04332982424247732,
+    "max_drawdown": -0.7039988195366682,
+    "terminal_equity": 995.526648811703
+  },
+  "baseline_family_summary": [
+    {
+      "BH_beater_median_CAGR": 0.051505137929423905,
+      "BH_beater_median_Sharpe": 0.2056744619978077,
+      "BH_beater_median_round_trips": 39.0,
+      "all_median_Sharpe": -0.06450699011524919,
+      "all_median_round_trips": 33.5,
+      "beat_BH_Sharpe_count": 6,
+      "configurations": 18,
+      "family": "SMA_DISTANCE"
+    },
+    {
+      "BH_beater_median_CAGR": 0.039177991327499995,
+      "BH_beater_median_Sharpe": 0.1308613176881141,
+      "BH_beater_median_round_trips": 19.0,
+      "all_median_Sharpe": -0.03951799910577941,
+      "all_median_round_trips": 27.0,
+      "beat_BH_Sharpe_count": 4,
+      "configurations": 18,
+      "family": "EMA_DISTANCE"
+    },
+    {
+      "BH_beater_median_CAGR": 0.03912823945451582,
+      "BH_beater_median_Sharpe": 0.14963000944189195,
+      "BH_beater_median_round_trips": 25.0,
+      "all_median_Sharpe": -0.08524990436684661,
+      "all_median_round_trips": 25.0,
+      "beat_BH_Sharpe_count": 5,
+      "configurations": 27,
+      "family": "ZSCORE"
+    },
+    {
+      "BH_beater_median_CAGR": 0.048935638030392026,
+      "BH_beater_median_Sharpe": 0.19224030541383128,
+      "BH_beater_median_round_trips": 113.0,
+      "all_median_Sharpe": 0.15913254658575407,
+      "all_median_round_trips": 32.0,
+      "beat_BH_Sharpe_count": 17,
+      "configurations": 27,
+      "family": "RSI"
+    },
+    {
+      "BH_beater_median_CAGR": 0.044751433102092175,
+      "BH_beater_median_Sharpe": 0.17367871565729442,
+      "BH_beater_median_round_trips": 38.5,
+      "all_median_Sharpe": -0.03826945314995383,
+      "all_median_round_trips": 27.0,
+      "beat_BH_Sharpe_count": 32,
+      "configurations": 90,
+      "family": "ALL"
+    }
+  ],
+  "best_baseline_by_development_Sharpe": {
+    "annualized_volatility": 0.14199803487243678,
+    "average_holding_hours": 238.3,
+    "cagr": 0.08015231340362261,
+    "candidate_id": "mr_30m__sma_distance_10__entry_m0p06__exit_0__shared_hours_3",
+    "cash_excess_sharpe": 0.4013016587820588,
+    "cost_drag_return": 0.03765918452007327,
+    "entry_threshold": -0.06,
+    "exit_threshold": 0.0,
+    "exposure_fraction": 0.04946882768427553,
+    "family": "SMA_DISTANCE",
+    "max_drawdown": -0.201352114642097,
+    "period": 10,
+    "terminal_equity": 2334.919597360518,
+    "trade_count": 20,
+    "trades_per_year": 1.8184932040044215
+  },
+  "candidate_count": 90,
+  "candidate_scenario_count": 360,
+  "cash_references_match": true,
+  "cost_scenario_comparisons": [
+    {
+      "BH_CAGR": -0.00037121161801934033,
+      "BH_Sharpe": 0.0434486484515093,
+      "BH_drawdown": -0.7039988195366682,
+      "family_beat_counts": {
+        "ALL": 32,
+        "EMA_DISTANCE": 4,
+        "RSI": 17,
+        "SMA_DISTANCE": 6,
+        "ZSCORE": 5
+      },
+      "slippage_bps": 1.0
+    },
+    {
+      "BH_CAGR": -0.0004075673216287212,
+      "BH_Sharpe": 0.04332982424247732,
+      "BH_drawdown": -0.7039988195366682,
+      "family_beat_counts": {
+        "ALL": 32,
+        "EMA_DISTANCE": 4,
+        "RSI": 17,
+        "SMA_DISTANCE": 6,
+        "ZSCORE": 5
+      },
+      "slippage_bps": 3.0
+    },
+    {
+      "BH_CAGR": -0.0005348019254668435,
+      "BH_Sharpe": 0.04291412626972717,
+      "BH_drawdown": -0.7039988195366682,
+      "family_beat_counts": {
+        "ALL": 26,
+        "EMA_DISTANCE": 4,
+        "RSI": 14,
+        "SMA_DISTANCE": 4,
+        "ZSCORE": 4
+      },
+      "slippage_bps": 10.0
+    },
+    {
+      "BH_CAGR": -0.000807393732275119,
+      "BH_Sharpe": 0.042024325100356,
+      "BH_drawdown": -0.7039988195366682,
+      "family_beat_counts": {
+        "ALL": 14,
+        "EMA_DISTANCE": 3,
+        "RSI": 7,
+        "SMA_DISTANCE": 3,
+        "ZSCORE": 1
+      },
+      "slippage_bps": 25.0
+    }
+  ],
+  "finalist_count": 20,
+  "freeze_sha256": "c9085977c2c4f36164eefc8351101b97b8c4b373789493f5835ca4ba4f6cfb6d",
+  "limits": [
+    "No independent price/action/transaction replay; saved derived returns are the evidence inputs.",
+    "Exposure and trade/holding fields checked for reconciliation/range, not replayed from private trade ledgers.",
+    "Previously examined development history and parameter selection are retrospective in-sample research.",
+    "Validation and historical OOS remain closed."
+  ],
+  "maximum_absolute_arithmetic_errors": {
+    "Sharpe_difference_vs_BH": 0.0,
+    "annualized_turnover": 0.0,
+    "annualized_volatility": 0.0,
+    "cagr": 0.0,
+    "candidate_BH_reference": 0.0,
+    "candidate_cash_terminal": 0.0,
+    "cash_excess_sharpe": 0.0,
+    "cash_wealth_from_ref": 1.659827830735594e-11,
+    "cost_drag_return": 0.0,
+    "cross_cost_cash_wealth": 0.0,
+    "daily_returns": 0.0,
+    "max_drawdown": 0.0,
+    "passive_annualized_volatility": 0.0,
+    "passive_cagr": 0.0,
+    "passive_cash_excess_sharpe": 0.0,
+    "passive_cash_reference": 0.0,
+    "passive_daily_return": 0.0,
+    "passive_max_drawdown": 0.0,
+    "passive_terminal_equity": 0.0,
+    "passive_total_return": 0.0,
+    "passive_trades_per_year": 0.0,
+    "summary_medians": 0.0,
+    "terminal_equity": 0.0,
+    "total_return": 0.0,
+    "trades_per_year": 0.0
+  },
+  "new_development_results_only": true,
+  "new_private_result_hashes_match": true,
+  "no_postgap_or_BH_trade_filters": true,
+  "old_numeric_outcomes_opened": false,
+  "passive_scenario_count": 8,
+  "period": {
+    "end": "2011-12-31",
+    "start": "2001-01-01"
+  },
+  "protected_existing_file_hash_count": 150,
+  "protected_existing_file_hashes_match": true,
+  "public_artifact_hashes_match_before_audit_extension": true,
+  "raw_market_prices_opened": false,
+  "scored_sessions": 2767,
+  "source_hashes_match": true,
+  "top_five_per_family_reproduced": true,
+  "validation_or_OOS_prices_or_returns_opened": false
+}

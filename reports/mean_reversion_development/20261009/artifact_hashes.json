@@ -1,0 +1,14 @@
+{
+  "README.md": "3537cc20970d5a387448cb355b9093c49044ed182c62c75daec6c6169e9446d7",
+  "benchmark_metrics.csv": "803c87a4df50ded70e04287f9da1747a058e04321bde2280269b9779572348a5",
+  "candidate_metrics.csv": "200fe1b5f89f82fc83ad427acc2e94606435914b64811e2112ed9e7d0d34612d",
+  "candidate_metrics_all_costs.csv": "5b47bff8a3853d10393d63ee3beaef264a9ddb165c41f67c14ba875ac57df21e",
+  "development_finalists.csv": "ba0859c62344d3de4a47536d16d0934ee07e3f16bcfe98839f6a435bfc979607",
+  "family_summary.csv": "ebde57299050f6180528c1986f59814267b28033226441de08fd252d0be281c4",
+  "family_summary_all_costs.csv": "94f7481cf51f114c3950e4fabe0611b95cb783748ed78eeafc7564ee80f94c49",
+  "gap_diagnostics.json": "a46569e6e214aa9c144bb1819225ca14f5f54e9ecd0eee146236faf18dace9d3",
+  "independent_audit.json": "5084cfadaad6a530a350f4f21ec615eca3ee49e7e6d4c3132908611ef14e4a56",
+  "post_gap_candidate_flags.csv": "4538c97ed478211ea473e46171e6a4aa6096ea0510acc04967145fd537990968",
+  "post_gap_signal_events.csv": "2906ba396d06b660f8eddaa7bbbb589840e72baa2b47b887480be5fb8f265ddd",
+  "summary.json": "de71109dd25ed76343084134e5964755376bcfc539285b4d8c5f2e259e7449bd"
+}

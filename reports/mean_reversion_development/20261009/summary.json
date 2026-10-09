@@ -1,0 +1,57 @@
+{
+  "all_90_in_denominator": true,
+  "baseline_BH_CAGR": -0.0004075673216287212,
+  "baseline_BH_Sharpe": 0.04332982424247732,
+  "baseline_BH_max_drawdown": -0.7039988195366682,
+  "baseline_slippage_bps": 3,
+  "cash_policy": {
+    "annual_rate": 0.03,
+    "day_count": "ACT/365",
+    "effective_annual_cash_growth": "slightly_above_3pct_due_to_interval_compounding",
+    "freshness_adapter": "repeat_identical_preknown_assumption_at_daily_UTC_boundaries",
+    "includes_closures": true,
+    "known_at": "before_first_supplied_clock_instant",
+    "per_clock_interval_return": "0.03 * elapsed_calendar_seconds / (365 * 86400)",
+    "rate_type": "fixed_nominal_annual_research_assumption",
+    "risk_free_reference": "same_assumed_cash_clock_returns_for_all_candidates_and_BH",
+    "source": "user_assumption_not_DTB3_or_observed_market_yield",
+    "wealth": "multiply_one_plus_interval_return_on_each_frozen_event_clock_interval"
+  },
+  "commission_bps": 1,
+  "configuration_count": 90,
+  "configuration_scenario_count": 360,
+  "entry_mode": "persistent_oversold_not_rebound_confirmation",
+  "families": [
+    "SMA_DISTANCE",
+    "EMA_DISTANCE",
+    "ZSCORE",
+    "RSI"
+  ],
+  "finalist_count": 20,
+  "finalist_eligibility": "finite_development_baseline_Sharpe_only_no_trade_or_BH_gate",
+  "finalists_sha256": "e84ec0ef4b8e5880a554c39c7b6e234f62e69b956f5de2a516d8e3da96d02781",
+  "finished_at": "2026-10-09T13:39:45.493838+00:00",
+  "freeze_at": "2026-10-09T13:39:02.218107+00:00",
+  "freeze_sha256": "c9085977c2c4f36164eefc8351101b97b8c4b373789493f5835ca4ba4f6cfb6d",
+  "grid_sha256": "99c878002fe30913f5db25936972bd5e2fed2d47f780bf89052eae5ef15fe57e",
+  "historical_oos_authorized": false,
+  "initial_cash": 1000,
+  "market_started_at": "2026-10-09T13:39:04.651357+00:00",
+  "no_prior_strategy_outcomes_used": true,
+  "period": {
+    "end": "2011-12-31",
+    "start": "2001-01-01"
+  },
+  "retrospective_previously_examined_history": true,
+  "security": "QQQ",
+  "shared_confirmation_hours": 3,
+  "slippage_bps_scenarios": [
+    1.0,
+    3.0,
+    10.0,
+    25.0
+  ],
+  "study_name": "Mean-Reversion Study",
+  "trade_definition": "completed_round_trips_including_terminal_liquidation",
+  "validation_authorized": false
+}
