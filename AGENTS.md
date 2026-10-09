@@ -1,5 +1,13 @@
 # Trend Following Study — Repository Instructions
 
+- **Current user override: development-only hold.** Select/freeze the 45-option
+  shortlist using 2001–2011 outcomes only, then STOP. Do not run, inspect numeric
+  outcomes from, publish additional comparisons for, or unlock validation and
+  historical OOS without a new explicit user instruction for that stage. Earlier
+  broad evaluation authorization is superseded for further work. Preserve existing
+  sealed artifacts and sources; prior examination cannot be undone or called
+  genuinely untouched. This hold is an operational instruction, not a new runtime
+  kill switch, and does not change the existing monitor.
 - The public project name is **Trend Following Study**. Use this name in
   project titles, documentation and future descriptions, not a version label.
 - This repository contains only the current 56,644-configuration QQQ/cash study,

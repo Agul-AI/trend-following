@@ -1,5 +1,11 @@
 # Trend Following Study — Diversified Shortlist Follow-up
 
+**Current instruction: stop after development-only selection and freezing.**
+The validation/historical procedure below documents an earlier authorized run,
+not permission to repeat or extend it. Further stage evaluation or numerical
+outcome inspection requires new explicit user authorization for that stage.
+Existing sealed records remain unchanged; prior examination cannot be reversed.
+
 This is an **exploratory, retrospective follow-up** using the same 56,644
 configurations, Alpha-only data, periods, costs, accounting and daily-indicator /
 half-hour-confirmation logic. The earlier validation and historical results have

@@ -5,6 +5,19 @@ The **Trend Following Study** tests **56,644 configurations** of daily indicator
 and half-hour confirmation on unlevered QQQ/cash. This tree contains only the
 current study, its dependencies and software tests. Git history is preserved.
 
+## Current status: development-only shortlist hold
+
+Select and freeze **45 options from 2001–2011 development only**, then stop.
+Validation and historical evaluation are **not authorized for further work**
+until the user explicitly opens the relevant stage. The selection criterion is
+baseline net cash-excess Sharpe, with five distinct indicator pairs per family
+cell and confirmation waits chosen using development only.
+
+Earlier evaluations shown below already occurred and are retained as historical
+records; this hold cannot make their periods genuinely untouched again. See the
+[development-only shortlist and hold](reports/development_shortlist_hold/20261008/README.md).
+The hold is operational, not a newly installed runtime interlock.
+
 ## Diversified shortlist follow-up: keep 45 options, not one winner
 
 The follow-up selects **five distinct indicator pairs per entry/exit family
