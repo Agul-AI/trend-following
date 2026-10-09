@@ -30,9 +30,14 @@ records; this hold cannot make their periods genuinely untouched again. See the
 The hold is operational, not a newly installed runtime interlock.
 
 **Timing policy for new/restarted studies:** one globally fixed wait, equal for
-entry and exit and shared by every configuration. The numerical value is awaiting
-the user's choice; do not tune waits independently or treat this as a new executed
+entry and exit and shared by every configuration. Retain **2, 3 and 4 trading
+hours** as development choices; one final global value is still awaiting the
+user's choice. Do not tune waits independently or treat this as a new executed
 study. Previously sealed configurations remain unchanged.
+
+[Retained 2/3/4-hour comparison](reports/retained_wait_choices/20261008/README.md):
+289 indicator pairs at each choice, 867 total development configurations. No
+new market simulation, shortlist selection or later-stage access was performed.
 
 The [equal-wait development diagnostic](reports/equal_wait_sensitivity/20261008/README.md)
 shows Sharpe dependence for the same 45 indicator pairs and all 289 pairs at

@@ -1,0 +1,31 @@
+{
+  "cash_convention": "nominal_ACT365_event_compounding_not_exact_3pct_APY",
+  "cash_nominal_annual_rate": 0.03,
+  "commission_bps": 1,
+  "configuration_count_per_wait": 289,
+  "configuration_count_total": 867,
+  "development_period": {
+    "end": "2011-12-30",
+    "start": "2001-01-02"
+  },
+  "entry_wait_equals_exit_wait": true,
+  "global_production_wait_selected": false,
+  "market_simulation_rerun": false,
+  "median_trades_scope": "all_289_configs_completed_round_trips_over_full_development_including_terminal_liquidation",
+  "new_45_option_shortlist_selected": false,
+  "prior_sealed_records_modified": false,
+  "project": "Trend Following Study",
+  "retained_wait_hours": [
+    2,
+    3,
+    4
+  ],
+  "same_wait_for_all_configs_within_each_cohort": true,
+  "scope": "development_only_retained_uniform_wait_choices",
+  "slippage_bps": 3,
+  "source_publication_sha256": {
+    "candidate_metrics.csv": "5b1f1caf75d74751b001154325704bf227d69d1937e3cddd3b0e95e752528dce",
+    "counts_by_wait.csv": "b5152c7f1836c9e8451de5e4ebb9209c7125cfe2b5c593324358fc4091d9470a"
+  },
+  "validation_or_historical_oos_opened_or_authorized": false
+}

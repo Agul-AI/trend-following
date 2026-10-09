@@ -1,0 +1,4 @@
+wait_hours,required_consecutive_hits,configuration_count,finite_Sharpe_count,undefined_Sharpe_count,beat_BH_Sharpe_count,beat_BH_Sharpe_pct,tie_BH_Sharpe_count,strict_gt_BH_Sharpe_count,below_BH_Sharpe_count,near_tie_within_1e_10_count,BH_cash_excess_Sharpe,median_finite_Sharpe,best_finite_Sharpe,cash_nominal_annual_rate,commission_bps,slippage_bps,median_completed_round_trips,median_one_way_orders
+2.0,5,289,289,0,187,64.70588235294117,0,187,102,0,0.04332982424247732,0.10527014426108446,0.4958117403984282,0.03,1,3,62.0,124.0
+3.0,7,289,289,0,181,62.62975778546713,0,181,108,0,0.04332982424247732,0.10393039382630193,0.47881397646042123,0.03,1,3,55.0,110.0
+4.0,9,289,289,0,169,58.477508650519034,0,169,120,0,0.04332982424247732,0.10049269103699192,0.48172061513186687,0.03,1,3,51.0,102.0

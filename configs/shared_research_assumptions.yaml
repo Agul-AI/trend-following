@@ -11,12 +11,13 @@ cash:
 confirmation:
   policy: one_global_wait_equal_for_entry_and_exit_shared_across_all_configurations
   wait_hours: null
-  value_status: awaiting_user_choice
+  value_status: awaiting_one_global_choice_from_2_3_4_trading_hours
+  retained_development_wait_hours: [2, 3, 4]
   counter_unit: consecutive_completed_half_hour_qualifying_observations
   required_checks_formula: 1_plus_2_times_wait_hours
 allowed_diagnostic:
   stage: development_only
-  common_wait_hours: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]
+  common_wait_hours: [2, 3, 4]
   entry_wait_equals_exit_wait: true
   indicator_pairs_per_wait: 289
   production_study: false

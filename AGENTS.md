@@ -1,5 +1,11 @@
 # Trend Following Study — Repository Instructions
 
+- **Latest retained wait choices:** keep only **2, 3 and 4 trading hours** for
+  further development comparisons. Within each choice, the one common duration
+  applies to entry and exit for every indicator pair; never mix waits per side
+  or configuration. Retaining three choices does not select one final global
+  duration or authorize validation/OOS. Preserve the completed 13-cohort
+  diagnostic and all other sealed records unchanged.
 - **Latest cash policy for all new/restarted studies:** fixed 3% annual cash
   interest replaces the variable DTB3 proxy. The default convention preserves
   nominal ACT/365 accrual with event-time compounding; do not describe its
