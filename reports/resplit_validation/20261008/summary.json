@@ -1,4 +1,20 @@
 {
+  "BH_beating_median_columns": [
+    "beating_BH_median_Sharpe",
+    "beating_BH_median_cagr",
+    "beating_BH_median_max_drawdown",
+    "beating_BH_median_completed_round_trips",
+    "beating_BH_median_one_way_orders"
+  ],
+  "BH_beating_medians_are_conditional_descriptive_not_candidate_reselection": true,
+  "all_pair_median_columns": [
+    "median_finite_Sharpe",
+    "median_cagr",
+    "median_max_drawdown",
+    "median_completed_round_trips",
+    "median_one_way_orders"
+  ],
+  "all_pair_medians_retained_in_original_columns": true,
   "all_selected_candidates_retained_including_undefined_scores": true,
   "benchmark_statistics": {
     "buy_and_hold": {
@@ -83,7 +99,8 @@
     "Development-based intersection is in-sample selection",
     "Hypothetical cash yield and execution costs",
     "Alpha-only as-traded units are reconstructed from adjustment factors, not native raw captures or guaranteed point-in-time data",
-    "No winner, final global wait or historical OOS selected or opened"
+    "No winner, final global wait or historical OOS selected or opened",
+    "Table medians condition on beating BH Sharpe in the already observed validation period; they are not whole-cohort or independent confirmation statistics"
   ],
   "new_validation_manifest_sha256": "a4a367ba1622b7759e57da8ceae0bcd5e5cd69042a0f837eb0748b4b3576e179",
   "new_validation_period_includes_previously_examined_historical_OOS_years_2016_2018": true,
@@ -97,7 +114,7 @@
   "publication_dependency_source_sha256": {
     "scripts/summarize_constant_cash.py": "f68424de9675a981436a0b461c4e6c76d255571c63c60e49720ac354aeb741ed"
   },
-  "publication_helper_sha256": "cc173db1f2fc607a5bd73d1810808109ade9e1496ecd6902d3890132509febab",
+  "publication_helper_sha256": "20d444fbdfd06df4e9c68451ec0abf4de7f89de8607a31beb89427dfdcd2ffda",
   "required_consecutive_hits_formula": "1 + 2 * wait_hours",
   "result_seal_payload_sha256": "4fcc14aa7e9a8ce45171412c4b0ed3c019c0ad2d1ee1d140d04b6beb786553cc",
   "same_entry_and_exit_wait": true,
@@ -108,10 +125,11 @@
   "selection_inputs": "same_159_pair_constant_3pct_cash_development_intersection_not_prior_validation_or_OOS_outcomes",
   "slippage_bps_per_one_way_order": 3,
   "split_change_is_after_prior_validation_and_OOS_exposure": true,
+  "table_medians_scope": "only_validation_BH_Sharpe_beating_configs_separately_at_each_wait",
   "taxes_financing_separate_fund_expenses": false,
   "total_bps_per_one_way_order": 4,
   "trade_count_definition": "completed_buy_sell_round_trips_including_terminal_liquidation_not_trades_per_year",
-  "trade_medians_scope": "all_159_frozen_pairs_per_wait_not_only_validation_BH_beating_members",
+  "trade_medians_scope": "only_validation_BH_Sharpe_beating_configs_separately_at_each_wait",
   "undefined_scores_retained_in_159_denominator": true,
   "validation_all_three_beat_flag_is_descriptive_not_a_new_selection": true,
   "validation_configurations_evaluated": 477,

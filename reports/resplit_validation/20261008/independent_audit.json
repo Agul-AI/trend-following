@@ -99,6 +99,38 @@
   "public_all_1760_BH_and_cash_marks_match_private_release": true,
   "public_all_477_development_selection_rows_match_unchanged_frozen_rows": true,
   "public_all_477_validation_rows_match_private_release": true,
+  "public_conditional_median_extension": {
+    "additional_market_execution_or_OOS_access": false,
+    "full477outcomes_and_all159_pairs_retained": true,
+    "independent_read_only_check_passed": true,
+    "median_Sharpe": [
+      0.8759687658300268,
+      0.8868700839100898,
+      0.8854393708053245
+    ],
+    "median_cagr": [
+      0.1489106315446005,
+      0.1499969322213715,
+      0.1487907624782158
+    ],
+    "median_round_trips": [
+      10.0,
+      13.0,
+      12.0
+    ],
+    "new_candidate_selection": false,
+    "scope": "only_configs_with_validation_cash_excess_Sharpe_greater_than_BH_plus_1e_10_separately_by_wait",
+    "wait_hours": [
+      2.0,
+      3.0,
+      4.0
+    ],
+    "winner_counts": [
+      9,
+      12,
+      7
+    ]
+  },
   "public_count_table_and_two_benchmarks_match_private_release": true,
   "public_trade_columns_label_round_trips_vs_one_way_orders_correctly": true,
   "raw_share_BH_and_event_clock_cash_ledgers_recomputed": true,

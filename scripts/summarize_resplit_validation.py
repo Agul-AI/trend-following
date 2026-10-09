@@ -315,7 +315,9 @@ def counts_by_wait(metrics, bh_sharpe):
         scores = cohort.cash_excess_sharpe.to_numpy(float)
         finite = np.isfinite(scores)
         delta = scores - bh_sharpe
-        beat = int((finite & (delta > TOLERANCE)).sum())
+        beat_mask = finite & (delta > TOLERANCE)
+        beat = int(beat_mask.sum())
+        beating = cohort.loc[beat_mask]
         rows.append(
             {
                 "wait_hours": hours,
@@ -335,6 +337,15 @@ def counts_by_wait(metrics, bh_sharpe):
                 "median_max_drawdown": cohort.max_drawdown.median(),
                 "median_completed_round_trips": cohort.trade_count.median(),
                 "median_one_way_orders": cohort.order_count.median(),
+                "beating_BH_median_Sharpe": np.median(scores[beat_mask]) if beat else np.nan,
+                "beating_BH_median_cagr": beating.cagr.median() if beat else np.nan,
+                "beating_BH_median_max_drawdown": beating.max_drawdown.median() if beat else np.nan,
+                "beating_BH_median_completed_round_trips": beating.trade_count.median()
+                if beat
+                else np.nan,
+                "beating_BH_median_one_way_orders": beating.order_count.median()
+                if beat
+                else np.nan,
                 "commission_bps": 1,
                 "slippage_bps": 3,
                 "cash_nominal_annual_rate": 0.03,
@@ -572,7 +583,24 @@ def publish(sidecar, output):
             pairs.validation_beat_BH_Sharpe_all_three_waits.sum()
         ),
         "validation_all_three_beat_flag_is_descriptive_not_a_new_selection": True,
-        "trade_medians_scope": "all_159_frozen_pairs_per_wait_not_only_validation_BH_beating_members",
+        "table_medians_scope": "only_validation_BH_Sharpe_beating_configs_separately_at_each_wait",
+        "trade_medians_scope": "only_validation_BH_Sharpe_beating_configs_separately_at_each_wait",
+        "all_pair_medians_retained_in_original_columns": True,
+        "all_pair_median_columns": [
+            "median_finite_Sharpe",
+            "median_cagr",
+            "median_max_drawdown",
+            "median_completed_round_trips",
+            "median_one_way_orders",
+        ],
+        "BH_beating_median_columns": [
+            "beating_BH_median_Sharpe",
+            "beating_BH_median_cagr",
+            "beating_BH_median_max_drawdown",
+            "beating_BH_median_completed_round_trips",
+            "beating_BH_median_one_way_orders",
+        ],
+        "BH_beating_medians_are_conditional_descriptive_not_candidate_reselection": True,
         "trade_count_definition": "completed_buy_sell_round_trips_including_terminal_liquidation_not_trades_per_year",
         "winner_selected_after_validation": False,
         "global_wait_selected_after_validation": False,
@@ -615,6 +643,7 @@ def publish(sidecar, output):
             "Hypothetical cash yield and execution costs",
             "Alpha-only as-traded units are reconstructed from adjustment factors, not native raw captures or guaranteed point-in-time data",
             "No winner, final global wait or historical OOS selected or opened",
+            "Table medians condition on beating BH Sharpe in the already observed validation period; they are not whole-cohort or independent confirmation statistics",
         ],
     }
     # Complete verification and privacy checks before creating even the output folder.

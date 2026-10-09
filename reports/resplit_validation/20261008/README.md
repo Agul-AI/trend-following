@@ -38,18 +38,30 @@ QQQ buy-and-hold after costs:
 - Net CAGR: **16.59%**.
 - Daily maximum drawdown loss: **22.79%**.
 
-| Shared entry/exit wait | Beat BH Sharpe /159 | Percentage | Median cash-excess Sharpe | Median net CAGR | Median drawdown loss | Median completed round trips |
+| Shared entry/exit wait | Beat BH Sharpe /159 | Percentage | Median cash-excess Sharpe (BH beaters) | Median net CAGR (BH beaters) | Median drawdown loss (BH beaters) | Median completed round trips (BH beaters) |
 |---|---:|---:|---:|---:|---:|---:|
-| 2 hours | 9 | 5.7% | 0.617 | 10.21% | 17.61% | 18 |
-| 3 hours | 12 | 7.5% | 0.595 | 9.73% | 18.20% | 16 |
-| 4 hours | 7 | 4.4% | 0.629 | 10.46% | 17.76% | 14 |
+| 2 hours | 9 | 5.7% | 0.876 | 14.89% | 13.67% | 10 |
+| 3 hours | 12 | 7.5% | 0.887 | 15.00% | 14.08% | 13 |
+| 4 hours | 7 | 4.4% | 0.885 | 14.88% | 15.06% | 12 |
 
-Some configurations exceed the extended-period BH Sharpe, but **most do not**;
-all three cohort medians remain below BH Sharpe and CAGR. Medians include all
-159 retained pairs, not only winners. Trade counts are completed buy–sell round
-trips across the **whole seven-year validation segment**, including terminal
-liquidation—not annual counts; one-way execution medians are twice these values.
-Individual-strategy medians are not the performance of an ensemble portfolio.
+The displayed medians include **only the configurations beating validation BH
+cash-excess Sharpe at that particular wait**: 9, 12 and 7 respectively. They do
+not use all 159 pairs or the three pairs beating BH at all three waits. The counts
+and 159-pair denominators are unchanged. Original whole-cohort medians remain in
+the `median_*` columns of `counts_by_wait.csv`; displayed values use the explicit
+`beating_BH_median_*` columns.
+
+These are **conditional summaries selected on the already observed validation
+scores**, not independent performance estimates or a new candidate selection.
+All 477 outcomes remain published. Most configurations did not beat BH Sharpe;
+the winning-subset median CAGRs remain below BH's 16.59% CAGR. Beating Sharpe does
+not imply beating return. No replacement, global-wait decision or OOS access
+occurred to change this table.
+
+Trades are completed buy–sell round trips across the **whole seven-year validation
+segment**, including terminal liquidation—not annual counts; one-way execution
+medians are twice these values. These medians are individual-strategy statistics,
+not performance of an ensemble portfolio.
 
 The descriptive number of pairs beating validation BH at **all three waits** is
 **3**. This report does not select a new shortlist from that flag, replace any

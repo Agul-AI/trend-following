@@ -309,6 +309,45 @@ def test_undefined_sharpes_retained_denominator_and_all_pair_trade_medians(fabri
     assert len(validation) == 477
 
 
+def test_beating_bh_medians_use_only_each_wait_winning_subset(fabricated):
+    _, _, validation, _, benchmarks, _ = checked(fabricated)
+    bh = benchmarks.loc[benchmarks.portfolio.eq("buy_and_hold"), "cash_excess_sharpe"].iloc[0]
+    before = validation.copy(deep=True)
+    counts = helper.counts_by_wait(validation, bh)
+    for row in counts.itertuples(index=False):
+        cohort = validation.loc[validation.wait_hours.eq(row.wait_hours)]
+        winners = cohort.loc[
+            np.isfinite(cohort.cash_excess_sharpe)
+            & cohort.cash_excess_sharpe.gt(bh + helper.TOLERANCE)
+        ]
+        assert len(winners) == row.beat_BH_Sharpe_count
+        assert row.beating_BH_median_Sharpe == pytest.approx(winners.cash_excess_sharpe.median())
+        assert row.beating_BH_median_cagr == pytest.approx(winners.cagr.median())
+        assert row.beating_BH_median_completed_round_trips == winners.trade_count.median()
+        assert row.beating_BH_median_one_way_orders == 2 * winners.trade_count.median()
+        assert row.beating_BH_median_completed_round_trips != row.median_completed_round_trips
+    pd.testing.assert_frame_equal(validation, before)
+    assert len(validation) == 477
+
+
+def test_empty_winner_subset_has_undefined_medians_not_zero(fabricated):
+    _, _, validation, _, benchmarks, _ = checked(fabricated)
+    bh = benchmarks.loc[benchmarks.portfolio.eq("buy_and_hold"), "cash_excess_sharpe"].iloc[0]
+    validation.loc[validation.wait_hours.eq(2), "cash_excess_sharpe"] = bh - 0.2
+    counts = helper.counts_by_wait(validation, bh).set_index("wait_hours")
+    assert counts.loc[2, "beat_BH_Sharpe_count"] == 0
+    assert counts.loc[2, "configuration_count"] == 159
+    for name in (
+        "beating_BH_median_Sharpe",
+        "beating_BH_median_cagr",
+        "beating_BH_median_max_drawdown",
+        "beating_BH_median_completed_round_trips",
+        "beating_BH_median_one_way_orders",
+    ):
+        assert np.isnan(counts.loc[2, name])
+    assert np.isfinite(counts.loc[2, "median_cagr"])
+
+
 @pytest.mark.parametrize("mutation", ["negative", "fraction", "unpaired"])
 def test_trade_count_reconciliation_required(fabricated, mutation):
     validation = checked(fabricated)[2]
