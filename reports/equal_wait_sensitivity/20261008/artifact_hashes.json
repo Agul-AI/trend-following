@@ -1,0 +1,12 @@
+{
+  "README.md": "419706a7bea4bfe10872670dcb249c95f80a195860073ae95847fde95774f85c",
+  "family_wait_summary.csv": "b0f1c8fcbe5137d2a03e20e685a38228bbb6c4a6e0f49718e1240c19459ac684",
+  "independent_audit.json": "e26e094ddac6b1e3095e201b66664972f07f1815715b93daa4ca5cfd8387f3eb",
+  "indicator_pair_dependence.png": "f3ad7318b5f0eae5b971fe3dd11a570f2e0f8eda172d918d6efe7a5c352c435a",
+  "paired_changes_vs_zero.csv": "36cc7fdc07000df283a30723a58c42f4dfe65677e12e2ed56d466ff427b29352",
+  "per_pair_equal_wait_metrics.csv": "6f5819a8c4e3063b139dca09e4753aecdf2f27a10000c1dc82d8ac05512e2bfb",
+  "per_pair_wait_range.csv": "63c6bbfe72f6ec8cfb81832e264a78cb2bd20985f0a6aa4bd5f9a340f3472468",
+  "per_wait_summary.csv": "872f8a549322916ab93ad62ac2a6b6c97e771565bc35ec71054ecc52d1d0f572",
+  "summary.json": "1e7dfe5cf9f47ae71fc5a81c621b21246edfc70ce8d070576ee8deee6c9d6b65",
+  "summarylineplot.png": "59b3e79cb0bc4c15f74307cc658c1812959c2d92e4d6449f0f78d3483026c1f0"
+}

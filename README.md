@@ -18,6 +18,16 @@ records; this hold cannot make their periods genuinely untouched again. See the
 [development-only shortlist and hold](reports/development_shortlist_hold/20261008/README.md).
 The hold is operational, not a newly installed runtime interlock.
 
+**Timing policy for new/restarted studies:** one globally fixed wait, equal for
+entry and exit and shared by every configuration. The numerical value is awaiting
+the user's choice; do not tune waits independently or treat this as a new executed
+study. Previously sealed configurations remain unchanged.
+
+The [equal-wait development diagnostic](reports/equal_wait_sensitivity/20261008/README.md)
+shows Sharpe dependence for the same 45 indicator pairs and all 289 pairs at
+common waits of 0–6 hours. It reuses saved development results only; no later
+period was opened and no new optimal wait was selected.
+
 ## Diversified shortlist follow-up: keep 45 options, not one winner
 
 The follow-up selects **five distinct indicator pairs per entry/exit family
@@ -131,7 +141,7 @@ prepared freezes remain private and are **not included**. Synthetic software
 tests require no market-price inputs. Market preparation fails closed when
 verified local inputs or required authorization are missing.
 
-Publication checks passed **315 synthetic software tests**, Ruff lint and
+Publication checks passed **340 synthetic software tests**, Ruff lint and
 whitespace checks. These checks are separate from market performance; the
 eight frozen implementation files and immutable configuration remain unchanged.
 

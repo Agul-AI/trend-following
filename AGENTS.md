@@ -1,5 +1,12 @@
 # Trend Following Study — Repository Instructions
 
+- **Latest timing policy for all new/restarted studies:** use one globally fixed
+  confirmation wait for both entry and exit, shared by every indicator pair and
+  study. Do not optimize separate waits per side, configuration, or security.
+  The numerical wait is awaiting the user's choice; do not create or run a new
+  performance freeze until it is specified. Preserve previously sealed studies
+  byte-for-byte. The completed equal-wait development diagnostic does not choose
+  the global value or authorize later-period work.
 - **Current user override: development-only hold.** Select/freeze the 45-option
   shortlist using 2001–2011 outcomes only, then STOP. Do not run, inspect numeric
   outcomes from, publish additional comparisons for, or unlock validation and
