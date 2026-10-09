@@ -1,0 +1,126 @@
+{
+  "frozen_sources_edited": false,
+  "no_new_performance_or_selection": true,
+  "oos_2019_onward_accessed": false,
+  "presentation_only": true,
+  "renderer": "scripts/plot_multi_scale_report.py",
+  "schema": "qqq_multiscale_post_freeze_figure_layout_review",
+  "source_arrays_and_plotted_coordinates_unchanged": true,
+  "source_freeze_sha256": "85602574fb3c943d5461bd5773204c61fb8d55b1f5abb36098c955579c475749",
+  "stages": {
+    "development": {
+      "endpoint_tick_alignment": {
+        "first": "left",
+        "last": "right"
+      },
+      "first_mark": "2001-01-02T22:00:00+00:00",
+      "labels": [
+        "Locked SMA100: recovery-only",
+        "Locked SMA200: recovery or break",
+        "Ungated mean reversion",
+        "QQQ buy-and-hold",
+        "50/50 independent-sleeve control"
+      ],
+      "last_mark": "2011-12-30T22:00:00+00:00",
+      "non_overlapping_header_geometry_verified": true,
+      "observed_marks": 2767,
+      "plotted_arrays_exactly_equal": true,
+      "sealed_derived_file_sha256": {
+        "basket_s3_daily.npz": "a8f07bc10f17a61829a157524eebacf441ca0984d7aebdb5ce57d311cae9c775",
+        "controls_s3_daily.npz": "3b65c96978b3c6df57a99b5d4e8748d394861e987fb83524d433d72f464d361c"
+      },
+      "sealed_derived_files_unchanged": true,
+      "selected_series": [
+        "multi_scale_sma100_entry_only",
+        "multi_scale_sma200_recovery_or_trend_break",
+        "portfolio_tf_000",
+        "buy_and_hold",
+        "portfolio_tf_050"
+      ],
+      "source_and_plotted_array_sha256": {
+        "buy_and_hold": {
+          "equity": "dc8a2c33b61a65e7bb2d55a115f26b5b198b9d542eb27b38475cba8c642239aa",
+          "exposure": "1d625bec0bb31b1ebec687757d132d5d1609d50be1b8701431dc40108cdea997"
+        },
+        "multi_scale_sma100_entry_only": {
+          "equity": "121f0bb4723d4682da3cfad3fb71347909a359632859d37293d32ec46b463995",
+          "exposure": "63b8b44aec79159b89cba94c9ab368aad19ea3b81b0da4cb0c9e0f9b2fa05cdc"
+        },
+        "multi_scale_sma200_recovery_or_trend_break": {
+          "equity": "d953ef68d250caddd643073ac89bc95fc7c1e1b3eb64d4b2c7a5166a7058fadb",
+          "exposure": "6c06c0f92cebafb46e758f467e826a6ee846ee5d34d90753f14e57648de616de"
+        },
+        "portfolio_tf_000": {
+          "equity": "95f72ef65f4a660567c8f246c17997486e580222718cbc886fdd21824caa643f",
+          "exposure": "4db080908f20f335c74acabeecb8bd3bdd2e53b3622615452db0d10561551fca"
+        },
+        "portfolio_tf_050": {
+          "equity": "b0e7a3383397ef32c8dc9d57f410e9388f0d234cc3489ca1700d67ad7b271be6",
+          "exposure": "e0aa466aa085f09f53114294301eefb3a503ec8db8e56734b364ba511a67d2c9"
+        }
+      },
+      "stage": "development",
+      "svg_trailing_whitespace_normalized": true,
+      "title_and_axis_labels_within_export_bounds": true,
+      "wealth_axis_label": "Portfolio wealth (USD)",
+      "wealth_axis_math_parsing": false
+    },
+    "validation": {
+      "endpoint_tick_alignment": {
+        "first": "left",
+        "last": "right"
+      },
+      "first_mark": "2012-01-03T22:00:00+00:00",
+      "labels": [
+        "Locked SMA100: recovery-only",
+        "Locked SMA200: recovery or break",
+        "Ungated mean reversion",
+        "QQQ buy-and-hold",
+        "50/50 independent-sleeve control"
+      ],
+      "last_mark": "2018-12-31T22:00:00+00:00",
+      "non_overlapping_header_geometry_verified": true,
+      "observed_marks": 1760,
+      "plotted_arrays_exactly_equal": true,
+      "sealed_derived_file_sha256": {
+        "basket_s3_daily.npz": "a659e8fbe7c1224aad67d70a6737cb091826590cba8f1b7f48e176aaeb0835e1",
+        "controls_s3_daily.npz": "374ed22f02bfd881591c6e41ec6a02eca7bd529e8e068ebdbf3d39ec1b8cefb1"
+      },
+      "sealed_derived_files_unchanged": true,
+      "selected_series": [
+        "multi_scale_sma100_entry_only",
+        "multi_scale_sma200_recovery_or_trend_break",
+        "portfolio_tf_000",
+        "buy_and_hold",
+        "portfolio_tf_050"
+      ],
+      "source_and_plotted_array_sha256": {
+        "buy_and_hold": {
+          "equity": "78215a7361f10a354dafebe39425cd620adc6b2919d7032694671374cb9c1678",
+          "exposure": "cb2ca062367e5cb2dcefcb5075765455ecf5e04a243064ab06cc34a00017e80a"
+        },
+        "multi_scale_sma100_entry_only": {
+          "equity": "44957f620edb33ac75bc6bbf303ac3327ec9d6454d8d8274697a6a5121e1b5d3",
+          "exposure": "e42d5b579a5791d27218789815c7fd3a2a021c5fd4364025a2b3a6bda01dd274"
+        },
+        "multi_scale_sma200_recovery_or_trend_break": {
+          "equity": "b543614b7628907fac3f764dde9367b290e7276c27d3f721515fe42dde1a4429",
+          "exposure": "fd7d0577defff5f87770136ccf154f46c2f3bf8316bad80e66ab416e2f04da23"
+        },
+        "portfolio_tf_000": {
+          "equity": "6505c8f49dd0f9f47890a65d2edb72c4332893b2c0479965fbf66a8b2a378729",
+          "exposure": "af7f4c81d38b65821ff2809e0e9dce14232e5303cf70c822f4ab51efeb332bf7"
+        },
+        "portfolio_tf_050": {
+          "equity": "c8bbcc18295ce445e959dd15a00120cdd6d45b61ff553c3b56d9271d04adeebe",
+          "exposure": "2e0de64d22ccbc5abde5de6329c1d60e5337c768d6cdd60db9053f1837bbe3c7"
+        }
+      },
+      "stage": "validation",
+      "svg_trailing_whitespace_normalized": true,
+      "title_and_axis_labels_within_export_bounds": true,
+      "wealth_axis_label": "Portfolio wealth (USD)",
+      "wealth_axis_math_parsing": false
+    }
+  }
+}

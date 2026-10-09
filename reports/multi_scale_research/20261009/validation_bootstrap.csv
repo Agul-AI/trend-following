@@ -1,0 +1,13 @@
+basket_id,reference_id,reference_aliases,block_length,replicates,finite_replicates,seed,observed_sharpe_difference,ci_lower,ci_upper,confidence_level
+multi_scale_sma100_entry_only,locked_independent,"[""locked_independent"", ""ungated_mean_reversion""]",5,2000,2000,20261009,-0.10302560932778904,-0.47343384851029213,0.3172246321253504,0.95
+multi_scale_sma100_entry_only,buy_and_hold,"[""buy_and_hold""]",5,2000,2000,20261009,-0.36001239952917174,-0.9969862204967411,0.3013660286047244,0.95
+multi_scale_sma200_recovery_or_trend_break,locked_independent,"[""locked_independent"", ""ungated_mean_reversion""]",5,2000,2000,20261009,-0.03121983028527886,-0.5017397714586141,0.4888490951143597,0.95
+multi_scale_sma200_recovery_or_trend_break,buy_and_hold,"[""buy_and_hold""]",5,2000,2000,20261009,-0.28820662048666157,-0.9668082909739432,0.3734154439108973,0.95
+multi_scale_sma100_entry_only,locked_independent,"[""locked_independent"", ""ungated_mean_reversion""]",20,2000,2000,20261009,-0.10302560932778904,-0.3665555763182683,0.19315558323180185,0.95
+multi_scale_sma100_entry_only,buy_and_hold,"[""buy_and_hold""]",20,2000,2000,20261009,-0.36001239952917174,-0.9163367047596711,0.24204778334445742,0.95
+multi_scale_sma200_recovery_or_trend_break,locked_independent,"[""locked_independent"", ""ungated_mean_reversion""]",20,2000,2000,20261009,-0.03121983028527886,-0.41676302992459135,0.36283522533912027,0.95
+multi_scale_sma200_recovery_or_trend_break,buy_and_hold,"[""buy_and_hold""]",20,2000,2000,20261009,-0.28820662048666157,-0.8772307230511617,0.33163118616058546,0.95
+multi_scale_sma100_entry_only,locked_independent,"[""locked_independent"", ""ungated_mean_reversion""]",60,2000,2000,20261009,-0.10302560932778904,-0.3643058281304642,0.20540370178439746,0.95
+multi_scale_sma100_entry_only,buy_and_hold,"[""buy_and_hold""]",60,2000,2000,20261009,-0.36001239952917174,-0.8268040563133836,0.14392594294910338,0.95
+multi_scale_sma200_recovery_or_trend_break,locked_independent,"[""locked_independent"", ""ungated_mean_reversion""]",60,2000,2000,20261009,-0.03121983028527886,-0.4281766157752174,0.3723569715517293,0.95
+multi_scale_sma200_recovery_or_trend_break,buy_and_hold,"[""buy_and_hold""]",60,2000,2000,20261009,-0.28820662048666157,-0.8177693528289844,0.28206557651107866,0.95

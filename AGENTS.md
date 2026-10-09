@@ -1,5 +1,19 @@
 # Trend Following Study — Repository Instructions
 
+- **Latest separate-study authorization: multi-scale combination comparison.**
+  Preserve and verify the sealed 12-trend/32-mean-reversion fixed-capital
+  portfolio results; do not rerun or extend its original selections. Add a
+  separate filtered study with SMA100/SMA200 gates from finalized causal daily
+  signal values at assumed 17:00 New York availability, both entry-only and
+  recovery-or-confirmed-trend-break exits, and four equal-weight 32-sleeve
+  baskets (128 rules). Keep the shared three-hour/seven-check wait and fixed
+  3% nominal cash accounting. Freeze all choices, run 2001–2011 development,
+  seal one filter per exit policy, then evaluate those selections and
+  predefined controls on 2012–2018. No constituent retuning, rebalancing,
+  order netting or validation reselection. This is hindsight-conditioned
+  retrospective research; **2019 onward remains closed**. Use the separate
+  `scripts/run_multi_scale_research.py` interface and preserve all earlier
+  frozen sources/results, monitors and resumes byte-for-byte.
 - **Latest separate-study authorization: QQQ strategy portfolio development and validation.**
   Implement the approved fixed-initial-capital sleeve experiment with exactly
   12 current three-hour trend validation Sharpe beaters and 32 mean-reversion

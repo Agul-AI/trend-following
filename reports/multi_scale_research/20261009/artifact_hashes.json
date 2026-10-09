@@ -1,0 +1,22 @@
+{
+  "README.md": "105fb0765458c21b973334b63f66f415287faff17d56a00c1d184cac10b033ce",
+  "constituents.csv": "b4d1af35209e6b357b70fe493497d45aad78f15f79df7d68d7276add9c0feff6",
+  "development_annual_returns.csv": "40a3dc6f5b496cb6cc73b29d50b461ab25a74e917148667aca5bc5c218ba5cb9",
+  "development_constituents.csv": "a0f01e73157e6c37995bc2fa6edba4d9671a64631fa9a9dd268b508f05a866eb",
+  "development_controls.csv": "68d88d9efac328c3ac9a2c88f86e698db2296c9e0b25b781d30611b500d318b9",
+  "development_filter_sharpe.png": "aa4e3d864d189a0819340e22f3bbb76703a98bed256f568a1ebbff2f00da239b",
+  "development_filter_sharpe.svg": "7167aa34b4cfe1b5903312643ef3de7c3c007477bc3b4943eccb573fc56196e6",
+  "development_metrics.csv": "41677cbf9ddf71f832147a49a10c81233e811f093faffcb2788814d1f83cb089",
+  "development_wealth_exposure.png": "ca68193c3a0523c11f8d112b31b3e45f75e5da5f9804b5d872babccda9bfbdf8",
+  "development_wealth_exposure.svg": "0035acb3b3401e5d2500249096f9cf55a38d70137e0b6aa8ac827ba62dea46ca",
+  "figure_layout_audit.json": "08e504a8c39eef1e8ee0adac7723edd6681f95a4d6caed46e8f13422358302b3",
+  "independent_audit.json": "74a2ee8c27e6cd9f92266597a6c0728c6f4a0312f383fbd6fe2141de2015f4e3",
+  "summary.json": "8afbc44782238ed456c435b9fc559faa0bf44333ff15883910878cb26299fc1f",
+  "validation_annual_returns.csv": "93677552b2986ed27a2cb3fe6372963444c95b701848cb30a9cc366e2df4d2c9",
+  "validation_bootstrap.csv": "ac232db7d3a8d499a2ebb9d8e9b5d1b8a519f01d720d467eeaa760523e78161b",
+  "validation_constituents.csv": "adecfbbc1f81b57941d4d16c840107c2ba037dc4d43be872fe8f2d619114755e",
+  "validation_controls.csv": "c66d60d381f8e6136c77ba72ca5ad08346ea7d2966257dec0a42a0cf8d8becbb",
+  "validation_metrics.csv": "bfd230d3a6cd1b6717988713197e39c9fa29e4c1d0fd0869cef2599e4feba3d8",
+  "validation_wealth_exposure.png": "2591b4db14b7045e66b284e3b7dd5bc38b18a565ca2a38758d23457eda9d1087",
+  "validation_wealth_exposure.svg": "da06fd95afd5d2c5c54e213dbd790d6b38b99eba309263442a55d6da98908757"
+}

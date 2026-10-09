@@ -3,9 +3,83 @@
 **Repository:** [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
 The **Trend Following Study** tests **56,644 configurations** of daily indicators
 and half-hour confirmation on unlevered QQQ/cash. The tree also contains the
-separate current mean-reversion and fixed-capital portfolio studies, shared
-dependencies and software tests.
+separate current mean-reversion, fixed-capital portfolio and multi-scale
+combination studies, shared dependencies and software tests.
 Git history is preserved; archived studies are not reintroduced.
+
+## Long-term trend + short-term mean-reversion comparison
+
+The separate multi-scale comparison retains all **12 trend and 32 mean-reversion
+members**. It reuses the independent fixed-capital portfolio seals unchanged,
+and tests **128 filtered rules in four equal-initial-capital MR baskets**:
+SMA100/SMA200, each with recovery-only or recovery-or-confirmed-trend-break exits.
+Finalized daily gates become available at assumed **17:00 New York**; intraday
+checks never update the gate. The shared wait is three trading hours/seven
+completed half-hour checks. There is no rebalancing or order netting.
+
+Development (2001–2011) locked **SMA100 with recovery-only exits** and
+**SMA200 with recovery-or-trend-break exits** before validation. At 1-bp commission
+plus 3-bps slippage, their development cash-excess Sharpes were **0.3635** and
+**0.4340**, respectively, versus **0.1954** for the unchanged ungated MR basket.
+The old independent experiment's locked allocation remains **0% trend / 100% MR**;
+its validation controls are not new replacement candidates.
+
+Validation used the two locked baskets and the other two predefined filtered
+baskets as controls, without reselection. Baseline costs remain 1-bp one-way
+commission plus 3-bps adverse slippage, with fixed 3% nominal ACT/365 cash.
+
+| Validation 2012–2018 | Cash-excess Sharpe | Net CAGR | Daily max drawdown | Exposure |
+|---|---:|---:|---:|---:|
+| Locked independent / ungated MR | 0.5992 | 6.46% | -7.55% | 12.93% |
+| SMA100 gate; recovery only (locked) | 0.4962 | 5.03% | -4.90% | 9.36% |
+| SMA200 gate; recovery or trend break (locked) | 0.5680 | 5.22% | -4.34% | 9.43% |
+| 50/50 independent sleeves (control) | 0.8994 | 11.27% | -8.29% | 55.97% |
+| QQQ buy-and-hold | 0.8562 | 16.59% | -22.79% | 100.00% |
+
+**Finding:** neither locked filtered basket improved validation Sharpe or growth
+against the ungated MR basket or QQQ buy-and-hold. Their shallower drawdowns
+come with lower exposure and growth. The 50/50 sleeve control has higher
+validation Sharpe than BH but lower growth; it was **not** the development-selected
+allocation and must not be promoted using this validation comparison. All twelve
+paired bootstrap Sharpe-difference intervals include zero. At 25-bps slippage,
+both locked filtered baskets have negative cash-excess Sharpe and CAGR below cash.
+
+[Full multi-scale comparison, all 128 constituents, cost scenarios, diagnostics
+and bootstrap intervals](reports/multi_scale_research/20261009/README.md).
+
+**Retrospective and hindsight-conditioned:** the twelve trend members were
+identified using validation performance. Neither development fitting nor paired
+bootstrap intervals restore independent confirmation. Some trend entries are
+short-horizon; three MR members use fifty days, so the retained universe is not
+strictly separated into long and short horizons. **2019 onward remains closed.**
+
+The separate CLI exposes `check`, `freeze`, `development`, `validation` and
+`report`, but no OOS route. It requires intact private input seals and matching
+explicit authorization; licensed prices and private receipts are not published.
+
+```bash
+~/.venvs/myenv/bin/python scripts/run_multi_scale_research.py check
+~/.venvs/myenv/bin/python scripts/run_multi_scale_research.py freeze --authorization PRIVATE_AUTH.json
+~/.venvs/myenv/bin/python scripts/run_multi_scale_research.py development
+~/.venvs/myenv/bin/python scripts/run_multi_scale_research.py validation
+~/.venvs/myenv/bin/python scripts/run_multi_scale_research.py report
+```
+
+The reviewed wealth/exposure chart layout is reproducible separately:
+
+```bash
+~/.venvs/myenv/bin/python scripts/plot_multi_scale_report.py
+```
+
+This presentation-only helper reads sealed derived arrays, fixes labels/layout,
+and records exact plot-data digests; it cannot backtest, fit parameters or open
+price packets. The frozen performance/report engines stay unchanged.
+
+Sealed stages and published reports cannot be overwritten or rerun. The first
+technical attempt stopped on a legacy archive-schema mismatch before any new
+filtered performance result; its private record was preserved, the read-only
+adapter was corrected without changing strategy rules, and a fresh freeze was
+used. Existing study sources/results, monitors and resumes remain unchanged.
 
 ## Current status: intersection validation complete; historical OOS closed
 

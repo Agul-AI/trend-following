@@ -1,0 +1,104 @@
+schema: qqq_multi_scale_research
+study_name: QQQ Multi-Scale Trend Following Study
+security: QQQ
+historical_label: retrospective_hindsight_conditioned_membership
+membership:
+  trend_count: 12
+  mean_reversion_count: 32
+  total_count: 44
+  reuse_exact_sealed_portfolio_membership: true
+  filtered_rule_count: 128
+  filtered_basket_count: 4
+  shared_confirmation_hours: 3.0
+  required_checks: 7
+construction:
+  initial_cash: 1000.0
+  fixed_initial_capital_sleeves: true
+  equal_initial_weights_within_basket: true
+  portfolio_rebalancing: false
+  capital_redistribution: false
+  order_netting: false
+  independent_portfolios: reuse_existing_seals_without_extension
+gate:
+  family: SMA
+  periods_days:
+  - 100
+  - 200
+  availability: finalized_daily_17_NY
+  includes_finalized_observation: true
+  support: signal_value_strictly_above_SMA
+  equality: 'OFF'
+  missing_required_history: UNKNOWN
+  intraday_preview: false
+execution:
+  exit_policies:
+  - entry_only
+  - recovery_or_trend_break
+  separate_recovery_and_trend_break_streaks: true
+  next_safe_observed_open: true
+  cancel_unfilled_entry_when_gate_OFF: true
+  cancel_trend_break_only_exit_when_gate_ON: true
+  UNKNOWN_holds_cancels_resets: true
+  gap_flags_selection_role: false
+periods:
+  initialization:
+    start: '1999-11-01'
+    end: '2000-12-31'
+  development:
+    start: '2001-01-01'
+    end: '2011-12-31'
+  validation:
+    start: '2012-01-01'
+    end: '2018-12-31'
+accounting:
+  cash_nominal_annual_rate: 0.03
+  cash_day_count: ACT/365
+  commission_bps: 1.0
+  baseline_slippage_bps: 3.0
+  slippage_bps_scenarios:
+  - 1.0
+  - 3.0
+  - 10.0
+  - 25.0
+  taxes: false
+  financing: false
+  separate_fund_expenses: false
+  matched_terminal_liquidation: true
+selection:
+  metric: daily_cash_excess_sharpe
+  annualization: 252
+  standard_deviation_ddof: 1
+  finite_scores_only: true
+  one_filter_per_exit_policy: true
+  tie_tolerance: 1.0e-10
+  tie_order: stable_basket_id
+  baseline_only: true
+  trade_return_drawdown_BH_filters: false
+validation:
+  all_four_predeclared_filtered_baskets: true
+  gate_only_controls:
+  - 100
+  - 200
+  reuse_old_A_controls_only: true
+  no_reselection: true
+bootstrap:
+  replicates: 2000
+  block_lengths:
+  - 5
+  - 20
+  - 60
+  seed: 20261009
+  paired: true
+  confidence_level: 0.95
+  references:
+  - locked_independent
+  - ungated_mean_reversion
+  - buy_and_hold
+  deduplicate_identical_reference_paths_keep_aliases: true
+protocol:
+  authorized_stages:
+  - development
+  - validation
+  historical_oos_authorized: false
+  fresh_segment_cash_and_strategy_state: true
+  hindsight_conditioned_membership: true
