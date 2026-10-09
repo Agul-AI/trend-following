@@ -1,0 +1,7 @@
+comparator,block_length_sessions,replicates,finite_replicates,seed,observed_sharpe_difference,lower_95_percentile,upper_95_percentile,method,corrects_candidate_selection_bias
+buy_and_hold,5,2000,2000,20261009,-0.2569867902013827,-0.7896148298151058,0.2913308234547279,paired_circular_moving_block_percentile,False
+50_50,5,2000,2000,20261009,-0.30015765331340327,-0.8992633263367618,0.29044921226274617,paired_circular_moving_block_percentile,False
+buy_and_hold,20,2000,2000,20261009,-0.2569867902013827,-0.7471970947825143,0.24343098178560402,paired_circular_moving_block_percentile,False
+50_50,20,2000,2000,20261009,-0.30015765331340327,-0.7867641373660269,0.24556020283496252,paired_circular_moving_block_percentile,False
+buy_and_hold,60,2000,2000,20261009,-0.2569867902013827,-0.6578307541791668,0.16724886342337542,paired_circular_moving_block_percentile,False
+50_50,60,2000,2000,20261009,-0.30015765331340327,-0.8044660808749369,0.1796686432976195,paired_circular_moving_block_percentile,False

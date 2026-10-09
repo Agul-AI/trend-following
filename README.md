@@ -3,7 +3,8 @@
 **Repository:** [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
 The **Trend Following Study** tests **56,644 configurations** of daily indicators
 and half-hour confirmation on unlevered QQQ/cash. The tree also contains the
-separate current mean-reversion study, shared dependencies and software tests.
+separate current mean-reversion and fixed-capital portfolio studies, shared
+dependencies and software tests.
 Git history is preserved; archived studies are not reintroduced.
 
 ## Current status: intersection validation complete; historical OOS closed
@@ -216,6 +217,41 @@ command and all frozen trend and mean-reversion development sources/results
 remain unchanged. Previously examined history is retrospective research, not
 untouched confirmation.
 
+### QQQ strategy portfolio study
+
+The separate portfolio experiment assigns fixed initial capital to the same
+**12 three-hour trend validation Sharpe beaters and 32 mean-reversion development
+Sharpe beaters**. It tests trend allocations of 0–100% in 10% steps plus equal
+capital across all 44 candidates. Weights within each style are initially equal;
+cash stays in its sleeve and capital weights drift. No portfolio rebalancing,
+order netting, leverage, shorts or constituent retuning is assumed.
+
+Select one allocation using **2001–2011 baseline net cash-excess Sharpe**, seal
+it, then test it and predefined controls on **2012–2018** at all four costs.
+The universe is already hindsight-conditioned by the twelve trend members'
+validation selection; this is retrospective research, not independent
+confirmation. **2019 onward remains closed**.
+
+```bash
+python scripts/run_portfolio_research.py check
+python scripts/run_portfolio_research.py freeze --authorization /path/to/private-receipt.json
+python scripts/run_portfolio_research.py development
+python scripts/run_portfolio_research.py validation
+python scripts/run_portfolio_research.py report
+```
+
+Completed: development selected **0% trend / 100% mean reversion** (Sharpe
+**0.1954**). Its validation Sharpe was **0.5992**, below BH **0.8562**.
+The predefined initial **50/50 control** achieved **0.8994 Sharpe, 11.27% CAGR
+and 8.29% daily drawdown loss**, versus QQQ **0.8562, 16.59%, 22.79%**;
+it was **not substituted for the locked allocation**.
+[Full portfolio results, chart, four costs and bootstrap evidence](reports/portfolio_research/20261009/README.md).
+
+The portfolio command exposes no OOS route. All earlier frozen studies, monitors
+and resumes remain unchanged. It combines **wealth**, not standalone Sharpe
+ratios or fixed-weight daily returns; gross sleeve orders are not net portfolio
+round trips.
+
 ### Frozen trend-following entry point
 
 ```bash
@@ -229,7 +265,7 @@ prepared freezes remain private and are **not included**. Synthetic software
 tests require no market-price inputs. Market preparation fails closed when
 verified local inputs or required authorization are missing.
 
-Publication checks passed **885 synthetic software tests**, Ruff lint and
+Publication checks passed **1039 synthetic software tests**, Ruff lint and
 whitespace checks. These checks are separate from market performance; the
 eight frozen implementation files and immutable configuration remain unchanged.
 

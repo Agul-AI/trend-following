@@ -1,5 +1,16 @@
 # Trend Following Study — Repository Instructions
 
+- **Latest separate-study authorization: QQQ strategy portfolio development and validation.**
+  Implement the approved fixed-initial-capital sleeve experiment with exactly
+  12 current three-hour trend validation Sharpe beaters and 32 mean-reversion
+  development Sharpe beaters. Freeze those identities and twelve initial style
+  allocations (trend 0–100% in 10% steps plus equal-44), then select one by
+  2001–2011 baseline net cash-excess Sharpe before testing it and predefined
+  controls on 2012–2018. No rebalancing, sleeve cash redistribution, order
+  netting, constituent retuning or validation reselection. Keep all original
+  sources/results immutable; add separate portfolio interfaces. This universe
+  is hindsight-conditioned because the twelve trend members were chosen from
+  validation performance. Historical OOS **2019 onward remains closed**.
 - **Latest separate-study authorization: mean-reversion validation only.**
   The user explicitly requested testing the **32 baseline development cases
   beating cost-matched buy-and-hold Sharpe** on **2012–2018**. Seal that exact
