@@ -5,7 +5,14 @@ The **Trend Following Study** tests **56,644 configurations** of daily indicator
 and half-hour confirmation on unlevered QQQ/cash. This tree contains only the
 current study, its dependencies and software tests. Git history is preserved.
 
-## Current status: development-only shortlist hold
+## Current status: intersection validation complete; historical OOS closed
+
+**Latest authorized follow-up: shared-pair validation only.** The 159 indicator
+pairs beating development BH Sharpe at **all three 2/3/4-hour waits** were sealed
+before validation access, then evaluated at every retained wait in 2012–2015.
+All **477 validation instances** remain; none beats the fresh cost-matched BH
+cash-excess Sharpe **1.09027**. No winner, replacement or global wait was selected.
+**Historical OOS remains closed.** [Intersection selection and validation report](reports/intersection_validation/20261008/README.md).
 
 **Cash assumption for all new/restarted studies:** fixed **3% nominal annual
 interest**, accrued ACT/365 and compounded on the existing event clock, replaces
@@ -18,11 +25,12 @@ recompute all 289 indicator pairs at each equal entry/exit wait under this cash
 assumption. These 13 timing diagnostics do not choose the global production wait
 or authorize validation/OOS. [Shared future assumptions](configs/shared_research_assumptions.yaml).
 
-Select and freeze **45 options from 2001–2011 development only**, then stop.
-Validation and historical evaluation are **not authorized for further work**
-until the user explicitly opens the relevant stage. The selection criterion is
-baseline net cash-excess Sharpe, with five distinct indicator pairs per family
-cell and confirmation waits chosen using development only.
+The earlier **45-option development-only hold** remains a preserved record, not
+the selection used for this intersection follow-up. Validation authorization
+covered only the sealed 159-pair comparison above; other validation work and
+historical evaluation require new explicit user instructions. The old 45-option
+criterion was baseline net cash-excess Sharpe with five distinct indicator pairs
+per family cell and confirmation waits chosen using development only.
 
 Earlier evaluations shown below already occurred and are retained as historical
 records; this hold cannot make their periods genuinely untouched again. See the
@@ -157,7 +165,7 @@ prepared freezes remain private and are **not included**. Synthetic software
 tests require no market-price inputs. Market preparation fails closed when
 verified local inputs or required authorization are missing.
 
-Publication checks passed **427 synthetic software tests**, Ruff lint and
+Publication checks passed **532 synthetic software tests**, Ruff lint and
 whitespace checks. These checks are separate from market performance; the
 eight frozen implementation files and immutable configuration remain unchanged.
 

@@ -1,0 +1,110 @@
+{
+  "all_selected_candidates_retained_including_undefined_scores": true,
+  "benchmark_statistics": {
+    "buy_and_hold": {
+      "cagr": 0.19879664135291097,
+      "cash_excess_sharpe": 1.0902718430400362,
+      "max_drawdown": -0.1394104228812072,
+      "terminal_equity": 2063.5643047513354
+    },
+    "cash": {
+      "cagr": 0.030452725159181737,
+      "cash_excess_sharpe": null,
+      "max_drawdown": 0.0,
+      "terminal_equity": 1127.3325738776662
+    }
+  },
+  "candidate_set_sealed_at": "2026-10-09T03:28:15.513883+00:00",
+  "candidate_set_sha256": "c33cf5fba4f912f19e02fe9c71bd61ff8936db3122ba74c4f0b7af255981bd0c",
+  "cash_policy": {
+    "annual_rate": 0.03,
+    "day_count": "ACT/365",
+    "effective_annual_cash_growth": "slightly_above_3pct_due_to_interval_compounding",
+    "freshness_adapter": "repeat_identical_preknown_assumption_at_daily_UTC_boundaries",
+    "includes_closures": true,
+    "known_at": "before_first_supplied_clock_instant",
+    "per_clock_interval_return": "0.03 * elapsed_calendar_seconds / (365 * 86400)",
+    "rate_type": "fixed_nominal_annual_research_assumption",
+    "risk_free_reference": "same_assumed_cash_clock_returns_for_all_candidates_and_BH",
+    "source": "user_assumption_not_DTB3_or_observed_market_yield",
+    "wealth": "multiply_one_plus_interval_return_on_each_frozen_event_clock_interval"
+  },
+  "commission_bps_per_one_way_order": 1,
+  "common_confirmation_hours": [
+    2.0,
+    3.0,
+    4.0
+  ],
+  "counts_independently_recomputed": true,
+  "derived_input_sha256": {
+    "benchmark_metrics.csv": "e9e913672016ca7f75eb3931f6768e9900e327718a1c21fe9124e4738e5c2395",
+    "buy_and_hold_daily.csv": "19ac052b7bc62f50dfdbe49830164645d05bf7e9aa9a1dd21b16394c9713c55a",
+    "candidate_metrics.csv": "cb90adb0a862999101892b21844be8a8972cf944dc57698eaedd893e9fd085de",
+    "cash_daily.csv": "63b3253501d126af9287855e7943c6bb6be037287091bc455ff12e6454805edb",
+    "development_selection_metrics.csv": "a88b2476cfb3e7858250d799052633aa74f8d4c51d3ef86070b1882d7c64150f"
+  },
+  "development_period": {
+    "end": "2011-12-31",
+    "start": "2001-01-01"
+  },
+  "effective_cash_cagr": 0.030452725159181737,
+  "first_validation_session": "2012-01-03",
+  "freeze_payload_sha256": "dcca14d29a0dee591fcc2e164da54bf908d33956a92bfd4389ed88632defe0c3",
+  "global_wait_selected_after_validation": false,
+  "historical_oos_authorized_or_opened_in_this_follow_up": false,
+  "implementation_source_sha256": {
+    "scripts/run_qqq_gap_flags_v5.py": "72a4effb5564391610917853793e4f57a34bb8e320d575e3544cefe5e1d2a826",
+    "scripts/run_qqq_reconciled_v5.py": "87d076d21f51ddf8d46b712c2be0655bfd1d2c4b7c0c1b4eda04b93f8927fd54",
+    "src/trend_following/research_alpha_reconciliation_v5.py": "11c5d5b83b43b71ff22efd590eb863d660a006caec02824fd1a4b89d90ceed63",
+    "src/trend_following/research_constant_cash.py": "0f5babf0de632184f3730c60944e08da9c1e6a298bde13368dee17603a3b7886",
+    "src/trend_following/research_daily_hourly_v5.py": "de718c8d9f16870e2907327f6e1aa8fc386993fcaaa1a5486e5029845bc7cd0d",
+    "src/trend_following/research_hourly_data_v5.py": "4dfdf6591456b037b6aca3617b77154fd3d94b868da873da54c9179080e23a80",
+    "src/trend_following/research_intersection_validation.py": "28a779bc2019824dc5a33bc1c30690fb2144abddb38dbfd75f23b99d99203209",
+    "src/trend_following/research_quality_engine_v5.py": "39cc48e4cd616ec0b5ed1ef6381821f85a2a70fab3572ba40bfab1784dee81ca",
+    "src/trend_following/research_quality_protocol_v5.py": "771fc81ca01a2d482789a2890939c2d63f16a6285cf7c3ea791f96fe4aa63005",
+    "src/trend_following/research_rates.py": "c93ff7712b9df421abd72b1f8ff3482c2c05e396d7d61359de59512cb8300520"
+  },
+  "indicator_unit": "daily_sessions",
+  "initial_capital_per_fresh_segment": 1000.0,
+  "instances_per_pair": 3,
+  "last_validation_session": "2015-12-31",
+  "limitations": [
+    "Exploratory retrospective validation on previously examined history, not genuinely untouched confirmation",
+    "Development-based intersection is in-sample selection",
+    "Hypothetical cash yield and execution costs",
+    "No winner, final global wait or historical OOS selected or opened"
+  ],
+  "pairs_sha256": "c6a7c803561fcf7073b50b8e40496a2304c57ba9b587f526124816f08f73cbe6",
+  "primary_beat_definition": "finite candidate cash-excess Sharpe > BH Sharpe + 1e-10",
+  "prior_validation_history_previously_examined": true,
+  "project": "Trend Following Study",
+  "publication_dependency_source_sha256": {
+    "scripts/summarize_constant_cash.py": "f68424de9675a981436a0b461c4e6c76d255571c63c60e49720ac354aeb741ed"
+  },
+  "publication_helper_sha256": "b663a54e480179588b2729d3ac4ba0dfb4af620dcb4b06b1f2abc9c7895f9173",
+  "required_consecutive_hits_formula": "1 + 2 * wait_hours",
+  "result_seal_payload_sha256": "b4e797c8433f20102f5571793fa5610a52d6c8208103287b82efdc517d834c7f",
+  "same_entry_and_exit_wait": true,
+  "scope": "development_BH_beating_intersection_with_diagnostic_validation_only",
+  "score_definition": "session_close_cash_excess_return_mean / sample_sd_ddof1 * sqrt(252)",
+  "selected_pair_count": 159,
+  "selection_definition": "finite development cash-excess Sharpe > development BH Sharpe + 1e-10 at EVERY shared wait 2, 3 and 4 hours",
+  "selection_inputs": "new_constant_3pct_cash_development_results_only_not_old_9_or_45_shortlists",
+  "slippage_bps_per_one_way_order": 3,
+  "taxes_financing_separate_fund_expenses": false,
+  "total_bps_per_one_way_order": 4,
+  "trade_count_definition": "completed_buy_sell_round_trips_including_terminal_liquidation_not_trades_per_year",
+  "trade_medians_scope": "all_159_frozen_pairs_per_wait_not_only_validation_BH_beating_members",
+  "undefined_scores_retained_in_159_denominator": true,
+  "validation_all_three_beat_flag_is_descriptive_not_a_new_selection": true,
+  "validation_configurations_evaluated": 477,
+  "validation_is_untouched_confirmation": false,
+  "validation_market_access_started_at": "2026-10-09T03:28:22.145862+00:00",
+  "validation_pairs_beating_BH_Sharpe_at_all_three_waits": 0,
+  "validation_period": {
+    "end": "2015-12-31",
+    "start": "2012-01-01"
+  },
+  "validation_sessions": 1006,
+  "winner_selected_after_validation": false
+}

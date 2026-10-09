@@ -23,5 +23,5 @@ allowed_diagnostic:
   production_study: false
   optimal_wait_selected: false
 later_stages:
-  validation: on_hold_no_new_explicit_authorization
+  validation: authorized_only_for_sealed_development_intersection_of_2_3_4_hour_BH_Sharpe_beats
   historical_oos: on_hold_no_new_explicit_authorization

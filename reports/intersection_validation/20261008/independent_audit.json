@@ -1,0 +1,109 @@
+{
+  "all_477_session_paths_statistics_recomputed": true,
+  "audit_scope": "independent_development_intersection_and_new_validation_only",
+  "candidate_set_sealed_before_validation_market_access": true,
+  "candidate_set_sha256": "c33cf5fba4f912f19e02fe9c71bd61ff8936db3122ba74c4f0b7af255981bd0c",
+  "cash_convention": "ACT365_event_time_compounding_not_3pct_APY",
+  "cash_nominal_annual_rate": 0.03,
+  "chronology": {
+    "candidate_set_sealed_at": "2026-10-09T03:28:15.513883+00:00",
+    "finished_at": "2026-10-09T03:28:42.418572+00:00",
+    "market_outcomes_started_at": "2026-10-09T03:28:22.145862+00:00"
+  },
+  "commission_bps": 1,
+  "counts_by_wait": [
+    {
+      "beat_BH_Sharpe_count": 0,
+      "below_BH_Sharpe_count": 159,
+      "configuration_count": 159,
+      "finite_Sharpe_count": 159,
+      "median_cagr": 0.11369655028367864,
+      "median_finite_sharpe": 0.7034413887241946,
+      "median_trade_count": 9.0,
+      "tie_BH_Sharpe_count": 0,
+      "undefined_Sharpe_count": 0,
+      "wait_hours": 2.0
+    },
+    {
+      "beat_BH_Sharpe_count": 0,
+      "below_BH_Sharpe_count": 159,
+      "configuration_count": 159,
+      "finite_Sharpe_count": 159,
+      "median_cagr": 0.10658856806775518,
+      "median_finite_sharpe": 0.6456377536618234,
+      "median_trade_count": 8.0,
+      "tie_BH_Sharpe_count": 0,
+      "undefined_Sharpe_count": 0,
+      "wait_hours": 3.0
+    },
+    {
+      "beat_BH_Sharpe_count": 0,
+      "below_BH_Sharpe_count": 159,
+      "configuration_count": 159,
+      "finite_Sharpe_count": 159,
+      "median_cagr": 0.11799286294013789,
+      "median_finite_sharpe": 0.7430405426003062,
+      "median_trade_count": 8.0,
+      "tie_BH_Sharpe_count": 0,
+      "undefined_Sharpe_count": 0,
+      "wait_hours": 4.0
+    }
+  ],
+  "daily_features_available_at_17NY_checked": true,
+  "development_per_wait_BH_beating_counts": {
+    "2": 187,
+    "3": 181,
+    "4": 169
+  },
+  "freeze_payload_sha256": "dcca14d29a0dee591fcc2e164da54bf908d33956a92bfd4389ed88632defe0c3",
+  "frozen_shared_pairs": 159,
+  "frozen_timing_instances": 477,
+  "historical_OOS_authorized": false,
+  "historical_OOS_numeric_files_read_for_this_followup": false,
+  "independent_passive_benchmarks": {
+    "buy_and_hold": {
+      "cagr": 0.19879664135291097,
+      "cash_excess_sharpe": 1.0902718430400362,
+      "max_abs_daily_equity_error": 0.0,
+      "max_drawdown": -0.1394104228812072,
+      "order_count": 2,
+      "terminal_equity": 2063.5643047513354
+    },
+    "cash": {
+      "cagr": 0.030452725159181737,
+      "cash_excess_sharpe": null,
+      "max_abs_daily_equity_error": 0.0,
+      "max_drawdown": 0.0,
+      "order_count": 0,
+      "terminal_equity": 1127.3325738776662
+    }
+  },
+  "limitations": [
+    "History was previously examined; retrospective validation, not restored untouched holdout",
+    "Accounting and primary statistics independently recomputed; full strategy decisions are not independently re-simulated",
+    "Frozen price reconstruction, provider-daily 17NY availability, modeled costs and nominal fixed cash assumptions retained",
+    "Gap flags descriptive only; no candidate removed after evaluation"
+  ],
+  "maximum_absolute_metric_errors": {
+    "annualized_volatility": 6.938893903907228e-16,
+    "cagr": 0.0,
+    "cash_excess_sharpe": 3.774758283725532e-15,
+    "max_drawdown": 0.0,
+    "returns": 0.0,
+    "terminal_equity": 0.0
+  },
+  "no_validation_filtering_or_replacement": true,
+  "pairs_sha256": "c6a7c803561fcf7073b50b8e40496a2304c57ba9b587f526124816f08f73cbe6",
+  "passive_dividend_actions": 17,
+  "passive_split_actions": 0,
+  "project": "Trend Following Study",
+  "ready_with_caveats": true,
+  "result_seal_payload_sha256": "b4e797c8433f20102f5571793fa5610a52d6c8208103287b82efdc517d834c7f",
+  "scored_known_halt_overlap_slots": 7,
+  "scored_unknown_missing_slots": 0,
+  "selection_development_only": true,
+  "slippage_bps": 3,
+  "validation_first_session": "2012-01-03",
+  "validation_last_session": "2015-12-31",
+  "validation_sessions": 1006
+}

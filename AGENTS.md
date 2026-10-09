@@ -1,5 +1,14 @@
 # Trend Following Study — Repository Instructions
 
+- **Latest stage authorization: intersection validation only.** Keep the daily
+  indicator pairs beating cost-matched BH cash-excess Sharpe in development at
+  every shared wait of 2, 3 and 4 hours, using fixed 3% nominal cash and 1+3 bp
+  commission/slippage. Freeze that development-only intersection before loading
+  validation inputs. Evaluate every retained pair at all three uniform waits in
+  2012–2015; no post-validation replacement or winner selection. This overrides
+  the validation hold only for this separately sealed comparison. Historical
+  OOS remains unauthorized/closed. Do not use earlier validation/OOS outcomes
+  for selection or describe previously examined history as genuinely untouched.
 - **Latest retained wait choices:** keep only **2, 3 and 4 trading hours** for
   further development comparisons. Within each choice, the one common duration
   applies to entry and exit for every indicator pair; never mix waits per side
