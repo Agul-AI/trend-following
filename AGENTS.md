@@ -1,5 +1,19 @@
 # Trend Following Study — Repository Instructions
 
+- **Latest separate-study authorization: core/tactical and adaptive allocation.**
+  Add a separate study using exactly the sealed 12 trend and 32 MR members,
+  all 384 equal-initial-capital pairs, core/blend allocations 50/70/90% with
+  pure trend eligible, and a fixed finalized-daily ER20 regime selector
+  (MR at <=0.25, trend at >=0.35; seven half-hour confirmations). Gate MR
+  statefully by its paired unchanged trend state; trend exits always win.
+  Fixed sleeves drift without rebalancing; blending places actual partial
+  target trades only on state changes, with no cross-account netting.
+  Run 2001–2011 development, seal both allocation selections and the fixed
+  regime rule, then evaluate predefined 2012–2018 retrospective validation.
+  Keep 2019 onward closed; do not reselect pairs or validation winners.
+  Use scripts/run_hybrid_allocation_research.py and preserve earlier frozen
+  sources/results, monitors and resumes. This remains hindsight-conditioned.
+
 - **Latest separate-study authorization: multi-scale combination comparison.**
   Preserve and verify the sealed 12-trend/32-mean-reversion fixed-capital
   portfolio results; do not rerun or extend its original selections. Add a

@@ -1,0 +1,161 @@
+{
+  "OOS_market_data_rows_parsed": 0,
+  "bootstrap": {
+    "block_lengths": [
+      5,
+      20,
+      60
+    ],
+    "confidence_level": 0.95,
+    "historical_selection_bias_corrected": false,
+    "independent_interval_count": 27,
+    "replicates": 2000,
+    "seed": 20261009
+  },
+  "bounded_periods": {
+    "development": "2001\u20132011",
+    "retrospective_validation": "2012\u20132018"
+  },
+  "chronology": {
+    "development_finished_at": "2026-10-10T05:18:15.643035+00:00",
+    "frozen_at": "2026-10-10T05:06:28.236410+00:00",
+    "selection_before_validation": true,
+    "selections_sealed_at": "2026-10-10T05:18:24.119539+00:00",
+    "validation_finished_at": "2026-10-10T05:42:38.658548+00:00",
+    "validation_started_at": "2026-10-10T05:35:23.938966+00:00"
+  },
+  "constituents": {
+    "all_unchanged": true,
+    "mean_reversion": 32,
+    "pairs": 384,
+    "principal_portfolios": 8,
+    "trend": 12
+  },
+  "coverage_limitations": [
+    "No UNKNOWN-ER execution opens occurred in either historical segment; UNKNOWN suppression/recovery is covered by synthetic acceptance tests, not historical replay observations.",
+    "Historical membership used validation outcomes; neither development fitting nor bootstrap intervals restores independent confirmation.",
+    "Provider-daily availability and reconstructed Alpha execution-price conventions remain research assumptions."
+  ],
+  "custody": {
+    "all_seals_and_bindings_match": true,
+    "development_result_digest": "a360785b522c787864619e4a28ccfcf4b4554d45b37f9c7e80134603bc4f35e6",
+    "development_sealed_files_verified": 50,
+    "freeze_file_sha256": "aa4a07cf02266bec0801050dd3a5104f4a1091f2ecf6e96827e00ddeaffc586e",
+    "freeze_payload_digest": "d4f1d1fc6db1791c41315ad2cfb29005d9019f2d7b242f02c054acc7766c1e46",
+    "frozen_source_files_verified": 32,
+    "prior_dependency_files_verified": 527,
+    "protected_tracked_files_unchanged": 246,
+    "validation_result_digest": "31add98dfe28429160f9a84561e05424e77efe9f9e1a9ce9c857b4cc9edc637b",
+    "validation_sealed_files_verified": 51
+  },
+  "development_only_selections": [
+    {
+      "architecture": "A",
+      "portfolio_id": "hybrid_core_050",
+      "trend_allocation": 0.5
+    },
+    {
+      "architecture": "B",
+      "portfolio_id": "hybrid_blend_050",
+      "trend_allocation": 0.5
+    }
+  ],
+  "historical_OOS_authorized": false,
+  "monitors_and_resumes_modified": false,
+  "private_reference_code_sha256": {
+    "independent_account_scalar": "cccd569d8b01add9c12989b714e09569be698933f17a05a6075e5cf88cd7358b",
+    "independent_account_vectorized": "084587c70fd977de8fdbabf73164b8db8f2f9daa5c77ea23921c76b935638e9c",
+    "independent_daily_features": "5e09c6cc9b53b06fad647dc9ac8a6a963ff7068141f19ec6a298d6d71bc8bbe1",
+    "independent_shadow_states": "ab7ada315fde3f1f1d922a644d0e706ef932d9714ce6c1c0b172cfa1577af883",
+    "independent_target_commands": "ce406ceb871ce30ed88aa218cc28650c1ec1957b89eec745335a0c1e40e6d27b"
+  },
+  "regime_fixed_before_performance": {
+    "availability": "finalized_daily_17_NY",
+    "initial_mode": "TF",
+    "lower": 0.25,
+    "period_days": 20,
+    "upper": 0.35
+  },
+  "review_scope": "Independent causal feature/state/target-command replay and independent net/gross self-financing accounting; no strategy retuning",
+  "schema": "qqq_hybrid_allocation_independent_review",
+  "software": {
+    "Ruff_format_new_python_files": "10 passed",
+    "Ruff_lint_all_tree": "passed",
+    "diff_check": "passed",
+    "final_full_suite_exit_code": 0,
+    "full_suite_tests_passed": 1349,
+    "new_tests_passed": 140,
+    "preexisting_format_findings_preserved": [
+      "src/trend_following/research_rates.py",
+      "tests/test_research_rates.py"
+    ],
+    "preexisting_tests_passed": 1209
+  },
+  "stages": {
+    "development": {
+      "all_shadow_states_and_confirmation_counters_match": true,
+      "all_target_command_timestamps_and_fractions_match": true,
+      "bootstrap_intervals_independently_reproduced": 0,
+      "completed_half_hour_observations": 35810,
+      "cost_scenario_command_files_byte_identical": true,
+      "daily_history_observations": 3062,
+      "independent_accounting_errors": {
+        "all_accounting_metric_fields_passed": 87,
+        "max_funded_portfolio_daily_wealth_error": 9.094947017729282e-13,
+        "max_net_account_daily_wealth_error": 8.185452315956354e-12,
+        "max_portfolio_cash_excess_sharpe_error": 2.6645352591003757e-15,
+        "max_portfolio_turnover_error": 5.684341886080802e-14,
+        "max_post_cost_target_fraction_error": 4.440892098500626e-16,
+        "max_zero_cost_daily_wealth_error": 0.0,
+        "max_zero_cost_terminal_wealth_error": 0.0
+      },
+      "independent_feature_and_ER_max_absolute_errors": {
+        "ER20": 1.1268763699945339e-14,
+        "MR_features": 7.503331289626658e-12,
+        "TF_features": 4.547473508864641e-13,
+        "causal_signal_index": 5.684341886080801e-13,
+        "trace_ER": 1.1268763699945339e-14
+      },
+      "normalized_account_cost_scenarios": 7728,
+      "paired_outcomes": 10752,
+      "recorded_actual_fills_independently_reconciled": 1036444,
+      "safe_execution_opens": 35810,
+      "stage_digest": "a360785b522c787864619e4a28ccfcf4b4554d45b37f9c7e80134603bc4f35e6",
+      "status": "passed",
+      "zero_cost_commands_replayed_with_own_quantities": true
+    },
+    "validation": {
+      "all_shadow_states_and_confirmation_counters_match": true,
+      "all_target_command_timestamps_and_fractions_match": true,
+      "bootstrap_intervals_independently_reproduced": 27,
+      "completed_half_hour_observations": 22776,
+      "cost_scenario_command_files_byte_identical": true,
+      "daily_history_observations": 4822,
+      "independent_accounting_errors": {
+        "all_accounting_metric_fields_passed": 91,
+        "max_funded_portfolio_daily_wealth_error": 9.094947017729282e-13,
+        "max_net_account_daily_wealth_error": 9.549694368615746e-12,
+        "max_portfolio_cash_excess_sharpe_error": 3.774758283725532e-15,
+        "max_portfolio_turnover_error": 2.842170943040401e-14,
+        "max_post_cost_target_fraction_error": 3.3306690738754696e-16,
+        "max_zero_cost_daily_wealth_error": 0.0,
+        "max_zero_cost_terminal_wealth_error": 0.0
+      },
+      "independent_feature_and_ER_max_absolute_errors": {
+        "ER20": 1.4349632593280148e-14,
+        "MR_features": 1.4281908988778014e-11,
+        "TF_features": 4.547473508864641e-13,
+        "causal_signal_index": 1.0800249583553523e-12,
+        "trace_ER": 1.4349632593280148e-14
+      },
+      "normalized_account_cost_scenarios": 7728,
+      "paired_outcomes": 10752,
+      "recorded_actual_fills_independently_reconciled": 754512,
+      "safe_execution_opens": 22772,
+      "stage_digest": "31add98dfe28429160f9a84561e05424e77efe9f9e1a9ce9c857b4cc9edc637b",
+      "status": "passed",
+      "zero_cost_commands_replayed_with_own_quantities": true
+    }
+  },
+  "status": "passed"
+}

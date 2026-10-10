@@ -3,9 +3,55 @@
 **Repository:** [Agul-quant/trend-following](https://github.com/Agul-quant/trend-following).
 The **Trend Following Study** tests **56,644 configurations** of daily indicators
 and half-hour confirmation on unlevered QQQ/cash. The tree also contains the
-separate current mean-reversion, fixed-capital portfolio and multi-scale
-combination studies, shared dependencies and software tests.
+separate current mean-reversion, fixed-capital portfolio, multi-scale and
+core/tactical adaptive-allocation studies, shared dependencies and software tests.
 Git history is preserved; archived studies are not reintroduced.
+
+## Trend core, tactical mean reversion and adaptive allocation
+
+This separate study retains the exact **12 trend and 32 MR rules** and all
+**384 predefined pairings**, equally weighted initially, without pair selection or indicator changes.
+It compares fixed-initial-capital core/tactical sleeves, signal blending with
+actual partial-position trades, and a fixed causal ER20 regime selector.
+Core/blend allocations are **50/70/90% trend**, with **pure trend eligible**.
+The paired unchanged trend state gates MR; a trend exit forces tactical exits
+at the same next safe open. Tactical recovery sales never sell a funded core.
+
+Fixed-capital portfolios fund twelve trend cores and 384 tactical MR sleeves;
+these sleeves drift without rebalancing. Blended accounts restore their target
+only on confirmed model-state changes, paying costs on actual partial trades.
+Regime switching uses finalized daily ER20 (MR at <=0.25, trend at >=0.35),
+seven half-hour confirmations and warm incoming shadow states. The selector
+starts in trend mode each segment; it is a frozen research assumption, not a
+proven market classifier. All indicator lookbacks remain daily sessions.
+
+Development is **2001–2011**, followed by separately sealed **2012–2018
+retrospective validation**. This remains hindsight-conditioned because the
+trend members were identified using that validation period. **2019 onward is
+closed**, and the original sources/results, monitors and resumes are preserved.
+Cash earns 3% nominal ACT/365 with event-clock compounding, not exactly 3% APY.
+Execution scenarios use 1-bp commission plus 1/3/10/25-bp hypothetical slippage;
+3 bps is the selection baseline. There is no cross-account order netting.
+
+```bash
+~/.venvs/myenv/bin/python scripts/run_hybrid_allocation_research.py check
+~/.venvs/myenv/bin/python scripts/run_hybrid_allocation_research.py freeze --authorization PRIVATE_AUTH.json
+~/.venvs/myenv/bin/python scripts/run_hybrid_allocation_research.py development
+~/.venvs/myenv/bin/python scripts/run_hybrid_allocation_research.py validation
+~/.venvs/myenv/bin/python scripts/run_hybrid_allocation_research.py report
+```
+
+The CLI exposes no OOS route and refuses overwriting sealed stages. Prices,
+private freezes, approval receipts and detailed execution ledgers stay private.
+Public comparison results appear in
+[the separate derived report](reports/hybrid_allocation_research/20261010/README.md).
+
+Development locked 50/50 for both new core/tactical and blending constructions.
+At baseline costs in retrospective validation, blended Sharpe was 0.908 versus
+0.898 for pure trend, but CAGR fell to 10.75% from 15.08%; the small Sharpe
+difference was not supported by the paired bootstrap intervals and reversed
+under higher slippage. The fixed ER regime route scored 0.685. See the report
+for exposure, drawdown, trading, all allocations and cost scenarios.
 
 ## Long-term trend + short-term mean-reversion comparison
 

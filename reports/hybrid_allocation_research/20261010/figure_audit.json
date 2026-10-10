@@ -1,0 +1,80 @@
+[
+  {
+    "header_geometry_nonoverlap": true,
+    "observed_marks": 2767,
+    "plotted_data_sha256": {
+      "buy_and_hold": {
+        "equity": "dc8a2c33b61a65e7bb2d55a115f26b5b198b9d542eb27b38475cba8c642239aa",
+        "exposure": "1d625bec0bb31b1ebec687757d132d5d1609d50be1b8701431dc40108cdea997"
+      },
+      "hybrid_blend_050": {
+        "equity": "fadc047208d31d463d7fa8eb4a0578275ccdb76524aea9d376629e8d1dc4d16d",
+        "exposure": "ae05968c799887950fa5decbe779f047eace257c85d3b114e9a16a4b0fdb0e94"
+      },
+      "hybrid_core_050": {
+        "equity": "447868142254655bea7f6c9006ddc1985eec4ae8c183e8edd1359902db590c99",
+        "exposure": "d8c380388ef0181fdef824091fc2a38d43ebf3c478fa3f00b10a22fad3a240d3"
+      },
+      "hybrid_gated_mr": {
+        "equity": "137aecabee9283cb0f1214a233af23232dfd391d40f66e44ef214f6d2f5b4691",
+        "exposure": "a3d1f3382675e4abb9ea72f0a1a0b1bb4a7d6b32c75dc2cbf4ca42b0e478c402"
+      },
+      "hybrid_regime_er20_025_035": {
+        "equity": "5210a8d40aea980cfb05d89f7baf2dea8cd6264f7d308417856f2c39cf87d0ba",
+        "exposure": "ebc2f4460fe7fa44937dcecbfb1b11cf6d7b4323f29d7128a9fbb0735723af7c"
+      },
+      "portfolio_tf_100": {
+        "equity": "7b3701639a5b3fbeb8ad91a8ecd431ca4ce31b4f836efae3d9142afd7c4b6f88",
+        "exposure": "5531784f620ea5f68dd132baac3e86a549db319ecc796890f0a277c62e3a317a"
+      }
+    },
+    "portfolio_ids": [
+      "hybrid_core_050",
+      "hybrid_blend_050",
+      "hybrid_regime_er20_025_035",
+      "portfolio_tf_100",
+      "buy_and_hold",
+      "hybrid_gated_mr"
+    ],
+    "stage": "development"
+  },
+  {
+    "header_geometry_nonoverlap": true,
+    "observed_marks": 1760,
+    "plotted_data_sha256": {
+      "buy_and_hold": {
+        "equity": "78215a7361f10a354dafebe39425cd620adc6b2919d7032694671374cb9c1678",
+        "exposure": "cb2ca062367e5cb2dcefcb5075765455ecf5e04a243064ab06cc34a00017e80a"
+      },
+      "hybrid_blend_050": {
+        "equity": "7e0309cf487248a4b19a691d427225e0d07497c5b54ccc7198dd9d0c87a7be36",
+        "exposure": "ffee23bfa1baf468352445d24bf1d0ecf2f88e4b65449acc075839579f54dd09"
+      },
+      "hybrid_core_050": {
+        "equity": "34d580bec60c24dac0b004192799273bd77e795c8d834b5cd510f2cf59a6749a",
+        "exposure": "b45d632e0f3542be059cbd707d64776a3eec881dce26e45608bc493263bee369"
+      },
+      "hybrid_gated_mr": {
+        "equity": "5e628facecf9b9d14050de1c183ce87d9db976da51607ea18f39b11e67b8b0a3",
+        "exposure": "c01937abe8061de0b92291a08d30c85244111e414621767a6758baade3de69cb"
+      },
+      "hybrid_regime_er20_025_035": {
+        "equity": "56aa0b8845fbb9f55a0cb0a914be9dfed39055a7dbdb6587ca8fc54cd4fec060",
+        "exposure": "27e8ef94d51e1d3e30237b5d6345e3db155520debcb990168eba907bcff5d417"
+      },
+      "portfolio_tf_100": {
+        "equity": "fe11e753f81b0ff3879123b4f524e2d9f5e5f348fc7ad80610fb8a4e8c9547cd",
+        "exposure": "95f5b2c2236a638be8f0f1b78079423a7b815e78c3d0e9ef63325a288f55ac23"
+      }
+    },
+    "portfolio_ids": [
+      "hybrid_core_050",
+      "hybrid_blend_050",
+      "hybrid_regime_er20_025_035",
+      "portfolio_tf_100",
+      "buy_and_hold",
+      "hybrid_gated_mr"
+    ],
+    "stage": "validation"
+  }
+]

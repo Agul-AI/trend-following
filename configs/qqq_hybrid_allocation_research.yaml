@@ -1,0 +1,127 @@
+schema: qqq_hybrid_allocation_research
+study_name: Trend Following Study — Trend Core, Tactical Mean Reversion and Adaptive
+  Allocation
+security: QQQ
+historical_label: retrospective_hindsight_conditioned_membership
+membership:
+  trend_count: 12
+  mean_reversion_count: 32
+  pair_count: 384
+  equal_initial_capital_per_pair: true
+  pair_selection: false
+  unchanged_constituents: true
+portfolio:
+  initial_cash: 1000.0
+  allocations:
+  - 0.5
+  - 0.7
+  - 0.9
+  pure_trend_fallback: true
+  principal_count: 8
+  pair_result_count_per_cost: 2688
+  fractional_shares: true
+  cross_account_netting: false
+  capital_redistribution: false
+core:
+  funded_trend_accounts: 12
+  funded_tactical_accounts: 384
+  rebalance: false
+  MR_gate: paired_TF_actual_filled_long_state
+  TF_exit_forces_MR_at_same_safe_open: true
+blend:
+  funded_accounts_per_allocation: 384
+  target: alpha_sTF_plus_one_minus_alpha_sMRgated
+  rebalance: only_confirmed_target_changes
+  sizing: post_cost_equity_at_execution_raw_open
+  atomic_simultaneous_orders: true
+  maintenance_rebalance: false
+regime:
+  period_days: 20
+  lower: 0.25
+  upper: 0.35
+  availability: finalized_daily_17_NY
+  initial_mode: TF
+  observations: 21
+  zero_denominator: 0.0
+  unknown: retain_mode_cancel_switch_suppress_risk_adds_allow_reductions
+  confirmation_hours: 3.0
+  required_checks: 7
+  shadow_states: warm_within_TF_filled_permission
+  reconcile_after_unknown: true
+  threshold_selection: false
+execution:
+  indicator_units: daily_sessions
+  shared_confirmation_hours: 3.0
+  required_checks: 7
+  TF_exit_priority: true
+  next_safe_observed_open: true
+  MR_fresh_after_TF_entry: true
+  gaps: hold_cancel_pending_reset_streaks
+  post_gap_flags: descriptive_through_next_session_close
+periods:
+  initialization:
+    start: '1999-11-01'
+    end: '2000-12-31'
+  development:
+    start: '2001-01-01'
+    end: '2011-12-31'
+  validation:
+    start: '2012-01-01'
+    end: '2018-12-31'
+accounting:
+  cash_nominal_annual_rate: 0.03
+  cash_day_count: ACT/365
+  commission_bps: 1.0
+  baseline_slippage_bps: 3.0
+  slippage_bps_scenarios:
+  - 1.0
+  - 3.0
+  - 10.0
+  - 25.0
+  taxes: false
+  financing: false
+  separate_fund_expenses: false
+  matched_terminal_liquidation: true
+  gross_shadow: same_commands_own_wealth_quantities
+selection:
+  metric: daily_cash_excess_sharpe
+  annualization: 252
+  standard_deviation_ddof: 1
+  finite_only: true
+  baseline_only: true
+  tie_tolerance: 1.0e-10
+  tie_order: stable_portfolio_id
+  one_lock_per_architecture:
+  - A
+  - B
+  filters: false
+  C_fixed_no_selection: true
+controls:
+  reused_independent_trend_allocations:
+  - 0.5
+  - 0.7
+  - 0.9
+  pure_trend: true
+  ungated_MR: true
+  new_TF_state_gated_MR: true
+  buy_and_hold: true
+  cash: true
+  reuse_existing_seals: true
+bootstrap:
+  replicates: 2000
+  block_lengths:
+  - 5
+  - 20
+  - 60
+  seed: 20261009
+  confidence_level: 0.95
+  paired: true
+  deduplicate_identical_comparison_paths_keep_aliases: true
+protocol:
+  authorized_stages:
+  - development
+  - validation
+  historical_oos_authorized: false
+  fresh_segment_state: true
+  hindsight_conditioned_membership: true
+  no_validation_reselection: true
